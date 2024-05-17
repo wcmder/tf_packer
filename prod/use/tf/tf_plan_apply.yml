@@ -1,12 +1,19 @@
 ---
 variables:
+# variable group name in DevOps
 - group: dostest01kv01
+# Directory to run tasks
 - name: parentpath
-  value: demo
+  value: tf_packer
 - name : dir
-  value: use/infra
+  value: prod/use/tf
+# Terraform version
 - name : tfversion
   value: '1.7.2'
+# environment name in DevOps
+- name : env
+  value: tf_packer
+###
 trigger:
   branches:
     include:
@@ -65,7 +72,7 @@ stages:
         displayName: TF Apply
         pool:
           vmImage: ubuntu-latest
-        environment: demo
+        environment: $(env)
         strategy:
          runOnce:
           deploy:

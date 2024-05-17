@@ -1,21 +1,44 @@
-# local subscription info
+# naming convetion functions
 locals {
-
   # list of region name = avvrivation
   # to be matched from the call, and resulted in list with only the one matched
   region = {
     usgovvirginia = "usgovva"
   }
 
-  # get region abbrivation
+  # get region abbrivation for resrouce naming prefix
   # region the resource will be created, this list has only 1 item
   reg_abbr     = compact([for k, v in local.region : k == replace(lower(var.reg), " ", "") ? v : ""])
+
+  # get resource group region abbrivation for resrouce naming prefix
   # region of the resource group, this list has only 1 item
   reg_abbr_rsg = compact([for k, v in local.region : k == replace(lower(var.rsg_location), " ", "") ? v : ""])
 
-  # this used only main is false, for data call
-  env_rsg = var.main ? join("-", [local.name, local.reg_abbr[0], var.svc_name]) : join("-", [local.name, local.reg_abbr_rsg[0], var.svc_name])
+  # find the rsg region for the module call
+  # if true, use reg_abbr in which rsg created in this call
+  # if false, use reg_abbr_rsg rsg referenced but not created
+  env_rsg = var.main ? join("-", [var.env, local.reg_abbr[0], var.svc_name]) : join("-", [var.env, local.reg_abbr_rsg[0], var.svc_name])
+}
 
+
+# resource name prefix set
+/* 
+example - $env-$reg_abbr-$svc_name
+  prod-usgovva-infra : 
+  dev-usgovva-infra
+  transit-usgovva-infra
+*/
+locals {
+  #e_name         = var.env
+  env          = join("-", [var.env, local.reg_abbr[0], var.svc_name])
+  rsg_name     = var.rsg_name
+  rsg_location = var.rsg_location
+}
+
+
+
+# Onprem IP spaces
+locals {
   # onprem IP space for static route if used
   cidr_onprem = {
     fs = {
@@ -38,28 +61,13 @@ locals {
 }
 
 
-# resource name prefix env is here
-/* 
-example -
-  prod-usgovva-infra
-  dev-usgovva-infra
-  transit-usgovva-infra
-*/
-locals {
-  name         = var.env
-  env          = join("-", [local.name, local.reg_abbr[0], var.svc_name])
-  rsg_name     = var.rsg_name
-  rsg_location = var.rsg_location
-}
-
-
 # list of all DNS servers
 locals {
   dns = ["8.8.8.8"]
 }
 
 
-# cidr for all, inlucde in common to pass back to module calls
+# cidr cloud
 locals {
 
   cidr_all = ["10.0.0.0/12", "10.104.16.0/21"] # US GOV
@@ -120,39 +128,58 @@ locals {
 }
 
 
+# tags back on enviroment
 locals {
   prod_tags = {
     ApplicationName     = "Network Infrastructure"
-    BusinessOwner       = "ITD"
-    InfrastructureOwner = "ITD Netops"
+    BusinessOwner       = "Wallace"
+    InfrastructureOwner = "Wallace"
     Environment         = "Production"
-    TechnologyOwner     = "ITD Netops"
-    ApplicationOwner    = "ITD Netops"
+    TechnologyOwner     = "Wallace"
+    ApplicationOwner    = "Wallace"
   }
   dev_tags = {
     ApplicationName     = "Network Infrastructure"
-    BusinessOwner       = "ITD"
-    InfrastructureOwner = "ITD Netops"
+    BusinessOwner       = "Wallace"
+    InfrastructureOwner = "Wallace"
     Environment         = "Development"
-    TechnologyOwner     = "ITD Netops"
-    ApplicationOwner    = "ITD Netops"
+    TechnologyOwner     = "Wallace"
+    ApplicationOwner    = "Wallace"
   }
   transit_tags = {
     ApplicationName     = "Network Infrastructure"
-    BusinessOwner       = "ITD"
-    InfrastructureOwner = "ITD Netops"
+    BusinessOwner       = "Wallace"
+    InfrastructureOwner = "Wallace"
     Environment         = "Development"
-    TechnologyOwner     = "ITD Netops"
-    ApplicationOwner    = "ITD Netops"
+    TechnologyOwner     = "Wallace"
+    ApplicationOwner    = "Wallace"
   }
 }
 
 
+# set the tags return based on the DEV value
+# currently three defined - prod / dev / transit
 locals {
   tags = var.env == "prod" ? local.prod_tags : (
   var.env == "dev" ? local.dev_tags : (
   var.env == "transit" ? local.transit_tags : null)
   )
+}
+
+
+
+# create RSG - real name is prepended with local.env above
+module "rsg" {
+  source = "../../modules/network/rsg"
+  main   = var.main
+  rsg = {
+    rsg1 : {
+      rsg_name     = local.rsg_name
+      rsg_location = local.rsg_location
+    }
+  }
+  env    = local.env
+  common = local.tags
 }
 
 
@@ -167,22 +194,6 @@ locals {
     reg          = var.reg
   }
 }
-
-
-# create RSG - real name is prepended with local.env
-module "rsg" {
-  source = "../../modules/network/rsg"
-  main   = var.main
-  rsg = {
-    rsg1 : {
-      rsg_name     = local.rsg_name
-      rsg_location = local.rsg_location
-    }
-  }
-  env    = local.env
-  common = local.tags
-}
-
 
 # return the common settings
 output "common" {
