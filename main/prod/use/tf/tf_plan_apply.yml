@@ -4,7 +4,7 @@ variables:
 - group: dostest01kv01
 # Directory to run tasks
 - name: parentpath
-  value: tf_packer
+  value: main
 - name : dir
   value: prod/use/tf
 # Terraform version
@@ -20,9 +20,9 @@ trigger:
     - main
   paths:
     include: 
-    - tf_packer/prod/use/tf
+    - main/prod/use/tf
     exclude:
-    - tf_packer/prod/use/tf/*.yml
+    - main/prod/use/tf/*.yml
 stages:
   - stage: Build
     jobs:

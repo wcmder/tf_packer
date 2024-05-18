@@ -10,7 +10,7 @@ module "main" {
   rsg_location = "East US"
   reg          = "East US"
   evn          = "dev"
-  svc_name     = "lab"
+  svc_name     = "lab1"
 }
 
 
