@@ -4,11 +4,12 @@ locals {
   # to be matched from the call, and resulted in list with only the one matched
   region = {
     usgovvirginia = "usgovva"
+    eastus        = "use"
   }
 
   # get region abbrivation for resrouce naming prefix
   # region the resource will be created, this list has only 1 item
-  reg_abbr     = compact([for k, v in local.region : k == replace(lower(var.reg), " ", "") ? v : ""])
+  reg_abbr = compact([for k, v in local.region : k == replace(lower(var.reg), " ", "") ? v : ""])
 
   # get resource group region abbrivation for resrouce naming prefix
   # region of the resource group, this list has only 1 item
@@ -161,8 +162,8 @@ locals {
 # currently three defined - prod / dev / transit
 locals {
   tags = var.env == "prod" ? local.prod_tags : (
-  var.env == "dev" ? local.dev_tags : (
-  var.env == "transit" ? local.transit_tags : null)
+    var.env == "dev" ? local.dev_tags : (
+    var.env == "transit" ? local.transit_tags : null)
   )
 }
 
