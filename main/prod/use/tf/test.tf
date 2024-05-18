@@ -4,7 +4,7 @@
 
 
 module "main" {
-  source       = "../../modules/main_demo"
+  source       = "../../modules/org"
   main         = true
   rsg_name     = "rg01"
   rsg_location = "East US"
