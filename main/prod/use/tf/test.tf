@@ -4,12 +4,12 @@
 
 
 module "main" {
-  source       = "../../modules/org"
+  source       = "../../../modules/org"
   main         = true
   rsg_name     = "rg01"
   rsg_location = "East US"
   reg          = "East US"
-  evn          = "dev"
+  env          = "dev"
   svc_name     = "lab1"
 }
 
