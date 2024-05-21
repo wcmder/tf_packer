@@ -6,7 +6,7 @@ variables:
 - name: parentpath
   value: main
 - name : dir
-  value: prod/use/tf
+  value: dev/use/tf
 # Terraform version
 - name : tfversion
   value: '1.7.2'
@@ -20,9 +20,9 @@ trigger:
     - main
   paths:
     include: 
-    - main/prod/use/tf
+    - main/dev/use/tf
     exclude:
-    - main/prod/use/tf/*.yml
+    - main/dev/use/tf/*.yml
 stages:
   - stage: Build
     jobs:

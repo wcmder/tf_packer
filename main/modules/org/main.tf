@@ -3,7 +3,7 @@ locals {
   # list of region name = avvrivation
   # to be matched from the call, and resulted in list with only the one matched
   region = {
-    usgovvirginia = "usgovva"
+    usgovvirginia = "use"
     eastus        = "use"
   }
 
@@ -25,9 +25,9 @@ locals {
 # resource name prefix set
 /* 
 example - $env-$reg_abbr-$svc_name
-  prod-usgovva-infra : 
-  dev-usgovva-infra
-  transit-usgovva-infra
+  prod-use-infra : 
+  dev-use-infra
+  transit-use-infra
 */
 locals {
   #e_name         = var.env
@@ -71,48 +71,32 @@ locals {
 # cidr cloud
 locals {
 
-  cidr_all = ["10.0.0.0/12", "10.104.16.0/21"] # US GOV
+  cidr_all = ["10.0.0.0/21"] # US EAST
 
   cidr_region = {
-    usgovva_compute   = [cidrsubnet(local.cidr_all[0], 3, 0)] # 10.0.0.0/15
-    usgovva_transport = [cidrsubnet(local.cidr_all[1], 1, 0)] # 10.104.16.0/22
+    use_transit = [cidrsubnet(local.cidr_all[0], 1, 0)] # 10.0.0.0/22
+    use_vnet    = [cidrsubnet(local.cidr_all[0], 3, 4)] # 10.0.4.0/24
   }
 
   cidr_vnet = {
-    usgovva = {
-      vnet_vhub    = [cidrsubnet(local.cidr_region.usgovva_transport[0], 1, 0)] # 10.104.16.0/23
-      vnet_vhub_t1 = [cidrsubnet(local.cidr_region.usgovva_transport[0], 2, 2)] # 10.104.18.0/24
-      vnet_vhub_t2 = [cidrsubnet(local.cidr_region.usgovva_transport[0], 2, 3)] # 10.104.19.0/24 (reseved)
+    use = {
+      vnet_vhub = [cidrsubnet(local.cidr_region.use_transit[0], 1, 0)] # 10.0.0.0/23
+      vnet_er   = [cidrsubnet(local.cidr_region.use_transit[0], 2, 2)] # 10.0.2.0/24
+
     }
   }
 
-  vhub_t1_1 = [cidrsubnet(local.cidr_vnet.usgovva.vnet_vhub_t1[0], 1, 0)] # 10.104.18.0/25 (HQ)
-  vhub_t1_2 = [cidrsubnet(local.cidr_vnet.usgovva.vnet_vhub_t1[0], 1, 1)] # 10.104.18.128/25 (EQ)
 
   cidr_subnet = {
-    usgovva = {
+    use = {
       vnet_vhub = {
-        subnet_vhub = local.cidr_vnet.usgovva.vnet_vhub[0]
-        # 0 - 10.104.16.0/23 for vhub
-        vhub_t1_1 = cidrsubnets(local.vhub_t1_1[0], 5, 5, 5, 5, 3, 2, 1)
-        # 0 - /30 for private peering1
-        # 1 - /30 reserved
-        # 2 - /30 reserved
-        # 3 - /30 reserved
-        # 4 - /28 reserved
-        # 5 - /27 reserved
-        # 6 - /26 reserved
-        vhub_t2_1 = cidrsubnets(local.vhub_t1_2[0], 5, 5, 5, 5, 3, 2, 1)
-        # 0 - /30 for private peering1
-        # 1 - /30 reserved
-        # 2 - /30 reserved
-        # 3 - /30 reserved
-        # 4 - /28 reserved
-        # 5 - /27 reserved
-        # 6 - /26 reserved
+        subnet_vhub = local.cidr_vnet.use.vnet_vhub[0]                   # 10.0.0.0/23
+        er_prim     = [cidrsubnet(local.cidr_vnet.use.vnet_er[0], 6, 0)] # 10.0.2.0/30
+        er_sec      = [cidrsubnet(local.cidr_vnet.use.vnet_er[0], 6, 1)] # 10.0.2.4/30
       }
     }
   }
+
 
 
   # referenced by the local.common to be returned by module call

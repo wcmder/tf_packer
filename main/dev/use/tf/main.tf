@@ -2,7 +2,7 @@
 # main = true creates the resouce group and info
 # main = false gets the info only
 
-/*
+
 module "main" {
   source       = "../../../modules/org"
   main         = true
@@ -18,4 +18,4 @@ module "main" {
 locals {
   common = module.main.common
 }
-*/
+
