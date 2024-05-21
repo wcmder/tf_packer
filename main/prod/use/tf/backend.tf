@@ -1,4 +1,3 @@
-
 terraform {
   backend "azurerm" {
     subscription_id      = "3ee28fc2-7a0e-46c8-b38d-14ca6a26d742"
@@ -8,4 +7,3 @@ terraform {
     key                  = "tfp-01.tfstate"
   }
 }
-
