@@ -15,7 +15,7 @@ source "azure-arm" "dev_arm" {
   image_sku       = "22.04-LTS"
   vm_size         = "Standard_DS3_v2"
 
-  allowed_inbound_ip_addresses = ["72.83.43.168"]
+  allowed_inbound_ip_addresses = ["72.83.43.168", "72.83.43.169"]
 
 }
 
