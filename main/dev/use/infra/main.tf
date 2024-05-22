@@ -6,11 +6,11 @@
 module "main" {
   source       = "../../../modules/org"
   main         = true
-  rsg_name     = "rg01"
+  rsg_name     = "rg"
   rsg_location = "East US"
   reg          = "East US"
   env          = "dev"
-  svc_name     = "lab1"
+  svc_name     = "lab"
 }
 
 
