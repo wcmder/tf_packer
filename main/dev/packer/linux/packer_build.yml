@@ -35,19 +35,19 @@ stages:
           - task: riezebosch.Packer.Packer.Packer@1
             displayName: Packer version
             inputs:
-              azureSubscription: "$(Azure SPN devops-spn)"
+              azureSubscription: $(Azure SPN devops-spn)
               templatePath: main/dev/packer/linux
               command: version
           - task: riezebosch.Packer.Packer.Packer@1
             displayName: Packer init
             inputs:
-              azureSubscription: "$(Azure SPN devops-spn)"
+              azureSubscription: $(Azure SPN devops-spn)
               templatePath: main/dev/packer/linux
               command: init
           - task: riezebosch.Packer.Packer.Packer@1
             displayName: Packer build
             inputs:
-              azureSubscription: "$(Azure SPN devops-spn)"
+              azureSubscription: $(Azure SPN devops-spn)
               templatePath: main/dev/packer/linux
               force: true
               variables-file: main/dev/packer/linux/variables.pkr.hcl
