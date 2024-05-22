@@ -1,0 +1,53 @@
+---
+variables:
+  # variable group name in DevOps
+  - group: dostest01kv01
+  # Directory to run tasks
+  - name: parentpath
+    value: main
+  - name: dir
+    value: dev/packer/linux
+  # Terraform version
+  - name: pkrver
+    value: "1.7.2"
+###
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - main/dev/packer/linux
+    exclude:
+      - main/dev/packer/linux/*.yml
+stages:
+  - stage: Build
+    jobs:
+      - job: Packer
+        displayName:
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+            fetchDepth: 1
+          - task: riezebosch.Packer.PackerTool.PackerTool@0
+            displayName: "Use Latest Packer "
+          - task: riezebosch.Packer.Packer.Packer@1
+            displayName: Packer version
+            inputs:
+              azureSubscription: "$(Azure SPN devops-spn)"
+              templatePath: main/dev/packer/linux
+              command: version
+          - task: riezebosch.Packer.Packer.Packer@1
+            displayName: Packer init
+            inputs:
+              azureSubscription: "$(Azure SPN devops-spn)"
+              templatePath: main/dev/packer/linux
+              command: init
+          - task: riezebosch.Packer.Packer.Packer@1
+            displayName: Packer build
+            inputs:
+              azureSubscription: "$(Azure SPN devops-spn)"
+              templatePath: main/dev/packer/linux
+              force: true
+              variables-file: main/dev/packer/linux/variables.pkr.hcl
