@@ -7,9 +7,9 @@ variables:
     value: main
   - name: dir
     value: dev/packer/linux
-  # Terraform version
-  - name: pkrver
-    value: "1.7.2"
+  # spn
+  - name: spn
+    value: "Azure SPN devops-spn"
 ###
 trigger:
   branches:
@@ -35,19 +35,19 @@ stages:
           - task: riezebosch.Packer.Packer.Packer@1
             displayName: Packer version
             inputs:
-              azureSubscription: $(Azure SPN devops-spn)
-              templatePath: main/dev/packer/linux
+              azureSubscription: $(spn)
+              templatePath: $(parentpath)/$(dir)
               command: version
           - task: riezebosch.Packer.Packer.Packer@1
             displayName: Packer init
             inputs:
-              azureSubscription: $(Azure SPN devops-spn)
-              templatePath: main/dev/packer/linux
+              azureSubscription: $(spn)
+              templatePath: $(parentpath)/$(dir)
               command: init
           - task: riezebosch.Packer.Packer.Packer@1
             displayName: Packer build
             inputs:
-              azureSubscription: $(Azure SPN devops-spn)
-              templatePath: main/dev/packer/linux
+              azureSubscription: $(spn)
+              templatePath: $(parentpath)/$(dir)
               force: true
               variables-file: main/dev/packer/linux/variables.pkr.hcl

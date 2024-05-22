@@ -6,7 +6,7 @@ source "azure-arm" "dev_arm" {
 
   location                          = "East US"
   managed_image_name                = "evn-ng"
-  managed_image_resource_group_name = "dev-use-lab1-rg01"
+  managed_image_resource_group_name = "dev-use-lab-rg"
 
   communicator    = "ssh"
   os_type         = "Linux"
