@@ -50,4 +50,7 @@ stages:
               azureSubscription: $(spn)
               templatePath: $(parentpath)/$(dir)
               force: true
-              variables-file: main/dev/packer/linux/variables.pkr.hcl
+              variables: |
+                spn-client-id=$(dostest-spn-id) 
+                spn-client-secret=$(dostest-spn-secret)
+                spn-tenant-id=$(dostest-tenant-id)
