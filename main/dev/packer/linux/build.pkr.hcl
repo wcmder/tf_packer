@@ -14,7 +14,8 @@ build {
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
-      "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A0E4A1A5",
+      "curl -o /etc/apt/trusted.gpg.d/eve-ng-key1.gpg https://www.eve-ng.net/focal/eczema@ecze.com.gpg.key",
+      "curl -o /etc/apt/trusted.gpg.d/eve-ng-key2.gpg https://www.eve-ng.net/focal/dev@eve-ng.net.gpg.key",
       "echo 'deb [arch=amd64] http://www.eve-ng.net/focal focal main' | sudo tee /etc/apt/sources.list.d/eve-ng.list",
       "apt update",
       "curl -k -sSL https://www.eve-ng.net/focal/install-eve.sh | bash -i"
