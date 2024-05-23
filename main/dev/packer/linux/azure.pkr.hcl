@@ -1,12 +1,18 @@
+locals {
+  gallery_name = "ImageGallery"
+  img_ver      = "1.0.0"
+  img_name     = $ { var.img_name } - local.img_ver
+}
+
 source "azure-arm" "dev_arm" {
   subscription_id = var.dev_subscription_id
   client_id       = var.spn-client-id
   client_secret   = var.spn-client-secret
   tenant_id       = var.spn-tenant-id
 
-  location                          = "East US"
-  managed_image_name                = "evn-ng"
-  managed_image_resource_group_name = "dev-use-lab-rg"
+  location                          = var.location
+  managed_image_name                = local.img_name
+  managed_image_resource_group_name = var.rsg_name
 
   communicator    = "ssh"
   os_type         = "Linux"
@@ -18,6 +24,17 @@ source "azure-arm" "dev_arm" {
   # enable only if run from my PC
   #allowed_inbound_ip_addresses = ["72.83.43.168"]
 
+  shared_image_gallery_destination {
+    subscription         = var.dev_subscription_id
+    resource_group       = var.rsg_name
+    gallery_name         = local.gallery_name
+    image_name           = local.img_name
+    image_version        = local.img_ver
+    storage_account_type = "Standard_LRS"
+    target_region {
+      name = var.location
+    }
+  }
 }
 
 

@@ -19,3 +19,20 @@ locals {
   common = module.main.common
 }
 
+module "img_gallery" {
+  source = "../../../modules/system/img_gallery"
+  common = local.common
+  name   = "image_gallery"
+}
+
+module "shared_img" {
+  source           = "../../../modules/system/shared_img"
+  common           = local.common
+  img_name         = "eve-ng-img"
+  img_gallery_name = module.img_gallery.img_gallery_name
+  os_type          = "Linux"
+  publisher        = "wder"
+  offer            = "UbutunServer"
+  sku              = "jammy"
+
+}
