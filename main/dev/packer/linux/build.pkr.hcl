@@ -1,5 +1,5 @@
 build {
-  source = [
+  sources = [
     "source.azure-arm.dev_arm"
   ]
 
