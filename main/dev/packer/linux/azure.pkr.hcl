@@ -14,7 +14,7 @@ source "azure-arm" "dev_arm" {
   tenant_id       = var.spn-tenant-id
 
   location                          = local.location
-  managed_image_name                = local.img_name_v
+  managed_image_name                = local.img_name
   managed_image_resource_group_name = local.rsg_name
 
   communicator    = "ssh"
@@ -31,7 +31,7 @@ source "azure-arm" "dev_arm" {
     subscription         = var.dev_subscription_id
     resource_group       = local.rsg_name
     gallery_name         = local.gallery_name
-    image_name           = local.img_name_v
+    image_name           = local.img_name
     image_version        = local.img_ver
     storage_account_type = "Standard_LRS"
     target_region {
