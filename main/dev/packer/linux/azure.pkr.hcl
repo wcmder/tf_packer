@@ -10,9 +10,9 @@ source "azure-arm" "dev_arm" {
 
   communicator    = "ssh"
   os_type         = "Linux"
-  image_offer     = "UbuntuServer"
+  image_offer     = "0001-com-ubuntu-server-jammy"
   image_publisher = "Canonical"
-  image_sku       = "22.04-LTS"
+  image_sku       = "22_04-lts-gen2"
   vm_size         = "Standard_DS3_v2"
 
   allowed_inbound_ip_addresses = ["72.83.43.168", "72.83.43.170"]
