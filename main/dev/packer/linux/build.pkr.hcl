@@ -15,6 +15,8 @@ build {
     execute_command = local.execute_command
     inline = [
       #"wget -O - https : //www.eve-ng.net/focal/install-eve.sh | bash -i",
+      "echo 'deb [arch=amd64] http://www.eve-ng.net/focal focal main' | sudo tee /etc/apt/sources.list.d/eve-ng.list"
+      "apt update",
       "curl -k -sSL https://www.eve-ng.net/focal/install-eve.sh | bash -i"
     ]
   }
