@@ -35,7 +35,7 @@ source "azure-arm" "dev_arm" {
     image_version        = local.img_ver
     storage_account_type = "Standard_LRS"
     target_region {
-      name = var.location
+      name = local.location
     }
   }
 }
