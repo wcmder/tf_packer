@@ -34,5 +34,4 @@ module "shared_img" {
   publisher        = "wder"
   offer            = "UbutunServer"
   sku              = "jammy-eve-ng"
-
 }

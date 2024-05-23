@@ -9,6 +9,7 @@ resource "azurerm_shared_image" "shared_img" {
   resource_group_name = var.common["rsg_name"]
   location            = var.common["reg"]
   os_type             = var.os_type
+  hyper_v_generation  = var.hyper_v_generation
 
   identifier {
     publisher = var.publisher
