@@ -7,7 +7,7 @@ build {
     execute_command = local.execute_command
     inline = [
       "apt update",
-      #"apt -y upgrade"
+      "apt -y upgrade"
     ]
   }
 
@@ -15,7 +15,6 @@ build {
     execute_command   = local.execute_command
     expect_disconnect = true
     inline = [
-      # jammy is 22.04
       "curl -k -sSL https://www.eve-ng.net/jammy/install-eve.sh | bash -i"
     ]
   }
