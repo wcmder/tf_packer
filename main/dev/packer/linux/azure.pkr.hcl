@@ -2,7 +2,7 @@ locals {
   location     = "East US"
   rsg_name     = "dev-use-lab-rg"
   img_name     = "eve-ng"
-  gallery_name = "dev_use_lab_image_gallery"
+  gallery_name = "image_gallery"
   img_ver      = "1.0.0"
   img_name_v   = "${local.img_name}-${local.img_ver}"
 }
