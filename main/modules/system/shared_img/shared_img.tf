@@ -4,7 +4,7 @@ terraform {
 
 
 resource "azurerm_shared_image" "shared_img" {
-  name                = join("-", [var.common["env"], var.img_name])
+  name                = var.img_name
   gallery_name        = var.img_gallery_name
   resource_group_name = var.common["rsg_name"]
   location            = var.common["reg"]
