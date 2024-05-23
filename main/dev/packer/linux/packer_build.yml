@@ -38,6 +38,11 @@ stages:
               workingDirectory: $(parentpath)/$(dir)
               script: packer version
           - task: CmdLine@2
+            displayName: Packer init
+            inputs:
+              workingDirectory: $(parentpath)/$(dir)
+              script: packer init ./
+          - task: CmdLine@2
             displayName: Packer build
             inputs:
               workingDirectory: $(parentpath)/$(dir)
