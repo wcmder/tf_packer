@@ -13,7 +13,8 @@ build {
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
-      "wget -O - https : //www.eve-ng.net/focal/install-eve.sh | bash -i"
+      #"wget -O - https : //www.eve-ng.net/focal/install-eve.sh | bash -i",
+      "curl -k -sSL https://www.eve-ng.net/focal/install-eve.sh | bash -i"
     ]
   }
 
