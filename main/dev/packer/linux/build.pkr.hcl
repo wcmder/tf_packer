@@ -6,8 +6,13 @@ build {
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
-      "apt update",
-      "apt-get install wget",
+      "apt update"
+    ]
+  }
+
+  provisioner "shell" {
+    execute_command = local.execute_command
+    inline = [
       "wget -O - https : //www.eve-ng.net/focal/install-eve.sh | bash -i"
     ]
   }
