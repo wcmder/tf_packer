@@ -12,11 +12,10 @@ build {
   }
 
   provisioner "shell" {
-    execute_command = local.execute_command
+    execute_command   = local.execute_command
+    expect_disconnect = true
     inline = [
-      #"curl -o /etc/apt/trusted.gpg.d/eve-ng-key2.gpg https://www.eve-ng.net/focal/dists/focal/Release.gpg",
-      #"echo 'deb [arch=amd64] http://www.eve-ng.net/focal focal main' | sudo tee /etc/apt/sources.list.d/eve-ng.list",
-      #"apt update",
+      # jammy is 22.04
       "curl -k -sSL https://www.eve-ng.net/jammy/install-eve.sh | bash -i"
     ]
   }
