@@ -4,7 +4,7 @@ terraform {
 
 
 resource "azurerm_shared_image_gallery" "img_gallery" {
-  name                = join("-", [var.common["env"], var.name])
+  name                = replace(join("-", [var.common["env"], var.name]), "-", "_")
   resource_group_name = var.common["rsg_name"]
   location            = var.common["reg"]
   description         = "Shared images and things."
