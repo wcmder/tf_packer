@@ -32,17 +32,17 @@ stages:
             fetchDepth: 1
           - task: riezebosch.Packer.PackerTool.PackerTool@0
             displayName: "Use Latest Packer "
-          - task: AzureCLI@2
+          - task: CmdLine@2
             displayName: Packer version
             inputs:
               workingDirectory: $(parentpath)/$(dir)
               script: packer version
-          - task: AzureCLI@2
+          - task: CmdLine@2
             displayName: Packer init
             inputs:
               workingDirectory: $(parentpath)/$(dir)
               script: packer init -var "spn-client-id=$(dostest-spn-id)" -var "spn-client-secret=$(dostest-spn-secret)" -var "spn-tenant-id=$(dostest-tenant-id)"
-          - task: AzureCLI@2
+          - task: CmdLine@2
             displayName: Packer build
             inputs:
               workingDirectory: $(parentpath)/$(dir)
