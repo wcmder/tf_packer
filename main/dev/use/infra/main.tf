@@ -28,7 +28,7 @@ module "img_gallery" {
 module "shared_img" {
   source           = "../../../modules/system/shared_img"
   common           = local.common
-  img_name         = "eve-ng-img"
+  img_name         = "eve-ng-1.0.0"
   img_gallery_name = module.img_gallery.img_gallery_name
   os_type          = "Linux"
   publisher        = "wder"
