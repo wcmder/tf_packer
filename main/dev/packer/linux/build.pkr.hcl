@@ -14,13 +14,10 @@ build {
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
-      "curl -o curl -o /tmp/eczema@ecze.com.gpg.key https://www.eve-ng.net/focal/eczema@ecze.com.gpg.key",
-      "gpg --dearmor /tmp/eczema@ecze.com.gpg.key > /etc/apt/trusted.gpg.d/eve-ng-key1.gpg",
-      "curl -o curl -o /tmp/dev@eve-ng.net.gpg.key https://www.eve-ng.net/focal/dev@eve-ng.net.gpg.key",
-      "gpg --dearmor /tmp/dev@eve-ng.net.gpg.key > /etc/apt/trusted.gpg.d/eve-ng-key2.gpg",
-      "echo 'deb [arch=amd64] http://www.eve-ng.net/focal focal main' | sudo tee /etc/apt/sources.list.d/eve-ng.list",
-      "apt update",
-      "curl -k -sSL https://www.eve-ng.net/focal/install-eve.sh | bash -i"
+      #"curl -o /etc/apt/trusted.gpg.d/eve-ng-key2.gpg https://www.eve-ng.net/focal/dists/focal/Release.gpg",
+      #"echo 'deb [arch=amd64] http://www.eve-ng.net/focal focal main' | sudo tee /etc/apt/sources.list.d/eve-ng.list",
+      #"apt update",
+      "curl -k -sSL https://www.eve-ng.net/jammy/install-eve.sh | bash -i"
     ]
   }
 
