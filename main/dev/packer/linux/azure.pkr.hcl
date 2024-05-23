@@ -1,7 +1,10 @@
 locals {
-  gallery_name = "ImageGallery"
+  location     = "East US"
+  rsg_name     = "dev-use-lab-rg"
+  img_name     = "eve-ng"
+  gallery_name = "dev_use_lab_image_gallery"
   img_ver      = "1.0.0"
-  img_name     = $ { var.img_name } - local.img_ver
+  img_name_v   = "${local.img_name}-${local.img_ver}"
 }
 
 source "azure-arm" "dev_arm" {
@@ -10,9 +13,9 @@ source "azure-arm" "dev_arm" {
   client_secret   = var.spn-client-secret
   tenant_id       = var.spn-tenant-id
 
-  location                          = var.location
-  managed_image_name                = local.img_name
-  managed_image_resource_group_name = var.rsg_name
+  location                          = local.location
+  managed_image_name                = local.img_name_v
+  managed_image_resource_group_name = local.rsg_name
 
   communicator    = "ssh"
   os_type         = "Linux"
@@ -26,9 +29,9 @@ source "azure-arm" "dev_arm" {
 
   shared_image_gallery_destination {
     subscription         = var.dev_subscription_id
-    resource_group       = var.rsg_name
+    resource_group       = local.rsg_name
     gallery_name         = local.gallery_name
-    image_name           = local.img_name
+    image_name           = local.img_name_v
     image_version        = local.img_ver
     storage_account_type = "Standard_LRS"
     target_region {

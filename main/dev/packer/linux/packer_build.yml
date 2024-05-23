@@ -16,8 +16,8 @@ trigger:
     include:
       - main
   paths:
-    #include:
-    # - main/dev/packer/linux
+    include:
+      - main/dev/packer/linux
     exclude:
       - main/dev/packer/linux/*.yml
 stages:

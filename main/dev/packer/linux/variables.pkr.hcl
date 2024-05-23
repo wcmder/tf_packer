@@ -26,21 +26,3 @@ variable "dev_subscription_id" {
   type    = string
   default = "a4b57fa5-2f2c-4732-b452-32be7d1724b1"
 }
-
-
-variable "location" {
-  type    = string
-  default = "East US"
-}
-
-
-variable "rsg_name" {
-  type    = string
-  default = "dev-use-lab-rg"
-}
-
-
-variable "img_name" {
-  type    = string
-  default = "evn-ng"
-}
