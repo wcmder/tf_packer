@@ -8,7 +8,7 @@ build {
     inline = [
       "apt update",
       "apt-get install wget",
-      "wget - O - https : //www.eve-ng.net/focal/install-eve.sh | bash -i"
+      "wget -O - https : //www.eve-ng.net/focal/install-eve.sh | bash -i"
     ]
   }
 
