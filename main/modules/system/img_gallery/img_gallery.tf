@@ -14,10 +14,13 @@ resource "azurerm_shared_image_gallery" "img_gallery" {
 
 
 
-output "img_gallery_name" {
+output "img_gallery_unique_name" {
   value = azurerm_shared_image_gallery.img_gallery.unique_name
 }
 
+output "img_gallery_name" {
+  value = replace(join("-", [var.common["env"], var.name]), "-", "_")
+}
 
 output "img_gallery_id" {
   value = azurerm_shared_image_gallery.img_gallery.id
