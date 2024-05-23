@@ -6,7 +6,8 @@ build {
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
-      "apt update"
+      "apt update",
+      "apt upgrade"
     ]
   }
 
