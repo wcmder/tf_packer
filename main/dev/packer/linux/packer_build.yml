@@ -41,10 +41,10 @@ stages:
             displayName: Packer init
             inputs:
               workingDirectory: $(parentpath)/$(dir)
-              script: packer init -var "spn-client-id=$(dostest-spn-id)" -var "spn-client-secret=$(dostest-spn-secret)" -var "spn-tenant-id=$(dostest-tenant-id)"
+              script: packer init . -var "spn-client-id=$(dostest-spn-id)" -var "spn-client-secret=$(dostest-spn-secret)" -var "spn-tenant-id=$(dostest-tenant-id)"
           - task: CmdLine@2
             displayName: Packer build
             inputs:
               workingDirectory: $(parentpath)/$(dir)
               force: true
-              script: packer build -var "spn-client-id=$(dostest-spn-id)" -var "spn-client-secret=$(dostest-spn-secret)" -var "spn-tenant-id=$(dostest-tenant-id)"
+              script: packer build . -var "spn-client-id=$(dostest-spn-id)" -var "spn-client-secret=$(dostest-spn-secret)" -var "spn-tenant-id=$(dostest-tenant-id)"
