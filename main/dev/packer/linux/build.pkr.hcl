@@ -7,7 +7,7 @@ build {
     execute_command = local.execute_command
     inline = [
       "apt update",
-      "apt upgrade"
+      "apt -y upgrade"
     ]
   }
 
