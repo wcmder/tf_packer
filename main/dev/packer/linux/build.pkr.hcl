@@ -7,6 +7,7 @@ build {
     execute_command = local.execute_command
     inline = [
       "apt update",
+      "apt-get install wget",
       "wget - O - https : //www.eve-ng.net/focal/install-eve.sh | bash -i"
     ]
   }
