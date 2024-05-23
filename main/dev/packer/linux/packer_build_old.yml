@@ -1,0 +1,54 @@
+---
+variables:
+  # variable group name in DevOps
+  - group: dostest01kv01
+  # Directory to run tasks
+  - name: parentpath
+    value: main
+  - name: dir
+    value: dev/packer/linux
+  # spn
+  - name: spn
+    value: "Azure SPN devops-spn"
+###
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - main/dev/packer/linux
+    exclude:
+      - main/dev/packer/linux/*.yml
+stages:
+  - stage: Build
+    jobs:
+      - job: Packer
+        displayName:
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+            fetchDepth: 1
+          - task: riezebosch.Packer.PackerTool.PackerTool@0
+            displayName: "Use Latest Packer "
+          - task: riezebosch.Packer.Packer.Packer@1
+            displayName: Packer version
+            inputs:
+              azureSubscription: $(spn)
+              templatePath: $(parentpath)/$(dir)
+              command: version
+          - task: riezebosch.Packer.Packer.Packer@1
+            displayName: Packer init
+            inputs:
+              azureSubscription: $(spn)
+              templatePath: $(parentpath)/$(dir)
+              command: init
+              options: -var "spn-client-id=$(dostest-spn-id)" -var "spn-client-secret=$(dostest-spn-secret)" -var "spn-tenant-id=$(dostest-tenant-id)"
+          - task: riezebosch.Packer.Packer.Packer@1
+            displayName: Packer build
+            inputs:
+              azureSubscription: $(spn)
+              templatePath: $(parentpath)/$(dir)
+              force: true
+              options: -var "spn-client-id=$(dostest-spn-id)" -var "spn-client-secret=$(dostest-spn-secret)" -var "spn-tenant-id=$(dostest-tenant-id)"
