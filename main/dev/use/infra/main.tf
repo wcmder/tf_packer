@@ -97,7 +97,7 @@ module "eveng_nsg" {
           priority        = 100
           direction       = "Inbound"
           access          = "Allow"
-          protocol        = "tcp"
+          protocol        = "Tcp"
           src_port_range  = "*"
           dst_port_range  = "80"
           src_addr_prefix = "72.83.43.168"
@@ -105,6 +105,7 @@ module "eveng_nsg" {
         }
       }
     }
+
   }
 }
 
@@ -118,7 +119,7 @@ module "nsg_assc" {
       subnet_id = module.subnet_lab.subnet_name_id["AzureBastionSubnet"]
     }
     vm : {
-      nsg_id    = module.default_nsg.nsg_name_id["default-nsg"]
+      nsg_id    = module.eveng_nsg.nsg_name_id["eveng_nsg"]
       subnet_id = module.subnet_lab.subnet_name_id["vm-subnet"]
     }
   }
