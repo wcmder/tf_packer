@@ -83,6 +83,31 @@ module "bastion_nsg" {
   nsg_name = "bas-nsg"
 }
 
+# Create NSG
+module "eveng_nsg" {
+  source = "../modules/nsg"
+  common = local.common
+  nsg = {
+
+    nsg1 : {
+      nsg_name = "eveng_nsg"
+      security_rule = {
+        rule1 : {
+          name            = "allow_wder"
+          priority        = 100
+          direction       = "Inbound"
+          access          = "Allow"
+          protocol        = "tcp"
+          src_port_range  = "*"
+          dst_port_range  = "80"
+          src_addr_prefix = "72.83.43.168"
+          dst_addr_prefix = "*"
+        }
+      }
+    }
+  }
+}
+
 
 # Assign NSG to all subnet in the vnet
 module "nsg_assc" {
@@ -109,13 +134,13 @@ module "eveng_pip" {
 
 
 module "eve-ng" {
-  source            = "../../../modules/system/vm"
-  common            = local.common
-  vm_name           = "eve-ng"
-  nic_name          = "eve-ng-nic"
-  ip_name           = "eve-ng-ip"
-  subnet_id         = module.subnet_lab.subnet_name_id["vm-subnet"]
-  public_ip_addr_id = module.eveng_pip.pip_id
-  vm_size           = "Standard_DS3_v2"
-  src_img_id        = module.shared_img.img_id
+  source      = "../../../modules/system/vm"
+  common      = local.common
+  vm_name     = "eve-ng"
+  nic_name    = "eve-ng-nic"
+  ip_name     = "eve-ng-ip"
+  subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
+  pip_addr_id = module.eveng_pip.pip_id
+  vm_size     = "Standard_DS3_v2"
+  src_img_id  = module.shared_img.img_id
 }
