@@ -53,8 +53,8 @@ module "sa01" {
   source   = "../../../modules/system/sa"
   common   = local.common
   name     = "sa01"
-  act_tier = "Premium"
-  act_type = "ZRS"
+  act_tier = "Standard"
+  act_type = "LRS"
 }
 
 # sa container
@@ -65,6 +65,8 @@ module "sa01_container" {
   sa_name = module.sa01.sa_name
   #access_type = "blob"
 }
+
+/*
 
 # sa container blob to store the image version
 module "sa01_blob" {
@@ -95,7 +97,6 @@ module "sig_img_ver_010" {
 }
 
 
-/*
 # create lab vnet
 module "vnet" {
   source = "../../../modules/network/vnet"
