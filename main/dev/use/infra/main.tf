@@ -42,6 +42,10 @@ module "sig_img_eveng" {
   publisher = "wder"
   offer     = "UbutunServer"
   sku       = "jammy-eve-ng"
+
+  depends_on = [
+    module.sig
+  ]
 }
 
 # storage account
@@ -81,6 +85,11 @@ module "sig_img_ver_010" {
   sig_name = module.sig.sig_name
   blob_uri = module.sa01_blob.blob_url
   sa_id    = module.sa01.sa_id
+
+  depends_on = [
+    module.sig,
+    module.sig_img_eveng,
+  ]
 }
 
 
