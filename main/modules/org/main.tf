@@ -181,6 +181,7 @@ locals {
     tags         = local.tags
     cidr         = local.cidr
     reg          = var.reg
+    rsg_name     = module.rsg.rsg_name_name[local.rsg_name]
   }
 }
 

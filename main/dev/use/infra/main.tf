@@ -83,8 +83,17 @@ module "sa01_blob" {
     module.sa01_container,
   ]
 }
+*/
 
+data "azurerm_image" "eveng010" {
+  name                = "eve-ng-0.1.0"
+  resource_group_name = local.common.rsg_name
+}
 
+output "test" {
+  value = data.azurerm_image.eveng010.id
+}
+/*
 # eve ng image version
 module "sig_img_ver_010" {
   source   = "../../../modules/system/sig_img_ver"
