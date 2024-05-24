@@ -54,7 +54,7 @@ module "sa01" {
   common   = local.common
   name     = "sa01"
   act_tier = "Premium"
-  act_type = "LRS"
+  act_type = "ZRS"
 }
 
 # sa container
@@ -74,6 +74,7 @@ module "sa01_blob" {
   sa_name        = module.sa01.sa_name
   container_name = module.sa01_container.container_name
   type           = "Block"
+  #size           = 4194304000
 }
 
 # eve ng image version
