@@ -92,7 +92,7 @@ module "eveng_nsg" {
     nsg1 : {
       nsg_name = "eveng_nsg"
       security_rule = {
-        rule1 : {
+        http : {
           name            = "allow_wder"
           priority        = 100
           direction       = "Inbound"
@@ -100,6 +100,17 @@ module "eveng_nsg" {
           protocol        = "Tcp"
           src_port_range  = "*"
           dst_port_range  = "80"
+          src_addr_prefix = "72.83.43.168"
+          dst_addr_prefix = "*"
+        }
+        ssh : {
+          name            = "allow_wder"
+          priority        = 110
+          direction       = "Inbound"
+          access          = "Allow"
+          protocol        = "Tcp"
+          src_port_range  = "*"
+          dst_port_range  = "22"
           src_addr_prefix = "72.83.43.168"
           dst_addr_prefix = "*"
         }
