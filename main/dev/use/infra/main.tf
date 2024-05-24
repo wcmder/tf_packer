@@ -69,7 +69,7 @@ module "sa01_blob" {
   sa_name        = module.sa01.sa_name
   container_name = module.sa01_container.container_name
   type           = "Page"
-  size           = 1024
+  size           = 20971520
 }
 
 # eve ng image version
