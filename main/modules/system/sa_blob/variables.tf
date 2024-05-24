@@ -28,5 +28,5 @@ variable "type" {
 
 variable "size" {
   type    = number
-  default = 512
+  default = null
 }
