@@ -24,7 +24,7 @@ output "common" {
   value = local.common.cidr
 }
 
-
+/*
 module "img_gallery" {
   source = "../../../modules/system/img_gallery"
   common = local.common
@@ -42,7 +42,6 @@ module "shared_img" {
   sku              = "jammy-eve-ng"
 }
 
-/*
 # create lab vnet
 module "vnet" {
   source = "../../../modules/network/vnet"
