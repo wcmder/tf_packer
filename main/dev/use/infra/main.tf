@@ -53,6 +53,7 @@ module "sa01" {
   source   = "../../../modules/system/sa"
   common   = local.common
   name     = "sa01"
+  act_tier = "Premium"
   act_type = "LRS"
 }
 
@@ -89,6 +90,7 @@ module "sig_img_ver_010" {
   depends_on = [
     module.sig,
     module.sig_img_eveng,
+    module.sa01_blob
   ]
 }
 
