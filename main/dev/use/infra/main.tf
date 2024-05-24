@@ -53,8 +53,8 @@ module "sa01" {
   source   = "../../../modules/system/sa"
   common   = local.common
   name     = "sa01"
-  act_tier = "Standard"
-  act_type = "LRS"
+  act_tier = "Premium"
+  act_type = "ZRS"
 }
 
 # sa container
@@ -66,7 +66,7 @@ module "sa01_container" {
   #access_type = "blob"
 }
 
-/*
+
 
 # sa container blob to store the image version
 module "sa01_blob" {
@@ -79,6 +79,7 @@ module "sa01_blob" {
   #size           = 4194304000
 }
 
+/*
 # eve ng image version
 module "sig_img_ver_010" {
   source   = "../../../modules/system/sig_img_ver"
