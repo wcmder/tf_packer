@@ -42,12 +42,40 @@ module "sig_img_eveng" {
   sku       = "jammy-eve-ng"
 }
 
+module "sa01" {
+  source   = "../../../modules/system/sa"
+  common   = local.common
+  name     = "sa_01"
+  act_type = "LRS"
+}
+
+module "sa01_container" {
+  source      = "../../../modules/system/sa_container"
+  common      = local.common
+  name        = "container_01"
+  sa_name     = module.sa01.sa_name
+  access_type = "blob"
+}
+
+module "sa01_blob" {
+  source         = "../../../modules/system/sa_blob"
+  common         = local.common
+  name           = blob_01
+  sa_name        = module.sa01.sa_name
+  container_name = module.sa01_container.container_name
+  type           = "blob"
+}
+
+
+
 module "sig_img_ver_010" {
   source   = "../../../modules/system/sig_img_ver"
   common   = local.common
   ver      = "0.1.0"
   img_name = "eve-ng"
   sig_name = module.sig.sig_name
+  blob_uri = module.sig_img_ver_010.blob_uri
+  sa_id    = module.sa01.sa_id
 }
 
 

@@ -16,6 +16,8 @@ resource "azurerm_shared_image" "sig_img" {
     offer     = var.offer
     sku       = var.sku
   }
+
+  tags = merge(var.common["tags"], { "ResourceType" = "Shared Image" })
 }
 
 

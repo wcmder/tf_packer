@@ -10,6 +10,16 @@ variable "img_name" {
   type = string
 }
 
+variable "blob_uri" {
+  type    = string
+  default = null
+}
+
+variable "sa_id" {
+  type    = string
+  default = null
+}
+
 variable "common" {
   type = object({
     env          = string,
