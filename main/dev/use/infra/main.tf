@@ -38,7 +38,7 @@ module "shared_img" {
 
 # create lab vnet
 module "vnet" {
-  source = "../../modules/vnet"
+  source = "../../../modules/network/vnet"
   common = local.common
   vnet = {
     "lab-vnet" : [local.common.cidr.vnet.use.vnet_lab, []]
@@ -47,7 +47,7 @@ module "vnet" {
 
 # create all subnets for the fw vnet, fw /26 , mgmt /26, bastion /26
 module "subnet_lab" {
-  source    = "../../modules/subnet"
+  source    = "../../../modules/network/subnet"
   common    = local.common
   vnet_name = module.vnet.vnet_name_name["lab-vnet"]
 
@@ -59,4 +59,12 @@ module "subnet_lab" {
       cidr = local.common.cidr.subnet.use.vnet_lab.subnet_lab_bastion
     }
   }
+}
+
+
+# default nsg for all subnets
+module "default_nsg" {
+  source   = "../../modules/network/nsg_default"
+  common   = local.common
+  nsg_name = "default-nsg"
 }
