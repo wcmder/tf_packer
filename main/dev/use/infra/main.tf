@@ -76,9 +76,14 @@ module "sa01_blob" {
   container_name = module.sa01_container.container_name
   type           = "Block"
   size           = 4194304000
+
+  depends_on = [
+    module.sa01,
+    module.sa01_container,
+  ]
 }
 
-/*
+
 # eve ng image version
 module "sig_img_ver_010" {
   source   = "../../../modules/system/sig_img_ver"
@@ -95,7 +100,7 @@ module "sig_img_ver_010" {
     module.sa01_blob
   ]
 }
-
+/*
 
 # create lab vnet
 module "vnet" {
