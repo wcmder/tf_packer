@@ -78,7 +78,7 @@ module "sig_img_ver_010" {
   ver      = "0.1.0"
   img_name = "eve-ng"
   sig_name = module.sig.sig_name
-  blob_uri = module.sa01_blob.blob_uri
+  blob_uri = module.sa01_blob.blob_url
   sa_id    = module.sa01.sa_id
 }
 
