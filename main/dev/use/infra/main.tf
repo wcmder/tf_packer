@@ -20,11 +20,6 @@ locals {
 }
 
 
-output "common" {
-  value = local.common.cidr
-}
-
-
 # share image gallery
 module "sig" {
   source = "../../../modules/system/sig"
@@ -32,11 +27,18 @@ module "sig" {
   name   = "image_gallery"
 }
 
+
+/*
+
+locals {
+  img_name1 = "eve-ng-0.1.0"
+}
+
 # eve ng img
 module "sig_img_eveng" {
   source    = "../../../modules/system/sig_img"
   common    = local.common
-  img_name  = "eve-ng"
+  img_name  = local.img_name1
   sig_name  = module.sig.sig_name
   os_type   = "Linux"
   publisher = "wder"
@@ -50,14 +52,9 @@ module "sig_img_eveng" {
 
 # get imag id
 data "azurerm_image" "eveng010" {
-  name                = "eve-ng-0.1.0"
+  name                = local.img_name1
   resource_group_name = local.common.rsg_name
 }
-
-output "test" {
-  value = data.azurerm_image.eveng010.id
-}
-
 
 
 # eve ng image version
@@ -75,7 +72,6 @@ module "sig_img_ver_010" {
   ]
 }
 
-/*
 
 # create lab vnet
 module "vnet" {

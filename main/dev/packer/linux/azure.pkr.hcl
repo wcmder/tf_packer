@@ -27,7 +27,7 @@ source "azure-arm" "dev_arm" {
   # enable only if run from my PC
   #allowed_inbound_ip_addresses = ["72.83.43.168"]
 
-
+  /*
   shared_image_gallery_destination {
     subscription         = var.dev_subscription_id
     resource_group       = local.rsg_name
@@ -39,6 +39,7 @@ source "azure-arm" "dev_arm" {
       name = local.location
     }
   }
+  */
 
 }
 
