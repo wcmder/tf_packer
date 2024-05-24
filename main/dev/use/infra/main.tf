@@ -64,7 +64,16 @@ module "subnet_lab" {
 
 # default nsg for all subnets
 module "default_nsg" {
-  source   = "../../modules/network/nsg_default"
+  source   = "../../../modules/network/nsg_default"
   common   = local.common
   nsg_name = "default-nsg"
 }
+
+
+# bastion nsg
+module "bastion_nsg" {
+  source   = "../../../modules/network/nsg_bas"
+  common   = local.common
+  nsg_name = "bas-nsg"
+}
+
