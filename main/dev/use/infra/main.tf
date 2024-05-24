@@ -25,12 +25,14 @@ output "common" {
 }
 
 
+# share image gallery
 module "sig" {
   source = "../../../modules/system/sig"
   common = local.common
   name   = "image_gallery"
 }
 
+# eve ng img
 module "sig_img_eveng" {
   source    = "../../../modules/system/sig_img"
   common    = local.common
@@ -42,6 +44,7 @@ module "sig_img_eveng" {
   sku       = "jammy-eve-ng"
 }
 
+# storage account
 module "sa01" {
   source   = "../../../modules/system/sa"
   common   = local.common
@@ -49,6 +52,7 @@ module "sa01" {
   act_type = "LRS"
 }
 
+# sa container
 module "sa01_container" {
   source      = "../../../modules/system/sa_container"
   common      = local.common
@@ -57,6 +61,7 @@ module "sa01_container" {
   access_type = "blob"
 }
 
+# sa container blob to store the image version
 module "sa01_blob" {
   source         = "../../../modules/system/sa_blob"
   common         = local.common
@@ -66,15 +71,14 @@ module "sa01_blob" {
   type           = "blob"
 }
 
-
-
+# eve ng image version
 module "sig_img_ver_010" {
   source   = "../../../modules/system/sig_img_ver"
   common   = local.common
   ver      = "0.1.0"
   img_name = "eve-ng"
   sig_name = module.sig.sig_name
-  blob_uri = module.sig_img_ver_010.blob_uri
+  blob_uri = module.sa01_blob.blob_uri
   sa_id    = module.sa01.sa_id
 }
 
