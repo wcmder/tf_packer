@@ -3,7 +3,7 @@ terraform {
 }
 
 
-resource "azurerm_shared_image_gallery" "img_gallery" {
+resource "azurerm_shared_image_gallery" "sig" {
   name                = var.name
   resource_group_name = var.common["rsg_name"]
   location            = var.common["reg"]
@@ -14,14 +14,14 @@ resource "azurerm_shared_image_gallery" "img_gallery" {
 
 
 
-output "img_gallery_unique_name" {
-  value = azurerm_shared_image_gallery.img_gallery.unique_name
+output "sig_unique_name" {
+  value = azurerm_shared_image_gallery.sig.unique_name
 }
 
-output "img_gallery_name" {
+output "sig_name" {
   value = var.name
 }
 
-output "img_gallery_id" {
-  value = azurerm_shared_image_gallery.img_gallery.id
+output "sig_id" {
+  value = azurerm_shared_image_gallery.sig.id
 }

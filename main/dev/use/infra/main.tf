@@ -24,24 +24,34 @@ output "common" {
   value = local.common.cidr
 }
 
-/*
-module "img_gallery" {
-  source = "../../../modules/system/img_gallery"
+
+module "sig" {
+  source = "../../../modules/system/sig"
   common = local.common
   name   = "image_gallery"
 }
 
-module "shared_img" {
-  source           = "../../../modules/system/shared_img"
-  common           = local.common
-  img_name         = "eve-ng"
-  img_gallery_name = module.img_gallery.img_gallery_name
-  os_type          = "Linux"
-  publisher        = "wder"
-  offer            = "UbutunServer"
-  sku              = "jammy-eve-ng"
+module "sig_img_eveng" {
+  source    = "../../../modules/system/sig_img"
+  common    = local.common
+  img_name  = "eve-ng"
+  sig_name  = module.sig.sig_name
+  os_type   = "Linux"
+  publisher = "wder"
+  offer     = "UbutunServer"
+  sku       = "jammy-eve-ng"
 }
 
+module "sig_img_ver_010" {
+  source   = "../../../modules/system/sig_img_ver"
+  common   = local.common
+  ver      = "0.1.0"
+  img_name = "eve-ng"
+  sig_name = module.sig.sig_name
+}
+
+
+/*
 # create lab vnet
 module "vnet" {
   source = "../../../modules/network/vnet"

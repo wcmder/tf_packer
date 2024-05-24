@@ -2,7 +2,7 @@ variable "img_name" {
   type = string
 }
 
-variable "img_gallery_name" {
+variable "sig_name" {
   type = string
 }
 
