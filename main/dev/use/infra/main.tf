@@ -86,7 +86,7 @@ module "bastion_nsg" {
 
 # Assign NSG to all subnet in the vnet
 module "nsg_assc" {
-  source = "../../modules/nsg_subnet_assc"
+  source = "../../../modules/network/nsg_subnet_assc"
   nsg_subnet = {
     bas : {
       nsg_id    = module.bastion_nsg.nsg_name_id["bas-nsg"]
