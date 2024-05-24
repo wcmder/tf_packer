@@ -42,6 +42,7 @@ module "shared_img" {
   sku              = "jammy-eve-ng"
 }
 
+/*
 # create lab vnet
 module "vnet" {
   source = "../../../modules/network/vnet"
@@ -156,3 +157,4 @@ module "eve-ng" {
   vm_size     = "Standard_DS3_v2"
   src_img_id  = module.shared_img.img_id
 }
+*/
