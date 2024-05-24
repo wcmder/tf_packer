@@ -53,7 +53,7 @@ module "sa01" {
   source   = "../../../modules/system/sa"
   common   = local.common
   name     = "sa01"
-  act_tier = "Premium"
+  act_tier = "Standard"
   act_type = "ZRS"
 }
 
