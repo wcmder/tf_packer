@@ -82,7 +82,7 @@ locals {
     use = {
       vnet_vhub = [cidrsubnet(local.cidr_region.use_transit[0], 1, 0)] # 10.0.0.0/23
       vnet_er   = [cidrsubnet(local.cidr_region.use_transit[0], 2, 2)] # 10.0.2.0/24
-
+      vnet_lab  = [cidrsubnet(local.cidr_region.use_vnet[0], 1, 0)]    # 10.0.4.0/25
     }
   }
 
@@ -90,9 +90,13 @@ locals {
   cidr_subnet = {
     use = {
       vnet_vhub = {
-        subnet_vhub = local.cidr_vnet.use.vnet_vhub[0]                   # 10.0.0.0/23
-        er_prim     = [cidrsubnet(local.cidr_vnet.use.vnet_er[0], 6, 0)] # 10.0.2.0/30
-        er_sec      = [cidrsubnet(local.cidr_vnet.use.vnet_er[0], 6, 1)] # 10.0.2.4/30
+        subnet_vhub = local.cidr_vnet.use.vnet_vhub[0]                 # 10.0.0.0/23
+        er_prim     = cidrsubnet(local.cidr_vnet.use.vnet_er[0], 6, 0) # 10.0.2.0/30
+        er_sec      = cidrsubnet(local.cidr_vnet.use.vnet_er[0], 6, 1) # 10.0.2.4/30
+      }
+      vnet_lab = {
+        subnet_lab_vm      = cidrsubnet(local.cidr_vnet.use.vnet_lab[0], 2, 0) # 10.0.4.0/27
+        subnet_lab_bastion = cidrsubnet(local.cidr_vnet.use.vnet_lab[0], 1, 1) # 10.0.4.64/26
       }
     }
   }

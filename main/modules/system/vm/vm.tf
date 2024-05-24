@@ -14,7 +14,7 @@ resource "azurerm_network_interface" "nic" {
     private_ip_address_allocation = "Dynamic"
   }
 
-  tags = merge(var.common["tags"], {"ResourceType" = "Nic"})
+  tags = merge(var.common["tags"], { "ResourceType" = "Nic" })
 
 }
 
@@ -22,8 +22,8 @@ resource "azurerm_linux_virtual_machine" "ubuntu" {
   name                            = join("-", [var.common["env"], var.vm_name])
   resource_group_name             = var.common["rsg_name"]
   location                        = var.common["reg"]
-  size                            = "Standard_F2"
-  admin_username                  = "adminuser"
+  size                            = var.vm_size
+  admin_username                  = "wder"
   admin_password                  = "12qwaszx!@QWASZX"
   disable_password_authentication = "false"
   network_interface_ids = [
@@ -40,15 +40,19 @@ resource "azurerm_linux_virtual_machine" "ubuntu" {
     storage_account_type = "Standard_LRS"
   }
 
+  /*
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
     sku       = "18.04-LTS"
     version   = "latest"
   }
+  */
 
-  tags = merge(var.common["tags"], {"ResourceType" = "Virtual Machine"})
-  
+  source_image_id = var.src_img_id
+
+  tags = merge(var.common["tags"], { "ResourceType" = "Virtual Machine" })
+
 }
 
 

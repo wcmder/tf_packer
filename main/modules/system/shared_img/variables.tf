@@ -26,6 +26,7 @@ variable "hyper_v_generation" {
   type    = string
   default = "V2"
 }
+
 variable "common" {
   type = object({
     env          = string,

@@ -35,3 +35,28 @@ module "shared_img" {
   offer            = "UbutunServer"
   sku              = "jammy-eve-ng"
 }
+
+# create lab vnet
+module "vnet" {
+  source = "../../modules/vnet"
+  common = local.common
+  vnet = {
+    "lab-vnet" : [local.common.cidr.vnet.use.vnet_lab, []]
+  }
+}
+
+# create all subnets for the fw vnet, fw /26 , mgmt /26, bastion /26
+module "subnet_lab" {
+  source    = "../../modules/subnet"
+  common    = local.common
+  vnet_name = module.vnet.vnet_name_name["lab-vnet"]
+
+  subnet = {
+    vm-subnet : {
+      cidr = local.common.cidr.subnet.use.vnet_lab.subnet_lab_vm
+    }
+    AzureBastionSubnet : {
+      cidr = local.common.cidr.subnet.use.vnet_lab.subnet_lab_bastion
+    }
+  }
+}
