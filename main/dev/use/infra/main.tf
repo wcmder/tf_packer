@@ -98,3 +98,24 @@ module "nsg_assc" {
     }
   }
 }
+
+
+#  public IP
+module "eveng_pip" {
+  source   = "../../../modules/network/pip"
+  common   = local.common
+  pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng-pip"
+}
+
+
+module "eve-ng" {
+  source            = "../../../modules/system/vm"
+  common            = local.common
+  vm_name           = "eve-ng"
+  nic_name          = "eve-ng-nic"
+  ip_name           = "eve-ng-ip"
+  subnet_id         = module.subnet_lab.subnet_name_id["vm-subnet"]
+  public_ip_addr_id = module.eveng_pip.ip
+  vm_size           = "Standard_DS3_v2"
+  src_img_id        = module.shared_img.img_id
+}

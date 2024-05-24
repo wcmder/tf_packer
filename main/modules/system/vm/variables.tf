@@ -43,6 +43,10 @@ variable "src_img_id" {
   default = null
 }
 
+variable "public_ip_addr_id" {
+  type = string
+}
+
 
 variable "common" {
   type = object({
