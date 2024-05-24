@@ -33,7 +33,7 @@ variable "sku" {
   default = null
 }
 
-variable "version" {
+variable "ver" {
   type    = string
   default = null
 }

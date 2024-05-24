@@ -43,10 +43,10 @@ resource "azurerm_linux_virtual_machine" "ubuntu" {
 
   /*
   source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
+    publisher = var.publisher # "Canonical"
+    offer     = var.offer     # "UbuntuServer"
+    sku       = var.sku       #"18.04-LTS"
+    version   = var.ver       #"latest"
   }
   */
 
