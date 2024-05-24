@@ -48,6 +48,7 @@ module "sig_img_eveng" {
   ]
 }
 
+/*
 # storage account
 module "sa01" {
   source   = "../../../modules/system/sa"
