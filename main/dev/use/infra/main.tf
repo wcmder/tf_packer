@@ -67,7 +67,7 @@ module "sa01_container" {
 }
 
 
-/*
+
 # sa container blob to store the image version
 module "sa01_blob" {
   source         = "../../../modules/system/sa_blob"
@@ -78,6 +78,8 @@ module "sa01_blob" {
   type           = "Block"
   #size           = 4194304000
 }
+
+/*
 
 # eve ng image version
 module "sig_img_ver_010" {
