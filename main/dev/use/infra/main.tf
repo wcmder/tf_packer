@@ -65,10 +65,10 @@ module "sa01_container" {
 module "sa01_blob" {
   source         = "../../../modules/system/sa_blob"
   common         = local.common
-  name           = blob_01
+  name           = "blob_01"
   sa_name        = module.sa01.sa_name
   container_name = module.sa01_container.container_name
-  type           = "blob"
+  type           = "Page"
 }
 
 # eve ng image version
