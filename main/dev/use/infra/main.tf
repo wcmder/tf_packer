@@ -48,7 +48,7 @@ module "sig_img_eveng" {
 module "sa01" {
   source   = "../../../modules/system/sa"
   common   = local.common
-  name     = "sa_01"
+  name     = "sa01"
   act_type = "LRS"
 }
 
@@ -56,7 +56,7 @@ module "sa01" {
 module "sa01_container" {
   source      = "../../../modules/system/sa_container"
   common      = local.common
-  name        = "container_01"
+  name        = "container01"
   sa_name     = module.sa01.sa_name
   access_type = "blob"
 }
@@ -65,7 +65,7 @@ module "sa01_container" {
 module "sa01_blob" {
   source         = "../../../modules/system/sa_blob"
   common         = local.common
-  name           = "blob_01"
+  name           = "blob01"
   sa_name        = module.sa01.sa_name
   container_name = module.sa01_container.container_name
   type           = "Page"

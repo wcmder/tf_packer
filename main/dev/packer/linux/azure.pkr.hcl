@@ -3,7 +3,7 @@ locals {
   rsg_name     = "dev-use-lab-rg"
   img_name     = "eve-ng"
   gallery_name = "image_gallery"
-  img_ver      = "1.0.0"
+  img_ver      = "0.1.0"
   img_name_v   = "${local.img_name}-${local.img_ver}"
 }
 
@@ -14,7 +14,7 @@ source "azure-arm" "dev_arm" {
   tenant_id       = var.spn-tenant-id
 
   location                          = local.location
-  managed_image_name                = local.img_name
+  managed_image_name                = local.img_name_v
   managed_image_resource_group_name = local.rsg_name
 
   communicator    = "ssh"
