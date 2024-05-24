@@ -48,43 +48,7 @@ module "sig_img_eveng" {
   ]
 }
 
-/*
-# storage account
-module "sa01" {
-  source   = "../../../modules/system/sa"
-  common   = local.common
-  name     = "sa01"
-  act_tier = "Standard"
-  act_type = "ZRS"
-}
-
-# sa container
-module "sa01_container" {
-  source  = "../../../modules/system/sa_container"
-  common  = local.common
-  name    = "container01"
-  sa_name = module.sa01.sa_name
-  #access_type = "blob"
-}
-
-
-# sa container blob to store the image version
-module "sa01_blob" {
-  source         = "../../../modules/system/sa_blob"
-  common         = local.common
-  name           = "blob01"
-  sa_name        = module.sa01.sa_name
-  container_name = module.sa01_container.container_name
-  type           = "Block"
-  size           = 4194304000
-
-  depends_on = [
-    module.sa01,
-    module.sa01_container,
-  ]
-}
-*/
-
+# get imag id
 data "azurerm_image" "eveng010" {
   name                = "eve-ng-0.1.0"
   resource_group_name = local.common.rsg_name
