@@ -59,11 +59,11 @@ module "sa01" {
 
 # sa container
 module "sa01_container" {
-  source      = "../../../modules/system/sa_container"
-  common      = local.common
-  name        = "container01"
-  sa_name     = module.sa01.sa_name
-  access_type = "blob"
+  source  = "../../../modules/system/sa_container"
+  common  = local.common
+  name    = "container01"
+  sa_name = module.sa01.sa_name
+  #access_type = "blob"
 }
 
 # sa container blob to store the image version
