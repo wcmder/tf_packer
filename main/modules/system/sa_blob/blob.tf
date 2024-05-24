@@ -4,7 +4,7 @@ resource "azurerm_storage_blob" "sa_blob" {
   storage_account_name   = var.sa_name
   storage_container_name = var.container_name
   type                   = var.type
-  #size                   = var.size
+  size                   = var.size
 }
 
 

@@ -66,7 +66,7 @@ module "sa01_container" {
   #access_type = "blob"
 }
 
-
+/*
 
 # sa container blob to store the image version
 module "sa01_blob" {
@@ -76,10 +76,9 @@ module "sa01_blob" {
   sa_name        = module.sa01.sa_name
   container_name = module.sa01_container.container_name
   type           = "Block"
-  #size           = 4194304000
+  size           = 4194304000
 }
 
-/*
 
 # eve ng image version
 module "sig_img_ver_010" {

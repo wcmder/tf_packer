@@ -28,5 +28,6 @@ variable "type" {
 
 variable "size" {
   type    = number
-  default = null
+  default = 4194304000
+  # 4.19GB
 }
