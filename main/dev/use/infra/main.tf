@@ -85,7 +85,7 @@ module "bastion_nsg" {
 
 # Create NSG
 module "eveng_nsg" {
-  source = "../modules/nsg"
+  source = "../../../modules/network/nsg"
   common = local.common
   nsg = {
 
