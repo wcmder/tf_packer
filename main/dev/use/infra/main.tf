@@ -115,7 +115,7 @@ module "eve-ng" {
   nic_name          = "eve-ng-nic"
   ip_name           = "eve-ng-ip"
   subnet_id         = module.subnet_lab.subnet_name_id["vm-subnet"]
-  public_ip_addr_id = module.eveng_pip.ip
+  public_ip_addr_id = module.eveng_pip.pip_id
   vm_size           = "Standard_DS3_v2"
   src_img_id        = module.shared_img.img_id
 }
