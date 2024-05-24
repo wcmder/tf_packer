@@ -19,6 +19,12 @@ locals {
   common = module.main.common
 }
 
+
+output "common" {
+  value = local.common.cidr
+}
+
+
 module "img_gallery" {
   source = "../../../modules/system/img_gallery"
   common = local.common
@@ -77,3 +83,18 @@ module "bastion_nsg" {
   nsg_name = "bas-nsg"
 }
 
+
+# Assign NSG to all subnet in the vnet
+module "nsg_assc" {
+  source = "../../modules/nsg_subnet_assc"
+  nsg_subnet = {
+    bas : {
+      nsg_id    = module.bastion_nsg.nsg_name_id["bas-nsg"]
+      subnet_id = module.subnet_lab.subnet_name_id["AzureBastionSubnet"]
+    }
+    vm : {
+      nsg_id    = module.default_nsg.nsg_name_id["default-nsg"]
+      subnet_id = module.subnet_lab.subnet_name_id["vm-subnet"]
+    }
+  }
+}
