@@ -93,23 +93,24 @@ data "azurerm_image" "eveng010" {
 output "test" {
   value = data.azurerm_image.eveng010.id
 }
-/*
+
+
+
 # eve ng image version
 module "sig_img_ver_010" {
-  source   = "../../../modules/system/sig_img_ver"
-  common   = local.common
-  ver      = "0.1.0"
-  img_name = "eve-ng"
-  sig_name = module.sig.sig_name
-  blob_uri = module.sa01_blob.blob_url
-  sa_id    = module.sa01.sa_id
+  source     = "../../../modules/system/sig_img_ver"
+  common     = local.common
+  ver        = "0.1.0"
+  img_name   = "eve-ng"
+  sig_name   = module.sig.sig_name
+  mgn_img_id = data.azurerm_image.eveng010.id
 
   depends_on = [
     module.sig,
     module.sig_img_eveng,
-    module.sa01_blob
   ]
 }
+
 /*
 
 # create lab vnet

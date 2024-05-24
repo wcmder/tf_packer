@@ -20,6 +20,11 @@ variable "sa_id" {
   default = null
 }
 
+variable "mgn_img_id" {
+  type    = string
+  default = null
+}
+
 variable "common" {
   type = object({
     env          = string,

@@ -11,6 +11,7 @@ resource "azurerm_shared_image_version" "img_ver" {
   location            = var.common["reg"]
   blob_uri            = var.blob_uri
   storage_account_id  = var.sa_id
+  managed_image_id    = var.mgn_img_id
 
   target_region {
     name                   = var.common["reg"]
