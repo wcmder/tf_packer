@@ -169,7 +169,7 @@ module "eveng_pip" {
   pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng-pip"
 }
 
-/*
+
 # eve ng VM
 module "eve-ng" {
   source      = "../../../modules/system/vm"
@@ -180,6 +180,6 @@ module "eve-ng" {
   subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
   pip_addr_id = module.eveng_pip.pip_id
   vm_size     = "Standard_DS3_v2"
-  src_img_id  = module.shared_img.img_id
+  src_img_id  = module.sig_img_ver_010.img_ver_id
 }
-*/
+
