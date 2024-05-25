@@ -26,6 +26,12 @@ build {
     execute_command = local.execute_command
     inline = [
       "apt -y install python3-pip",
+    ]
+  }
+
+  provisioner "shell" {
+    execute_command = local.execute_command
+    inline = [
       "pip3 install gdown --quiet",
     ]
   }
