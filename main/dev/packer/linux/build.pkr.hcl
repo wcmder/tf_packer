@@ -8,6 +8,11 @@ variable "C8KV_FILE_NAME" {
   default = "c8000v-universalk9.17.09.04a.iso"
 }
 
+variable "C8KV_PATH" {
+  type    = string
+  default = "/opt/unetlab/addons/qemu/c8000v-17.09.04a"
+}
+
 
 build {
   sources = [
@@ -45,13 +50,19 @@ build {
     ]
   }
 
+  provisioner "shell" {
+    execute_command = local.execute_command
+    inline = [
+      "mkdir -p ${var.C8KV_PATH}",
+      "cd ${var.C8KV_PATH}",
+      "gdown ${var.C8KV_FILE_ID}",
+    ]
+  }
 
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
-      "mkdir -p /opt/unetlab/addons/qemu/c8000v-17.09.04a",
-      "cd /opt/unetlab/addons/qemu/c8000v-17.09.04a",
-      "gdown ${var.C8KV_FILE_ID}",
+      "cd ${var.C8KV_PATH}",
       "qemu-img create -f qcow2 hda.qcow2 8G",
       "qemu-system-x86_64 -m 4096 -cdrom ${var.C8KV_FILE_NAME} -hda hda.qcow2 -boot d -nographic",
       "rm ${var.C8KV_FILE_NAME}",
