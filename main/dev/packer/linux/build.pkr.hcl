@@ -19,16 +19,6 @@ build {
     ]
   }
 
-
-  provisioner "shell" {
-    execute_command   = local.execute_command
-    expect_disconnect = true
-    inline = [
-      "curl -k -sSL https://www.eve-ng.net/jammy/install-eve.sh | bash -i",
-    ]
-  }
-
-
   provisioner "shell" {
     execute_command = local.execute_command
     environment_vars = [
