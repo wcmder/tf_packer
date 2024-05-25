@@ -30,13 +30,14 @@ build {
     ]
   }
 
+
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
+      "pip install gdown",
       "mkdir -p /opt/unetlab/addons/qemu/c8000v-17.09.04a",
       "cd /opt/unetlab/addons/qemu/c8000v-17.09.04a",
-      "CONFIRM=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate https://drive.google.com/uc?export=download&id=${var.FILE_ID} -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\\1/p')",
-      "wget --load-cookies /tmp/cookies.txt https://drive.google.com/uc?export=download&confirm=$CONFIRM&id=${var.FILE_ID} -O ${var.FILE_NAME} && rm -rf /tmp/cookies.txt",
+      "gdown ${FILE_ID}"
       "qemu-img create -f qcow2 hda.qcow2 8G",
       "qemu-system-x86_64 -m 4096 -cdrom ${var.FILE_NAME} -hda hda.qcow2 -boot d -nographic",
       "rm ${var.FILE_NAME}",
