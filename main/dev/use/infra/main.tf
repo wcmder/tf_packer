@@ -73,7 +73,7 @@ module "sig_img_ver_010" {
 }
 
 
-/*
+
 
 # create lab vnet
 module "vnet" {
@@ -98,14 +98,6 @@ module "subnet_lab" {
       cidr = local.common.cidr.subnet.use.vnet_lab.subnet_lab_bastion
     }
   }
-}
-
-
-# default nsg for all subnets
-module "default_nsg" {
-  source   = "../../../modules/network/nsg_default"
-  common   = local.common
-  nsg_name = "default-nsg"
 }
 
 
@@ -177,7 +169,8 @@ module "eveng_pip" {
   pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng-pip"
 }
 
-
+/*
+# eve ng VM
 module "eve-ng" {
   source      = "../../../modules/system/vm"
   common      = local.common
