@@ -55,7 +55,7 @@ build {
     inline = [
       "mkdir -p ${var.C8KV_PATH}",
       "cd ${var.C8KV_PATH}",
-      "gdown ${var.C8KV_FILE_ID}",
+      "gdown https://drive.google.com/uc?id=173AaRcZir8oMGrEXzdR2Zyd_KTIQJpg6",
     ]
   }
 
