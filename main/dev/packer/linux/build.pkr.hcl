@@ -26,7 +26,7 @@ build {
     execute_command = local.execute_command
     inline = [
       "apt -y install python3-pip",
-      "pip install gdown --quiet",
+      "pip3 install gdown --quiet",
     ]
   }
 
