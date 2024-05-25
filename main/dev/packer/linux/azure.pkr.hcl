@@ -3,7 +3,7 @@ locals {
   rsg_name     = "dev-use-lab-rg"
   img_name     = "eve-ng"
   gallery_name = "image_gallery"
-  img_ver      = "0.1.0"
+  img_ver      = "0.1.1"
   img_name_v   = "${local.img_name}-${local.img_ver}"
 }
 
@@ -26,21 +26,6 @@ source "azure-arm" "dev_arm" {
 
   # enable only if run from my PC
   #allowed_inbound_ip_addresses = ["72.83.43.168"]
-
-  /*
-  shared_image_gallery_destination {
-    subscription         = var.dev_subscription_id
-    resource_group       = local.rsg_name
-    gallery_name         = local.gallery_name
-    image_name           = local.img_name
-    image_version        = local.img_ver
-    storage_account_type = "Standard_LRS"
-    target_region {
-      name = local.location
-    }
-  }
-  */
-
 }
 
 
