@@ -17,7 +17,7 @@ build {
     inline = [
       "curl -k -sSL https://www.eve-ng.net/jammy/install-eve.sh | bash -i",
     ]
-  } c8000v-universalk9.17.09.04 a.iso
+  }
 
 
   provisioner "shell" {
