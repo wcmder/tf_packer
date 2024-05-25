@@ -25,6 +25,7 @@ build {
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
+      "apt update",
       "apt -y install python3-pip",
     ]
   }
