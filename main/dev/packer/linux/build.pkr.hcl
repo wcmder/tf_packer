@@ -1,9 +1,9 @@
-variable "FILE_ID" {
+variable "C8KV_FILE_ID" {
   type    = string
   default = "173AaRcZir8oMGrEXzdR2Zyd_KTIQJpg6"
 }
 
-variable "FILE_NAME" {
+variable "C8KV_FILE_NAME" {
   type    = string
   default = "c8000v-universalk9.17.09.04a.iso"
 }
@@ -18,7 +18,8 @@ build {
     execute_command = local.execute_command
     inline = [
       "apt update",
-      "apt -y upgrade"
+      "apt -y upgrade",
+      "pip install gdown",
     ]
   }
 
@@ -34,13 +35,12 @@ build {
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
-      "pip install gdown",
       "mkdir -p /opt/unetlab/addons/qemu/c8000v-17.09.04a",
       "cd /opt/unetlab/addons/qemu/c8000v-17.09.04a",
-      "gdown ${FILE_ID}"
+      "gdown ${C8KV_FILE_ID}",
       "qemu-img create -f qcow2 hda.qcow2 8G",
-      "qemu-system-x86_64 -m 4096 -cdrom ${var.FILE_NAME} -hda hda.qcow2 -boot d -nographic",
-      "rm ${var.FILE_NAME}",
+      "qemu-system-x86_64 -m 4096 -cdrom ${var.C8KV_FILE_NAME} -hda hda.qcow2 -boot d -nographic",
+      "rm ${var.C8KV_FILE_NAME}",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
     ]
   }
