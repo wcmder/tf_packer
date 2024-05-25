@@ -1,11 +1,11 @@
 variable "FILE_ID" {
   type    = string
-  default = "173AaRcZir8oMGrEXzdR2Zyd_KTIQJpg6",
+  default = "173AaRcZir8oMGrEXzdR2Zyd_KTIQJpg6"
 }
 
 variable "FILE_NAME" {
   type    = string
-  default = "c8000v-universalk9.17.09.04a.iso",
+  default = "c8000v-universalk9.17.09.04a.iso"
 }
 
 
