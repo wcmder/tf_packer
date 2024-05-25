@@ -28,7 +28,7 @@ module "sig" {
 }
 
 
-/*
+
 
 locals {
   img_name1 = "eve-ng-0.1.0"
@@ -72,6 +72,8 @@ module "sig_img_ver_010" {
   ]
 }
 
+
+/*
 
 # create lab vnet
 module "vnet" {
