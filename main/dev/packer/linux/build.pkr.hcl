@@ -37,7 +37,7 @@ build {
     inline = [
       "mkdir -p /opt/unetlab/addons/qemu/c8000v-17.09.04a",
       "cd /opt/unetlab/addons/qemu/c8000v-17.09.04a",
-      "gdown ${C8KV_FILE_ID}",
+      "gdown ${var.C8KV_FILE_ID}",
       "qemu-img create -f qcow2 hda.qcow2 8G",
       "qemu-system-x86_64 -m 4096 -cdrom ${var.C8KV_FILE_NAME} -hda hda.qcow2 -boot d -nographic",
       "rm ${var.C8KV_FILE_NAME}",
