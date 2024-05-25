@@ -62,7 +62,7 @@ module "sig_img_ver_010" {
   source     = "../../../modules/system/sig_img_ver"
   common     = local.common
   ver        = "0.1.0"
-  img_name   = "eve-ng"
+  img_name   = local.img_name1
   sig_name   = module.sig.sig_name
   mgn_img_id = data.azurerm_image.eveng010.id
 
