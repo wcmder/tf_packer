@@ -19,6 +19,12 @@ build {
     inline = [
       "apt update",
       "apt -y upgrade",
+    ]
+  }
+
+  provisioner "shell" {
+    execute_command = local.execute_command
+    inline = [
       "pip install gdown",
     ]
   }
