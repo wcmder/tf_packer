@@ -15,7 +15,7 @@ build {
     execute_command   = local.execute_command
     expect_disconnect = true
     inline = [
-      "curl -k -sSL https://www.eve-ng.net/jammy/install-eve.sh | bash -i"
+      "curl -k -sSL https://www.eve-ng.net/jammy/install-eve.sh | bash -i",
     ]
   } c8000v-universalk9.17.09.04 a.iso
 
