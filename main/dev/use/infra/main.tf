@@ -73,7 +73,7 @@ module "sig_img_ver_010" {
 }
 
 
-
+/*
 
 # create lab vnet
 module "vnet" {
@@ -183,3 +183,4 @@ module "eve-ng" {
   src_img_id  = module.sig_img_ver_010.img_ver_id
 }
 
+*/
