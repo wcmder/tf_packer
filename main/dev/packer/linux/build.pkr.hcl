@@ -15,7 +15,7 @@ variable "C8KV_PATH" {
 
 variable "C8KV_DL_PATH" {
   type    = string
-  default = "http://repo.dknetworks.io/files/c8000v-universalk9.17.09.04a.iso"
+  default = "https://repo.dknetworks.io/files/c8000v-universalk9.17.09.04a.iso"
 }
 
 build {
