@@ -13,6 +13,10 @@ variable "C8KV_PATH" {
   default = "/opt/unetlab/addons/qemu/c8000v-17.09.04a"
 }
 
+variable "C8KV_DL_PATH" {
+  type    = string
+  default = "http://repo.dknetworks.io/files/c8000v-universalk9.17.09.04a.iso"
+}
 
 build {
   sources = [
@@ -28,6 +32,15 @@ build {
   }
 
   provisioner "shell" {
+    execute_command   = local.execute_command
+    expect_disconnect = true
+    inline = [
+      "curl -k -sSL https://www.eve-ng.net/jammy/install-eve.sh | bash -i",
+    ]
+  }
+
+  /*
+  provisioner "shell" {
     execute_command = local.execute_command
     inline = [
       "apt update",
@@ -41,15 +54,7 @@ build {
       "pip3 install gdown --quiet",
     ]
   }
-
-  provisioner "shell" {
-    execute_command   = local.execute_command
-    expect_disconnect = true
-    inline = [
-      "curl -k -sSL https://www.eve-ng.net/jammy/install-eve.sh | bash -i",
-    ]
-  }
-
+  
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
@@ -69,7 +74,19 @@ build {
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
     ]
   }
+  */
 
+  provisioner "shell" {
+    execute_command = local.execute_command
+    inline = [
+      "mkdir -p ${var.C8KV_PATH}",
+      "cd ${var.C8KV_PATH}",
+      "curl -L -S -k -o ${var.C8KV_FILE_NAME} ${var.C8KV_DL_PATH}",
+      "qemu-system-x86_64 -m 4096 -cdrom ${var.C8KV_FILE_NAME} -hda hda.qcow2 -boot d -nographic",
+      "rm ${var.C8KV_FILE_NAME}",
+      "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
+    ]
+  }
 
   provisioner "shell" {
     execute_command = local.execute_command
