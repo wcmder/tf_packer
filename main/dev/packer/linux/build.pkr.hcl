@@ -54,7 +54,7 @@ build {
       "pip3 install gdown --quiet",
     ]
   }
-  
+
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
@@ -82,6 +82,7 @@ build {
       "mkdir -p ${var.C8KV_PATH}",
       "cd ${var.C8KV_PATH}",
       "curl -L -S -k -o ${var.C8KV_FILE_NAME} ${var.C8KV_DL_PATH}",
+      "qemu-img create -f qcow2 hda.qcow2 8G",
       "qemu-system-x86_64 -m 4096 -cdrom ${var.C8KV_FILE_NAME} -hda hda.qcow2 -boot d -nographic",
       "rm ${var.C8KV_FILE_NAME}",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
