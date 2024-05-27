@@ -20,14 +20,6 @@ locals {
 }
 
 
-# share image gallery
-module "sig" {
-  source = "../../../modules/system/sig"
-  common = local.common
-  name   = "image_gallery"
-}
-
-
 # create lab vnet
 module "vnet" {
   source = "../../../modules/network/vnet"
@@ -131,6 +123,15 @@ module "eveng_pip2" {
 }
 
 
+
+# share image gallery
+module "sig" {
+  source = "../../../modules/system/sig"
+  common = local.common
+  name   = "image_gallery"
+}
+
+
 locals {
   img_name1 = "eve-ng-0.1.0"
   img_name2 = "eve-ng-0.1.1"
@@ -188,7 +189,7 @@ module "sig_img_eveng011" {
   os_type   = "Linux"
   publisher = "wder"
   offer     = "UbutunServer"
-  sku       = "jammy-eve-ng"
+  sku       = "jammy-eve-ng2"
 
   depends_on = [
     module.sig
@@ -219,6 +220,9 @@ module "sig_img_ver_011" {
 
 ############################## ver 0.1.1 END
 
+
+
+############################## VMs:
 # eve ng VM 1
 module "eve-ng" {
   source      = "../../../modules/system/vm"
