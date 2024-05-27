@@ -106,17 +106,17 @@ module "nsg_assc" {
   }
 }
 
-/*
+
 #  public IP
-module "eveng_pip" {
+module "eveng1_pip" {
   source   = "../../../modules/network/pip"
   common   = local.common
-  pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng-pip"
+  pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng1-pip"
 }
 
 
 #  public IP
-module "eveng_pip2" {
+module "eveng2_pip" {
   source   = "../../../modules/network/pip"
   common   = local.common
   pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng2-pip"
@@ -133,13 +133,17 @@ module "sig" {
 
 
 locals {
-  img_name1 = "eve-ng-0.1.0"
-  img_name2 = "eve-ng-0.1.1"
+  ver010    = "0.1.0"
+  ver011    = "0.1.1"
+  img_name1 = "eve-ng-${local.ver010}"
+  img_name2 = "eve-ng-${local.ver011}"
+  sku1      = "jammy-eve-ng1"
+  sku2      = "jammy-eve-ng2"
 }
 
 ############################## ver 0.1.0 BEGIN
 # eve ng img defintion 
-module "sig_img_eveng" {
+module "sig_img_eveng1" {
   source    = "../../../modules/system/sig_img"
   common    = local.common
   img_name  = local.img_name1
@@ -147,7 +151,7 @@ module "sig_img_eveng" {
   os_type   = "Linux"
   publisher = "wder"
   offer     = "UbutunServer"
-  sku       = "jammy-eve-ng"
+  sku       = local.sku1
 
   depends_on = [
     module.sig
@@ -155,7 +159,7 @@ module "sig_img_eveng" {
 }
 
 # get imag id
-data "azurerm_image" "eveng010" {
+data "azurerm_image" "eveng1" {
   name                = local.img_name1
   resource_group_name = local.common.rsg_name
 }
@@ -165,10 +169,10 @@ data "azurerm_image" "eveng010" {
 module "sig_img_ver_010" {
   source     = "../../../modules/system/sig_img_ver"
   common     = local.common
-  ver        = "0.1.0"
+  ver        = local.ver010
   img_name   = local.img_name1
   sig_name   = module.sig.sig_name
-  mgn_img_id = data.azurerm_image.eveng010.id
+  mgn_img_id = data.azurerm_image.eveng1.id
 
   depends_on = [
     module.sig,
@@ -181,7 +185,7 @@ module "sig_img_ver_010" {
 
 ############################## ver 0.1.1 BEGIN
 # eve ng img defintion 
-module "sig_img_eveng011" {
+module "sig_img_eveng2" {
   source    = "../../../modules/system/sig_img"
   common    = local.common
   img_name  = local.img_name2
@@ -189,7 +193,7 @@ module "sig_img_eveng011" {
   os_type   = "Linux"
   publisher = "wder"
   offer     = "UbutunServer"
-  sku       = "jammy-eve-ng2"
+  sku       = local.sku2
 
   depends_on = [
     module.sig
@@ -197,7 +201,7 @@ module "sig_img_eveng011" {
 }
 
 # get imag id
-data "azurerm_image" "eveng011" {
+data "azurerm_image" "eveng2" {
   name                = local.img_name2
   resource_group_name = local.common.rsg_name
 }
@@ -207,10 +211,10 @@ data "azurerm_image" "eveng011" {
 module "sig_img_ver_011" {
   source     = "../../../modules/system/sig_img_ver"
   common     = local.common
-  ver        = "0.1.1"
+  ver        = local.ver011
   img_name   = local.img_name2
   sig_name   = module.sig.sig_name
-  mgn_img_id = data.azurerm_image.eveng011.id
+  mgn_img_id = data.azurerm_image.eveng2.id
 
   depends_on = [
     module.sig,
@@ -221,7 +225,7 @@ module "sig_img_ver_011" {
 ############################## ver 0.1.1 END
 
 
-
+/*
 ############################## VMs:
 # eve ng VM 1
 module "eve-ng" {
