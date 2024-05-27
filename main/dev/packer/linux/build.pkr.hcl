@@ -57,12 +57,12 @@ build {
     inline = [
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",
-      "curl -L -S -k -o ${var.C8KV_FILE_NAME} ${var.C8KV_DL_PATH}",
+      "curl -k -sSL -o ${var.C8KV_FILE_NAME} ${var.C8KV_DL_PATH}",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
     ]
   }
 
-
+  /*
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
@@ -72,6 +72,7 @@ build {
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
     ]
   }
+  */
 
   provisioner "shell" {
     execute_command = local.execute_command
