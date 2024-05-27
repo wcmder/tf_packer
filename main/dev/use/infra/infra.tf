@@ -19,7 +19,7 @@ locals {
   common = module.main.common
 }
 
-
+/*
 # create lab vnet
 module "vnet" {
   source = "../../../modules/network/vnet"
@@ -115,20 +115,11 @@ module "eveng1_pip" {
 }
 
 
-#  public IP
-module "eveng2_pip" {
-  source   = "../../../modules/network/pip"
-  common   = local.common
-  pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng2-pip"
-}
-
-
 # get imag id
 data "azurerm_image" "eveng1" {
   name                = "eve-ng-0.1.0"
   resource_group_name = local.common.rsg_name
 }
-
 
 
 # get imag id
@@ -152,16 +143,4 @@ module "eve-ng1-vm" {
   vm_size     = "Standard_DS3_v2"
   src_img_id  = data.azurerm_image.eveng1.id
 }
-
-# eve ng VM 2
-module "eve-ng2-vm" {
-  source      = "../../../modules/system/vm"
-  common      = local.common
-  vm_name     = "eve-ng2-vm"
-  nic_name    = "eve-ng2-nic"
-  ip_name     = "eve-ng2-ip"
-  subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
-  pip_addr_id = module.eveng2_pip.pip_id
-  vm_size     = "Standard_DS3_v2"
-  src_img_id  = data.azurerm_image.eveng2.id
-}
+*/
