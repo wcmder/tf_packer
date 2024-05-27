@@ -211,7 +211,6 @@ module "eveng_pip" {
   pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng-pip"
 }
 
-
 # eve ng VM 1
 module "eve-ng" {
   source      = "../../../modules/system/vm"
@@ -225,6 +224,14 @@ module "eve-ng" {
   src_img_id  = module.sig_img_ver_010.img_ver_id
 }
 
+#  public IP
+module "eveng_pip2" {
+  source   = "../../../modules/network/pip"
+  common   = local.common
+  pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng2-pip"
+}
+
+
 # eve ng VM 2
 module "eve-ng2" {
   source      = "../../../modules/system/vm"
@@ -233,7 +240,7 @@ module "eve-ng2" {
   nic_name    = "eve-ng2-nic"
   ip_name     = "eve-ng2-ip"
   subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
-  pip_addr_id = module.eveng_pip.pip_id
+  pip_addr_id = module.eveng_pip2.pip_id
   vm_size     = "Standard_DS3_v2"
   src_img_id  = module.sig_img_ver_011.img_ver_id
 }
