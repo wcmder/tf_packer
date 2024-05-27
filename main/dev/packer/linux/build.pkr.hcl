@@ -62,17 +62,17 @@ build {
     ]
   }
 
-  /*
+
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
       "mkdir -p ${var.PALO_IMG_PATH}",
       "cd ${var.PALO_IMG_PATH}",
-      "curl -L -S -k -o ${var.PALO_FILE_NAME} ${var.PALO_DL_PATH}",
+      "curl -k -sSL -o ${var.PALO_FILE_NAME} ${var.PALO_DL_PATH}",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
     ]
   }
-  */
+
 
   provisioner "shell" {
     execute_command = local.execute_command
