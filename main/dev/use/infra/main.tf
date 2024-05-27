@@ -226,7 +226,7 @@ module "eve-ng" {
 }
 
 # eve ng VM 2
-module "eve-ng" {
+module "eve-ng2" {
   source      = "../../../modules/system/vm"
   common      = local.common
   vm_name     = "eve-ng2-vm"
