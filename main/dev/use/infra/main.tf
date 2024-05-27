@@ -28,95 +28,6 @@ module "sig" {
 }
 
 
-locals {
-  img_name1 = "eve-ng-0.1.0"
-  img_name2 = "eve-ng-0.1.1"
-}
-
-############################## ver 0.1.0 BEGIN
-# eve ng img defintion 
-module "sig_img_eveng" {
-  source    = "../../../modules/system/sig_img"
-  common    = local.common
-  img_name  = local.img_name1
-  sig_name  = module.sig.sig_name
-  os_type   = "Linux"
-  publisher = "wder"
-  offer     = "UbutunServer"
-  sku       = "jammy-eve-ng"
-
-  depends_on = [
-    module.sig
-  ]
-}
-
-# get imag id
-data "azurerm_image" "eveng010" {
-  name                = local.img_name1
-  resource_group_name = local.common.rsg_name
-}
-
-
-# eve ng image version
-module "sig_img_ver_010" {
-  source     = "../../../modules/system/sig_img_ver"
-  common     = local.common
-  ver        = "0.1.0"
-  img_name   = local.img_name1
-  sig_name   = module.sig.sig_name
-  mgn_img_id = data.azurerm_image.eveng010.id
-
-  depends_on = [
-    module.sig,
-    module.sig_img_eveng,
-  ]
-}
-
-############################## ver 0.1.0 END
-
-
-############################## ver 0.1.1 BEGIN
-# eve ng img defintion 
-module "sig_img_eveng011" {
-  source    = "../../../modules/system/sig_img"
-  common    = local.common
-  img_name  = local.img_name2
-  sig_name  = module.sig.sig_name
-  os_type   = "Linux"
-  publisher = "wder"
-  offer     = "UbutunServer"
-  sku       = "jammy-eve-ng"
-
-  depends_on = [
-    module.sig
-  ]
-}
-
-# get imag id
-data "azurerm_image" "eveng011" {
-  name                = local.img_name2
-  resource_group_name = local.common.rsg_name
-}
-
-
-# eve ng image version
-module "sig_img_ver_011" {
-  source     = "../../../modules/system/sig_img_ver"
-  common     = local.common
-  ver        = "0.1.1"
-  img_name   = local.img_name2
-  sig_name   = module.sig.sig_name
-  mgn_img_id = data.azurerm_image.eveng010.id
-
-  depends_on = [
-    module.sig,
-    module.sig_img_eveng,
-  ]
-}
-
-############################## ver 0.1.1 END
-
-
 # create lab vnet
 module "vnet" {
   source = "../../../modules/network/vnet"
@@ -211,6 +122,103 @@ module "eveng_pip" {
   pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng-pip"
 }
 
+
+#  public IP
+module "eveng_pip2" {
+  source   = "../../../modules/network/pip"
+  common   = local.common
+  pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng2-pip"
+}
+
+
+locals {
+  img_name1 = "eve-ng-0.1.0"
+  img_name2 = "eve-ng-0.1.1"
+}
+
+############################## ver 0.1.0 BEGIN
+# eve ng img defintion 
+module "sig_img_eveng" {
+  source    = "../../../modules/system/sig_img"
+  common    = local.common
+  img_name  = local.img_name1
+  sig_name  = module.sig.sig_name
+  os_type   = "Linux"
+  publisher = "wder"
+  offer     = "UbutunServer"
+  sku       = "jammy-eve-ng"
+
+  depends_on = [
+    module.sig
+  ]
+}
+
+# get imag id
+data "azurerm_image" "eveng010" {
+  name                = local.img_name1
+  resource_group_name = local.common.rsg_name
+}
+
+
+# eve ng image version
+module "sig_img_ver_010" {
+  source     = "../../../modules/system/sig_img_ver"
+  common     = local.common
+  ver        = "0.1.0"
+  img_name   = local.img_name1
+  sig_name   = module.sig.sig_name
+  mgn_img_id = data.azurerm_image.eveng010.id
+
+  depends_on = [
+    module.sig,
+    module.sig_img_eveng,
+  ]
+}
+
+############################## ver 0.1.0 END
+
+
+############################## ver 0.1.1 BEGIN
+# eve ng img defintion 
+module "sig_img_eveng011" {
+  source    = "../../../modules/system/sig_img"
+  common    = local.common
+  img_name  = local.img_name2
+  sig_name  = module.sig.sig_name
+  os_type   = "Linux"
+  publisher = "wder"
+  offer     = "UbutunServer"
+  sku       = "jammy-eve-ng"
+
+  depends_on = [
+    module.sig
+  ]
+}
+
+# get imag id
+data "azurerm_image" "eveng011" {
+  name                = local.img_name2
+  resource_group_name = local.common.rsg_name
+}
+
+
+# eve ng image version
+module "sig_img_ver_011" {
+  source     = "../../../modules/system/sig_img_ver"
+  common     = local.common
+  ver        = "0.1.1"
+  img_name   = local.img_name2
+  sig_name   = module.sig.sig_name
+  mgn_img_id = data.azurerm_image.eveng011.id
+
+  depends_on = [
+    module.sig,
+    module.sig_img_eveng,
+  ]
+}
+
+############################## ver 0.1.1 END
+
 # eve ng VM 1
 module "eve-ng" {
   source      = "../../../modules/system/vm"
@@ -223,14 +231,6 @@ module "eve-ng" {
   vm_size     = "Standard_DS3_v2"
   src_img_id  = module.sig_img_ver_010.img_ver_id
 }
-
-#  public IP
-module "eveng_pip2" {
-  source   = "../../../modules/network/pip"
-  common   = local.common
-  pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng2-pip"
-}
-
 
 # eve ng VM 2
 module "eve-ng2" {
