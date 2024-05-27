@@ -19,6 +19,7 @@ locals {
   common = module.main.common
 }
 
+/*
 
 # create lab vnet
 module "vnet" {
@@ -130,7 +131,7 @@ data "azurerm_image" "eveng2" {
 
 
 ############################## VMs:
-/*
+
 # eve ng VM 1
 module "eve-ng1-vm" {
   source      = "../../../modules/system/vm"
