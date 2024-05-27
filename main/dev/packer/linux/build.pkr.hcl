@@ -1,3 +1,13 @@
+variable "repo_ip" {
+  type    = string
+  default = "104.21.70.95"
+}
+
+variable "repo_fqdn" {
+  type    = string
+  default = "repo.dknetworks.io"
+}
+
 variable "C8KV_FILE_NAME" {
   type    = string
   default = "virtioa.qcow2"
@@ -49,6 +59,13 @@ build {
     expect_disconnect = true
     inline = [
       "curl -k -sSL https://www.eve-ng.net/jammy/install-eve.sh | bash -i",
+    ]
+  }
+
+  provisioner "shell" {
+    execute_command = local.execute_command
+    inline = [
+      "echo '${var.repo_ip} ${var.repo_fqdn}' | sudo tee -a /etc/hosts",
     ]
   }
 
