@@ -19,7 +19,7 @@ locals {
   common = module.main.common
 }
 
-/*
+
 # create lab vnet
 module "vnet" {
   source = "../../../modules/network/vnet"
@@ -140,7 +140,6 @@ module "eve-ng1-vm" {
   ip_name     = "eve-ng1-ip"
   subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
   pip_addr_id = module.eveng1_pip.pip_id
-  vm_size     = "Standard_DS3_v2"
-  src_img_id  = data.azurerm_image.eveng1.id
+  vm_size     = "Standard_D8_v3"
+  src_img_id  = data.azurerm_image.eveng2.id
 }
-*/
