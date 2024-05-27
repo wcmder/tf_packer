@@ -161,7 +161,7 @@ module "eve-ng2-vm" {
   nic_name    = "eve-ng2-nic"
   ip_name     = "eve-ng2-ip"
   subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
-  pip_addr_id = module.eveng_pip2.pip_id
+  pip_addr_id = module.eveng2_pip.pip_id
   vm_size     = "Standard_DS3_v2"
   src_img_id  = data.azurerm_image.eveng2.id
 }
