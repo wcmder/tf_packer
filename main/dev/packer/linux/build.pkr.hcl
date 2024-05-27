@@ -13,6 +13,23 @@ variable "C8KV_DL_PATH" {
   default = "https://repo.dknetworks.io/files/c8kv/virtioa.qcow2"
 }
 
+
+variable "PALO_FILE_NAME" {
+  type    = string
+  default = "virtioa.qcow2"
+}
+
+variable "PALO_IMG_PATH" {
+  type    = string
+  default = "/opt/unetlab/addons/qemu/paloalto-10.2.5"
+}
+
+variable "PALO_DL_PATH" {
+  type    = string
+  default = "https://repo.dknetworks.io/files/palo/virtioa.qcow2"
+}
+
+
 build {
   sources = [
     "source.azure-arm.dev_arm"
@@ -40,6 +57,17 @@ build {
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",
       "curl -L -S -k -o ${var.C8KV_FILE_NAME} ${var.C8KV_DL_PATH}",
+      "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
+    ]
+  }
+
+
+  provisioner "shell" {
+    execute_command = local.execute_command
+    inline = [
+      "mkdir -p ${var.PALO_IMG_PATH}",
+      "cd ${var.PALO_IMG_PATH}",
+      "curl -L -S -k -o ${var.PALO_FILE_NAME} ${var.PALO_DL_PATH}",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
     ]
   }

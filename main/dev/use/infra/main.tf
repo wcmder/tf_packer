@@ -73,7 +73,7 @@ module "sig_img_ver_010" {
 }
 
 
-/*
+
 
 # create lab vnet
 module "vnet" {
@@ -169,7 +169,7 @@ module "eveng_pip" {
   pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng-pip"
 }
 
-
+/*
 # eve ng VM
 module "eve-ng" {
   source      = "../../../modules/system/vm"
