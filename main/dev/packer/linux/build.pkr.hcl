@@ -1,21 +1,16 @@
-variable "C8KV_FILE_ID" {
-  type    = string
-  default = "173AaRcZir8oMGrEXzdR2Zyd_KTIQJpg6"
-}
-
 variable "C8KV_FILE_NAME" {
   type    = string
-  default = "c8000v-universalk9.17.09.04a.iso"
+  default = "virtioa.qcow2"
 }
 
-variable "C8KV_PATH" {
+variable "C8KV_IMG_PATH" {
   type    = string
-  default = "/opt/unetlab/addons/qemu/c8000v-17.09.04a"
+  default = "/opt/unetlab/addons/qemu/c8000v-17.06.02"
 }
 
 variable "C8KV_DL_PATH" {
   type    = string
-  default = "https://repo.dknetworks.io/files/c8000v-universalk9.17.09.04a.iso"
+  default = "https://repo.dknetworks.io/files/c8kv/virtioa.qcow2"
 }
 
 build {
@@ -39,52 +34,12 @@ build {
     ]
   }
 
-  /*
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
-      "apt update",
-      "apt -y install python3-pip",
-    ]
-  }
-
-  provisioner "shell" {
-    execute_command = local.execute_command
-    inline = [
-      "pip3 install gdown --quiet",
-    ]
-  }
-
-  provisioner "shell" {
-    execute_command = local.execute_command
-    inline = [
-      "mkdir -p ${var.C8KV_PATH}",
-      "cd ${var.C8KV_PATH}",
-      "gdown https://drive.google.com/uc?id=173AaRcZir8oMGrEXzdR2Zyd_KTIQJpg6",
-    ]
-  }
-
-  provisioner "shell" {
-    execute_command = local.execute_command
-    inline = [
-      "cd ${var.C8KV_PATH}",
-      "qemu-img create -f qcow2 hda.qcow2 8G",
-      "qemu-system-x86_64 -m 4096 -cdrom ${var.C8KV_FILE_NAME} -hda hda.qcow2 -boot d -nographic",
-      "rm ${var.C8KV_FILE_NAME}",
-      "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
-    ]
-  }
-  */
-
-  provisioner "shell" {
-    execute_command = local.execute_command
-    inline = [
-      "mkdir -p ${var.C8KV_PATH}",
-      "cd ${var.C8KV_PATH}",
+      "mkdir -p ${var.C8KV_IMG_PATH}",
+      "cd ${var.C8KV_IMG_PATH}",
       "curl -L -S -k -o ${var.C8KV_FILE_NAME} ${var.C8KV_DL_PATH}",
-      "qemu-img create -f qcow2 hda.qcow2 8G",
-      "qemu-system-x86_64 -m 4096 -cdrom ${var.C8KV_FILE_NAME} -hda hda.qcow2 -boot d -nographic",
-      "rm ${var.C8KV_FILE_NAME}",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
     ]
   }
