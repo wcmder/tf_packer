@@ -176,7 +176,7 @@ module "sig_img_ver_010" {
 
   depends_on = [
     module.sig,
-    module.sig_img_eveng,
+    module.sig_img_eveng1,
   ]
 }
 
@@ -215,11 +215,6 @@ module "sig_img_ver_011" {
   img_name   = local.img_name2
   sig_name   = module.sig.sig_name
   mgn_img_id = data.azurerm_image.eveng2.id
-
-  depends_on = [
-    module.sig,
-    module.sig_img_eveng,
-  ]
 }
 
 ############################## ver 0.1.1 END
