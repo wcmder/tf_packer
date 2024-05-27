@@ -106,7 +106,7 @@ module "nsg_assc" {
   }
 }
 
-
+/*
 #  public IP
 module "eveng_pip" {
   source   = "../../../modules/network/pip"
@@ -249,3 +249,4 @@ module "eve-ng2" {
   src_img_id  = module.sig_img_ver_011.img_ver_id
 }
 
+*/
