@@ -30,6 +30,7 @@ variable "PALO_DL_PATH" {
 }
 
 
+
 build {
   sources = [
     "source.azure-arm.dev_arm"
