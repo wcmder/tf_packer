@@ -103,7 +103,7 @@ data "azurerm_image" "eveng011" {
 module "sig_img_ver_011" {
   source     = "../../../modules/system/sig_img_ver"
   common     = local.common
-  ver        = "0.1.0"
+  ver        = "0.1.1"
   img_name   = local.img_name2
   sig_name   = module.sig.sig_name
   mgn_img_id = data.azurerm_image.eveng010.id
@@ -212,7 +212,7 @@ module "eveng_pip" {
 }
 
 
-# eve ng VM
+# eve ng VM 1
 module "eve-ng" {
   source      = "../../../modules/system/vm"
   common      = local.common
@@ -225,4 +225,16 @@ module "eve-ng" {
   src_img_id  = module.sig_img_ver_010.img_ver_id
 }
 
+# eve ng VM 2
+module "eve-ng" {
+  source      = "../../../modules/system/vm"
+  common      = local.common
+  vm_name     = "eve-ng2-vm"
+  nic_name    = "eve-ng2-nic"
+  ip_name     = "eve-ng2-ip"
+  subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
+  pip_addr_id = module.eveng_pip.pip_id
+  vm_size     = "Standard_DS3_v2"
+  src_img_id  = module.sig_img_ver_011.img_ver_id
+}
 
