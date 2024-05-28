@@ -123,7 +123,7 @@ module "eve-ng1-vm" {
   ip_name     = "eveng1-ip"
   subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
   pip_addr_id = module.eveng1_pip.pip_id
-  vm_size     = "Standard_D16s_v3"
+  vm_size     = "Standard_D8s_v3"
   src_img_id  = data.azurerm_image.eveng1.id
 }
 
