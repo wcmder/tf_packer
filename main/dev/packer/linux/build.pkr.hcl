@@ -55,6 +55,25 @@ build {
   }
 
   provisioner "shell" {
+    execute_command   = local.execute_command
+    expect_disconnect = true
+    inline = [
+      "echo '${var.repo_ip} ${var.repo_fqdn}' | tee -a /etc/hosts",
+      "mkdir -p /tmp/cisco",
+      "cd /tmp/cisco",
+      "pwd",
+      "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.C8KV_FILE_NAME} ${var.C8KV_DL_PATH}",
+      "echo 'downloaded'"
+      "mkdir -p /tmp/palo",
+      "cd /tmp/palo",
+      "pwd",
+      "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.PALO_FILE_NAME} ${var.PALO_DL_PATH}",
+      "echo 'downloaded'"
+    ]
+  }
+
+  /*
+  provisioner "shell" {
     execute_command = local.execute_command
     inline = [
       "apt update",
@@ -75,23 +94,25 @@ build {
     execute_command = local.execute_command
     inline = [
       "echo '${var.repo_ip} ${var.repo_fqdn}' | tee -a /etc/hosts",
-      "echo '1st'",
+      "echo '1st file'",
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",
+      "pwd",
       "echo 'downloading'",
       "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.C8KV_FILE_NAME} ${var.C8KV_DL_PATH}",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
-      "echo '2st'",
       "echo '${var.C8KV_FILE_NAME} downloaded'",
+      "echo '2st file'",
       "mkdir -p ${var.PALO_IMG_PATH}",
       "cd ${var.PALO_IMG_PATH}",
+      "pwd",
       "echo 'downloading'",
       "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.PALO_FILE_NAME} ${var.PALO_DL_PATH}",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       "echo '${var.PALO_FILE_NAME} downloaded'",
     ]
   }
-
+*/
   provisioner "shell" {
     execute_command = local.execute_command
     inline          = ["/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"]
