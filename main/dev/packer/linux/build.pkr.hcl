@@ -59,13 +59,7 @@ build {
     inline = [
       "apt update",
       "apt install ubuntu-desktop -y",
-    ]
-  }
-
-  provisioner "shell" {
-    execute_command = local.execute_command
-    inline = [
-      "apt update",
+      "apt install slim -y",
       "apt install xrdp -y",
     ]
   }
@@ -82,30 +76,19 @@ build {
     execute_command = local.execute_command
     inline = [
       "echo '${var.repo_ip} ${var.repo_fqdn}' | sudo tee -a /etc/hosts",
-    ]
-  }
-
-  provisioner "shell" {
-    execute_command = local.execute_command
-    inline = [
+      "sleep 10",
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",
       "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.C8KV_FILE_NAME} ${var.C8KV_DL_PATH}",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
-    ]
-  }
-
-
-  provisioner "shell" {
-    execute_command = local.execute_command
-    inline = [
+      "echo '${var.C8KV_FILE_NAME} downloaded'",
       "mkdir -p ${var.PALO_IMG_PATH}",
       "cd ${var.PALO_IMG_PATH}",
       "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.PALO_FILE_NAME} ${var.PALO_DL_PATH}",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
+      "echo '${var.PALO_FILE_NAME} downloaded'",
     ]
   }
-
 
   provisioner "shell" {
     execute_command = local.execute_command
