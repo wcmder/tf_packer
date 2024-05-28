@@ -59,13 +59,13 @@ build {
     expect_disconnect = true
     inline = [
       "echo '${var.repo_ip} ${var.repo_fqdn}' | tee -a /etc/hosts",
-      "mkdir -p /tmp/cisco",
-      "cd /tmp/cisco",
+      "mkdir -p /data/cisco",
+      "cd /data/cisco",
       "pwd",
       "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.C8KV_FILE_NAME} ${var.C8KV_DL_PATH}",
       "echo 'downloaded'",
-      "mkdir -p /tmp/palo",
-      "cd /tmp/palo",
+      "mkdir -p /data/palo",
+      "cd /data/palo",
       "pwd",
       "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.PALO_FILE_NAME} ${var.PALO_DL_PATH}",
       "echo 'downloaded'",
@@ -95,13 +95,13 @@ build {
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",
       "pwd",
-      "mv /tmp/cisco/${var.C8KV_FILE_NAME} .",
+      "mv /data/cisco/${var.C8KV_FILE_NAME} .",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       #
       "mkdir -p ${var.PALO_IMG_PATH}",
       "cd ${var.PALO_IMG_PATH}",
       "pwd",
-      "mv /tmp/palo/${var.PALO_FILE_NAME} .",
+      "mv /data/palo/${var.PALO_FILE_NAME} .",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       #
       "echo 'ALL DONE'",
