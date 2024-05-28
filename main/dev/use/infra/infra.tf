@@ -20,7 +20,7 @@ locals {
 }
 
 
-
+/*
 # create lab vnet
 module "vnet" {
   source = "../../../modules/network/vnet"
@@ -133,4 +133,4 @@ module "eve-ng1-vm" {
   vm_size     = "Standard_D8s_v3"
   src_img_id  = data.azurerm_image.eveng2.id
 }
-
+*/
