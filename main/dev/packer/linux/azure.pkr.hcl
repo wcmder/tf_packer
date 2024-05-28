@@ -4,7 +4,9 @@ locals {
   img_name     = "eve-ng"
   gallery_name = "image_gallery"
   img_name_v   = "${local.img_name}-${local.img_ver}"
-  # 0.1.3 - 8kv palo, no desktop no xrdp
+  # 0.1.2 - 8kv only
+  # 0.1.3 - 8kv and palo, no desktop no xrdp
+  # 0.1.4 - 8kv, palo, desktop and xrdp
   img_ver = "0.1.4"
 }
 
