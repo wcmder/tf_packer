@@ -70,8 +70,8 @@ build {
     execute_command = local.execute_command
     inline = [
       "apt update",
-      "apt install ubuntu-desktop -y",
       "apt install xrdp -y",
+      "apt install ubuntu-desktop -y",
     ]
   }
 
