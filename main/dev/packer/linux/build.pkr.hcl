@@ -74,8 +74,7 @@ build {
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
-      "echo '${var.repo_ip} ${var.repo_fqdn}' | sudo tee -a /etc/hosts",
-      "sleep 10",
+      "echo '${var.repo_ip} ${var.repo_fqdn}' | tee -a /etc/hosts",
       "echo '1st'",
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",

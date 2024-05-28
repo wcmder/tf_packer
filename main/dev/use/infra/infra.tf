@@ -26,7 +26,7 @@ module "vnet" {
   source = "../../../modules/network/vnet"
   common = local.common
   vnet = {
-    "lab-vnet" : [local.common.cidr.vnet.use.vnet_lab, []]
+    "vm-vnet" : [local.common.cidr.vnet.use.vnet_lab, []]
   }
 }
 
@@ -34,7 +34,7 @@ module "vnet" {
 module "subnet_lab" {
   source    = "../../../modules/network/subnet"
   common    = local.common
-  vnet_name = module.vnet.vnet_name_name["lab-vnet"]
+  vnet_name = module.vnet.vnet_name_name["vm-vnet"]
 
   subnet = {
     vm-subnet : {
@@ -101,7 +101,7 @@ module "nsg_assc" {
 module "eveng1_pip" {
   source   = "../../../modules/network/pip"
   common   = local.common
-  pip_name = "${module.vnet.vnet_name_name["lab-vnet"]}-eveng1-pip"
+  pip_name = "${module.vnet.vnet_name_name["vm-vnet"]}-eveng1-pip"
 }
 
 
