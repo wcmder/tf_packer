@@ -136,9 +136,9 @@ data "azurerm_image" "eveng2" {
 module "eve-ng1-vm" {
   source      = "../../../modules/system/vm"
   common      = local.common
-  vm_name     = "eve-ng1-vm"
-  nic_name    = "eve-ng1-nic"
-  ip_name     = "eve-ng1-ip"
+  vm_name     = "eveng1-vm"
+  nic_name    = "eveng1-nic"
+  ip_name     = "eveng1-ip"
   subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
   pip_addr_id = module.eveng1_pip.pip_id
   vm_size     = "Standard_D8s_v3"
