@@ -59,7 +59,6 @@ build {
     inline = [
       "apt update",
       "apt install ubuntu-desktop -y",
-      "apt install slim -y",
       "apt install xrdp -y",
     ]
   }
