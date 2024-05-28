@@ -20,7 +20,7 @@ trigger:
       - main
   paths:
     include:
-      - main/dev/use/infra
+      - main/dev/use/infra/NOGO
     exclude:
       - main/dev/use/infra/*.yml
 stages:
