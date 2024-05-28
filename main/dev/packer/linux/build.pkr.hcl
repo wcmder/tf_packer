@@ -8,7 +8,7 @@ variable "repo_fqdn" {
   default = "repo.dknetworks.io"
 }
 
-variable "C8KV_FILE_NAME" {
+variable "FILE_NAME" {
   type    = string
   default = "virtioa.qcow2"
 }
@@ -21,12 +21,6 @@ variable "C8KV_IMG_PATH" {
 variable "C8KV_DL_PATH" {
   type    = string
   default = "https://repo.dknetworks.io/files/c8kv/virtioa.qcow2"
-}
-
-
-variable "PALO_FILE_NAME" {
-  type    = string
-  default = "virtioa.qcow2"
 }
 
 variable "PALO_IMG_PATH" {
@@ -62,12 +56,12 @@ build {
       "mkdir -p /data/cisco",
       "cd /data/cisco",
       "pwd",
-      "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.C8KV_FILE_NAME} ${var.C8KV_DL_PATH}",
+      "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${var.C8KV_DL_PATH}",
       "echo 'downloaded'",
       "mkdir -p /data/palo",
       "cd /data/palo",
       "pwd",
-      "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.PALO_FILE_NAME} ${var.PALO_DL_PATH}",
+      "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${var.PALO_DL_PATH}",
       "echo 'downloaded'",
     ]
   }
@@ -95,14 +89,16 @@ build {
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",
       "pwd",
-      "sudo mv /data/cisco/${var.C8KV_FILE_NAME} .",
-      "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
+      "sudo mv /data/cisco/${var.FILE_NAME} .",
+      "ls"
+      #"/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       #
       "mkdir -p ${var.PALO_IMG_PATH}",
       "cd ${var.PALO_IMG_PATH}",
       "pwd",
-      "sudo mv /data/palo/${var.PALO_FILE_NAME} .",
-      "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
+      "sudo mv /data/palo/${var.FILE_NAME} .",
+      "ls"
+      #"/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       #
       "echo 'ALL DONE'",
     ]
