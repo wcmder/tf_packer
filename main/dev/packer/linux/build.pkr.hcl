@@ -63,12 +63,12 @@ build {
       "cd /tmp/cisco",
       "pwd",
       "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.C8KV_FILE_NAME} ${var.C8KV_DL_PATH}",
-      "echo 'downloaded'"
+      "echo 'downloaded'",
       "mkdir -p /tmp/palo",
       "cd /tmp/palo",
       "pwd",
       "curl -k -sSL --retry 5 --retry-delay 5 -o ${var.PALO_FILE_NAME} ${var.PALO_DL_PATH}",
-      "echo 'downloaded'"
+      "echo 'downloaded'",
     ]
   }
 
