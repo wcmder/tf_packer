@@ -71,7 +71,7 @@ build {
       "echo 'downloaded'",
     ]
   }
-
+  /*
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
@@ -80,7 +80,7 @@ build {
       "apt install xrdp -y",
     ]
   }
-
+  */
   provisioner "shell" {
     execute_command   = local.execute_command
     expect_disconnect = true
@@ -95,13 +95,13 @@ build {
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",
       "pwd",
-      "mv /data/cisco/${var.C8KV_FILE_NAME} .",
+      "sudo mv /data/cisco/${var.C8KV_FILE_NAME} .",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       #
       "mkdir -p ${var.PALO_IMG_PATH}",
       "cd ${var.PALO_IMG_PATH}",
       "pwd",
-      "mv /data/palo/${var.PALO_FILE_NAME} .",
+      "sudo mv /data/palo/${var.PALO_FILE_NAME} .",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       #
       "echo 'ALL DONE'",
