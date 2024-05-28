@@ -65,16 +65,7 @@ build {
       "echo 'downloaded'",
     ]
   }
-  /*
-  provisioner "shell" {
-    execute_command = local.execute_command
-    inline = [
-      "apt update",
-      "apt install ubuntu-desktop -y",
-      "apt install xrdp -y",
-    ]
-  }
-  */
+
   provisioner "shell" {
     execute_command   = local.execute_command
     expect_disconnect = true
@@ -100,7 +91,16 @@ build {
       "ls",
       #"/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       #
-      "echo 'ALL DONE'",
+      "echo 'ALL DONE - Images Installed'",
+    ]
+  }
+
+  provisioner "shell" {
+    execute_command = local.execute_command
+    inline = [
+      "apt update",
+      "apt install ubuntu-desktop -y",
+      "apt install xrdp -y",
     ]
   }
 

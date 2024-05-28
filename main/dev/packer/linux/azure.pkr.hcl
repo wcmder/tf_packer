@@ -3,8 +3,9 @@ locals {
   rsg_name     = "dev-use-lab-rg"
   img_name     = "eve-ng"
   gallery_name = "image_gallery"
-  img_ver      = "0.1.3"
   img_name_v   = "${local.img_name}-${local.img_ver}"
+  # 0.1.3 - 8kv palo, no desktop no xrdp
+  img_ver = "0.1.4"
 }
 
 source "azure-arm" "dev_arm" {
