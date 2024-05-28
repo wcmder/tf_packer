@@ -89,15 +89,15 @@ build {
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",
       "pwd",
-      "sudo mv /data/cisco/${var.FILE_NAME} .",
-      "ls"
+      "mv /data/cisco/${var.FILE_NAME} .",
+      "ls",
       #"/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       #
       "mkdir -p ${var.PALO_IMG_PATH}",
       "cd ${var.PALO_IMG_PATH}",
       "pwd",
-      "sudo mv /data/palo/${var.FILE_NAME} .",
-      "ls"
+      "mv /data/palo/${var.FILE_NAME} .",
+      "ls",
       #"/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       #
       "echo 'ALL DONE'",
