@@ -3,7 +3,7 @@ locals {
   rsg_name     = "dev-use-lab-rg"
   img_name     = "eve-ng"
   gallery_name = "image_gallery"
-  img_ver      = "0.1.2"
+  img_ver      = "0.1.3"
   img_name_v   = "${local.img_name}-${local.img_ver}"
 }
 

@@ -55,6 +55,22 @@ build {
   }
 
   provisioner "shell" {
+    execute_command = local.execute_command
+    inline = [
+      "apt update",
+      "apt install ubuntu-desktop -y",
+    ]
+  }
+
+  provisioner "shell" {
+    execute_command = local.execute_command
+    inline = [
+      "apt update",
+      "apt install xrdp -y",
+    ]
+  }
+
+  provisioner "shell" {
     execute_command   = local.execute_command
     expect_disconnect = true
     inline = [
