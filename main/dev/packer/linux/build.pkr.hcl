@@ -1,6 +1,6 @@
 variable "repo_ip" {
   type    = string
-  default = "104.21.70.95"
+  default = "172.67.222.122"
 }
 
 variable "repo_fqdn" {
