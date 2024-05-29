@@ -64,15 +64,15 @@ module "eveng_nsg" {
       nsg_name = "eveng_nsg"
       security_rule = {
         rule1 : {
-          name            = "allow_wder"
-          priority        = 100
-          direction       = "Inbound"
-          access          = "Allow"
-          protocol        = "Tcp"
-          src_port_range  = "*"
-          dst_port_range  = "*"
-          src_addr_prefix = "72.83.43.168"
-          dst_addr_prefix = "*"
+          name              = "allow_wder"
+          priority          = 100
+          direction         = "Inbound"
+          access            = "Allow"
+          protocol          = "Tcp"
+          src_port_range    = "*"
+          dst_port_range    = "*"
+          src_addr_prefixes = ["72.83.43.168", "104.28.228.78"]
+          dst_addr_prefix   = "*"
         }
       }
     }
