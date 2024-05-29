@@ -90,9 +90,12 @@ build {
       "mv /data/palo/${var.FILE_NAME} .",
       "ls",
       #
+      "echo 'root:eve' | sudo chpasswd",
+      "echo 'ALL DONE - Images Installed'",
     ]
   }
 
+  /*
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
@@ -101,6 +104,7 @@ build {
       "echo 'ALL DONE - Images Installed'",
     ]
   }
+  */
 
   /*
   provisioner "shell" {
@@ -124,7 +128,7 @@ build {
 
   provisioner "shell" {
     execute_command = local.execute_command
-    inline          = ["/usr/sbin/waagent -force -deprovision && export HISTSIZE=0 && sync"]
+    inline          = ["/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"]
     only            = ["azure-arm"]
   }
 
