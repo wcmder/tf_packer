@@ -76,7 +76,8 @@ build {
   }
 
   provisioner "shell" {
-    execute_command = local.execute_command
+    execute_command   = local.execute_command
+    expect_disconnect = true
     inline = [
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",
@@ -90,9 +91,17 @@ build {
       "mv /data/palo/${var.FILE_NAME} .",
       "ls",
       #
+      "echo 'rebooting'",
+      "reboot"
+    ]
+  }
+
+  provisioner "shell" {
+    execute_command   = local.execute_command
+    expect_disconnect = true
+    inline = [
       "echo 'fix permissions'",
       "sudo /opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
-      #
       "echo 'ALL DONE - Images Installed'",
     ]
   }
