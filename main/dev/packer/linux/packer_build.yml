@@ -17,7 +17,7 @@ trigger:
       - main
   paths:
     include:
-      - main/dev/packer/linux/NOGO
+      - main/dev/packer/linux/
     exclude:
       - main/dev/packer/linux/*.yml
 stages:

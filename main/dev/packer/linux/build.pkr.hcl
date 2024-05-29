@@ -83,14 +83,15 @@ build {
       "pwd",
       "mv /data/cisco/${var.FILE_NAME} .",
       "ls",
-      #"/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       #
       "mkdir -p ${var.PALO_IMG_PATH}",
       "cd ${var.PALO_IMG_PATH}",
       "pwd",
       "mv /data/palo/${var.FILE_NAME} .",
       "ls",
-      #"/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
+      #
+      "echo 'fix permissions'",
+      "sudo /opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       #
       "echo 'ALL DONE - Images Installed'",
     ]
@@ -118,7 +119,7 @@ build {
 
   provisioner "shell" {
     execute_command = local.execute_command
-    inline          = ["/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"]
+    inline          = ["/usr/sbin/waagent -force -deprovision && export HISTSIZE=0 && sync"]
     only            = ["azure-arm"]
   }
 
