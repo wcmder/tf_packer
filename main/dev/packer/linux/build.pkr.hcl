@@ -96,6 +96,7 @@ build {
     ]
   }
 
+  /*
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
@@ -113,6 +114,7 @@ build {
       "apt install ubuntu-desktop -y",
     ]
   }
+  */
 
   provisioner "shell" {
     execute_command = local.execute_command
