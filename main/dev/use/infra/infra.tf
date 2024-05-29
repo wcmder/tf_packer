@@ -113,7 +113,7 @@ data "azurerm_image" "eveng1" {
 
 
 ############################## VMs:
-/*
+
 # eve ng VM 1
 module "eve-ng1-vm" {
   source      = "../../../modules/system/vm"
@@ -126,5 +126,5 @@ module "eve-ng1-vm" {
   vm_size     = "Standard_D8s_v3"
   src_img_id  = data.azurerm_image.eveng1.id
 }
-*/
+
 
