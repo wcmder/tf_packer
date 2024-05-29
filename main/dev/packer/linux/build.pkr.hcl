@@ -91,8 +91,10 @@ build {
       "ls",
       #
       "echo 'fix permissions'",
-      "echo 'intel' | tee /opt/unetlab/platform",
-      "sudo /opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
+      "cat /opt/unetlab/platform",
+      "cat /opt/unetlab/hypervisor",
+      #"echo 'intel' | tee /opt/unetlab/platform",
+      "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       "echo 'root:eve' | sudo chpasswd",
       "echo 'ALL DONE - root set, permission set, images installed'",
     ]
