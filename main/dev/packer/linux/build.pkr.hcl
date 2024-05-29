@@ -91,7 +91,7 @@ build {
       "ls",
       #
       "echo 'fix permissions'",
-      "echo 'intel' > /opt/unetlab/platform",
+      "echo 'intel' | tee /opt/unetlab/platform",
       "sudo /opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       "echo 'root:eve' | sudo chpasswd",
       "echo 'ALL DONE - root set, permission set, images installed'",
