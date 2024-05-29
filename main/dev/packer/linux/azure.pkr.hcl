@@ -4,8 +4,8 @@ locals {
   img_name     = "eve-ng"
   gallery_name = "image_gallery"
   img_name_v   = "${local.img_name}-${local.img_ver}"
-  # 0.1.4 - 8kv, palo
-  img_ver = "0.1.5"
+  # 0.1.5 - 8kv, palo
+  img_ver = "0.1.6"
 }
 
 source "azure-arm" "dev_arm" {

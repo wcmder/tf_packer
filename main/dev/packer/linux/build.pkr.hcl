@@ -90,21 +90,14 @@ build {
       "mv /data/palo/${var.FILE_NAME} .",
       "ls",
       #
+      "echo 'fix permissions'",
+      "echo 'intel' > /opt/unetlab/platform",
+      "sudo /opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       "echo 'root:eve' | sudo chpasswd",
-      "echo 'ALL DONE - Images Installed'",
+      "echo 'ALL DONE - root set, permission set, images installed'",
     ]
   }
 
-  /*
-  provisioner "shell" {
-    execute_command = local.execute_command
-    inline = [
-      "echo 'fix permissions'",
-      "sudo /opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
-      "echo 'ALL DONE - Images Installed'",
-    ]
-  }
-  */
 
   /*
   provisioner "shell" {
