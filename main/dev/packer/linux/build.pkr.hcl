@@ -92,7 +92,7 @@ build {
       "ls",
       #
       "echo 'rebooting'",
-      "reboot"
+      "sudo reboot"
     ]
   }
 
