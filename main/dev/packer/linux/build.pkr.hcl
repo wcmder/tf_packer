@@ -43,7 +43,7 @@ build {
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
-      "apt update",
+      "apt -y update",
       "apt -y upgrade",
     ]
   }
@@ -76,8 +76,7 @@ build {
   }
 
   provisioner "shell" {
-    execute_command   = local.execute_command
-    expect_disconnect = true
+    execute_command = local.execute_command
     inline = [
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",
@@ -91,14 +90,11 @@ build {
       "mv /data/palo/${var.FILE_NAME} .",
       "ls",
       #
-      "echo 'rebooting'",
-      "sudo reboot"
     ]
   }
 
   provisioner "shell" {
-    execute_command   = local.execute_command
-    expect_disconnect = true
+    execute_command = local.execute_command
     inline = [
       "echo 'fix permissions'",
       "sudo /opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
