@@ -17,7 +17,7 @@ trigger:
       - main
   paths:
     include:
-      - main/dev/packer/linux/NOGO
+      - main/dev/packer/linux/
     exclude:
       - main/dev/packer/linux/*.yml
 stages:
@@ -46,4 +46,4 @@ stages:
             displayName: Packer build
             inputs:
               workingDirectory: $(parentpath)/$(dir)
-              script: packer build -var "spn-client-id=$(dostest-spn-id)" -var "spn-client-secret=$(dostest-spn-secret)" -var "spn-tenant-id=$(dostest-tenant-id)" -on-error=abort -force ./
+              script: packer build -var "spn-client-id=$(dostest-spn-id)" -var "spn-client-secret=$(dostest-spn-secret)" -var "spn-tenant-id=$(dostest-tenant-id)" -on-error=cleanup -force ./

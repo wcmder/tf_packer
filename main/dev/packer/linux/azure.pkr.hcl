@@ -25,6 +25,7 @@ source "azure-arm" "dev_arm" {
   image_offer     = "0001-com-ubuntu-server-jammy"
   image_publisher = "Canonical"
   image_sku       = "22_04-lts-gen2"
+  image_version   = "latest"
   vm_size         = "Standard_D8s_v3"
 
   # enable only if run from my PC
