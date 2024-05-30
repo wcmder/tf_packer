@@ -90,15 +90,11 @@ build {
       "mv /data/palo/${var.FILE_NAME} .",
       "ls",
       #
-      "echo 'platform:'",
-      "cat /opt/unetlab/platform",
-      "echo 'hypervisor:'",
-      "cat /opt/unetlab/hypervisor",
+      "echo 'root:eve' | sudo chpasswd",
       "echo 'fix permissions'",
       #"echo 'intel' | tee /opt/unetlab/platform",
       "chmod a+x /opt/unetlab/wrappers/unl_wrapper",
-      "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions 2>&1",
-      "echo 'root:eve' | sudo chpasswd",
+      "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
       "echo 'ALL DONE - root set, permission set, images installed'",
     ]
   }
