@@ -76,7 +76,8 @@ build {
   }
 
   provisioner "shell" {
-    execute_command = local.execute_command
+    execute_command   = local.execute_command
+    expect_disconnect = true
     inline = [
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",
@@ -91,14 +92,20 @@ build {
       "ls",
       #
       "echo 'root:eve' | sudo chpasswd",
-      #"echo 'fix permissions'",
-      #"echo 'intel' | tee /opt/unetlab/platform",
-      #"chmod a+x /opt/unetlab/wrappers/unl_wrapper",
-      #"/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
-      "echo 'DONE - root set, permission NO set, images installed'",
+      "echo 'DONE - root set, images installed, rebooting'",
+      "reboot now",
     ]
   }
 
+  provisioner "shell" {
+    execute_command = local.execute_command
+    pause_before    = "120s"
+    inline = [
+      "echo 'fix permissions'",
+      "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
+      "echo 'DONE - permission set'",
+    ]
+  }
 
   /*
   provisioner "shell" {
