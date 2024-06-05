@@ -78,6 +78,7 @@ build {
   provisioner "shell" {
     execute_command   = local.execute_command
     expect_disconnect = true
+    pause_after       = "120s"
     inline = [
       "mkdir -p ${var.C8KV_IMG_PATH}",
       "cd ${var.C8KV_IMG_PATH}",
@@ -99,7 +100,6 @@ build {
 
   provisioner "shell" {
     execute_command = local.execute_command
-    pause_before    = "120s"
     inline = [
       "echo 'fix permissions'",
       "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
