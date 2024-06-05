@@ -107,7 +107,7 @@ module "eveng1_pip" {
 
 # get imag id
 data "azurerm_image" "eveng1" {
-  name                = "eve-ng-0.1.5"
+  name                = "eve-ng-0.1.7"
   resource_group_name = local.common.rsg_name
 }
 
