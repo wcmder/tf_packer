@@ -91,11 +91,11 @@ build {
       "ls",
       #
       "echo 'root:eve' | sudo chpasswd",
-      "echo 'fix permissions'",
+      #"echo 'fix permissions'",
       #"echo 'intel' | tee /opt/unetlab/platform",
-      "chmod a+x /opt/unetlab/wrappers/unl_wrapper",
-      "/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
-      "echo 'ALL DONE - root set, permission set, images installed'",
+      #"chmod a+x /opt/unetlab/wrappers/unl_wrapper",
+      #"/opt/unetlab/wrappers/unl_wrapper -a fixpermissions",
+      "echo 'DONE - root set, permission NO set, images installed'",
     ]
   }
 
