@@ -4,7 +4,7 @@ locals {
   img_name     = "eve-ng"
   gallery_name = "image_gallery"
   img_name_v   = "${local.img_name}-${local.img_ver}"
-  # 0.1.5 - 8kv, palo
+  # 0.1.7 - 8kv, palo tested boot
   img_ver = "0.1.7"
 }
 

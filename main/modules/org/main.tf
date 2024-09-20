@@ -1,7 +1,11 @@
-# naming convetion functions
+# Purpose 
+# 1 - to create and RSG in 'rsg_locaiton', the returned 'region' is for other resource creations in the called module
+# 2 - to use the RSG already created,  the returned 'region' is for other resource creations in the called module
+
+# naming convention functions
 locals {
-  # list of region name = avvrivation
-  # to be matched from the call, and resulted in list with only the one matched
+  # list of region name = abriviation
+  # used by 'reg_abbr' and 'reg_abbr_rsg', to produce the abriviation 
   region = {
     usgovvirginia = "use"
     eastus        = "use"
