@@ -8,12 +8,12 @@ build {
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
-      "apt update -y",
-      "apt upgrade -y",
+      "apt-get update -y",
+      "apt-get upgrade -y",
       "echo 'UPGRADE DONE'",
-      "apt install -y iperf",
+      "apt-get install -y iperf",
       "echo 'IPERF INSTALLED'",
-      "apt install net-tools",
+      "apt-get install -y net-tools",
       "echo 'NET-TOOLS INSTALLED'",
     ]
   }

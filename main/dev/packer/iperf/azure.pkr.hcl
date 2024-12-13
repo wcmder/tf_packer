@@ -4,7 +4,7 @@ locals {
   img_name     = "iperf"
   gallery_name = "image_gallery"
   img_name_v   = "${local.img_name}-${local.img_ver}"
-  img_ver      = "0.1.1"
+  img_ver      = "0.1.2"
 }
 
 source "azure-arm" "dev_arm" {
