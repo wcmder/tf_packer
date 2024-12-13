@@ -6,7 +6,7 @@ variables:
   - name: parentpath
     value: main
   - name: dir
-    value: dev/use/eve
+    value: dev/use/iperf
   # Terraform version
   - name: tfversion
     value: "1.7.2"

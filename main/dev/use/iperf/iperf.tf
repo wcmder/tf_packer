@@ -113,7 +113,7 @@ data "azurerm_image" "iperf" {
 
 
 ############################## VMs:
-
+/*
 # eve ng VM 1
 module "iperf-vm" {
   source      = "../../../modules/system/vm"
@@ -127,4 +127,4 @@ module "iperf-vm" {
   src_img_id  = data.azurerm_image.iperf.id
 }
 
-
+*/
