@@ -101,7 +101,7 @@ module "iperf_pip" {
 }
 
 
-/*
+
 # get imag id
 data "azurerm_image" "iperf" {
   name                = "iperf-0.1.0"
@@ -111,7 +111,7 @@ data "azurerm_image" "iperf" {
 
 ############################## VMs:
 
-# eve ng VM 1
+# iperf VM 1
 module "iperf-vm" {
   source      = "../../../modules/system/vm"
   common      = local.common
@@ -123,5 +123,3 @@ module "iperf-vm" {
   vm_size     = "Standard_D8s_v3"
   src_img_id  = data.azurerm_image.iperf.id
 }
-
-*/
