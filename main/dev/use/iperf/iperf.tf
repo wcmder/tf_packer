@@ -13,13 +13,10 @@ module "main" {
   svc_name     = "iperf"
 }
 
-
 # pass into module call
 locals {
   common = module.main.common
 }
-
-
 
 # create lab vnet
 module "vnet" {
@@ -45,7 +42,6 @@ module "subnet_lab" {
     }
   }
 }
-
 
 # bastion nsg
 module "bastion_nsg" {
@@ -105,6 +101,7 @@ module "iperf_pip" {
 }
 
 
+/*
 # get imag id
 data "azurerm_image" "iperf" {
   name                = "iperf-0.1.0"
@@ -113,7 +110,7 @@ data "azurerm_image" "iperf" {
 
 
 ############################## VMs:
-/*
+
 # eve ng VM 1
 module "iperf-vm" {
   source      = "../../../modules/system/vm"

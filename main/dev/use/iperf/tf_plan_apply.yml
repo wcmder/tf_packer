@@ -20,9 +20,9 @@ trigger:
       - main
   paths:
     include:
-      - main/dev/use/eve/
+      - main/dev/use/iperf/
     exclude:
-      - main/dev/use/eve/*.yml
+      - main/dev/use/iperf/*.yml
 stages:
   - stage: Build
     jobs:
