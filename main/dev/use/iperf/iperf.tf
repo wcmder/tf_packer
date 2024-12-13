@@ -17,7 +17,7 @@ module "main" {
 locals {
   common = module.main.common
 }
-
+/*
 # create lab vnet
 module "vnet" {
   source = "../../../modules/network/vnet"
@@ -123,3 +123,4 @@ module "iperf-vm" {
   vm_size     = "Standard_D8s_v3"
   src_img_id  = data.azurerm_image.iperf.id
 }
+*/
