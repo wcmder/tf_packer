@@ -15,7 +15,7 @@ resource "azurerm_network_interface" "nic1" {
     public_ip_address_id          = var.pip1_id
   }
 
-  tags = merge(var.common["tags"], {"ResourceType" = "Nic"})
+  tags = merge(var.common["tags"], { "ResourceType" = "Nic" })
 
 }
 
@@ -31,17 +31,17 @@ resource "azurerm_network_interface" "nic2" {
     public_ip_address_id          = var.pip2_id
   }
 
-  tags = merge(var.common["tags"], {"ResourceType" = "Nic"})
+  tags = merge(var.common["tags"], { "ResourceType" = "Nic" })
 
 }
 
 
 resource "azurerm_network_interface" "nic3" {
-  name                 = var.nic3_name
-  location             = var.common["reg"]
-  resource_group_name  = var.common["rsg_name"]
-  enable_ip_forwarding = true
-  
+  name                = var.nic3_name
+  location            = var.common["reg"]
+  resource_group_name = var.common["rsg_name"]
+  #enable_ip_forwarding = true
+
   ip_configuration {
     name                          = var.ip3_name
     subnet_id                     = var.subnet3_id
@@ -49,7 +49,7 @@ resource "azurerm_network_interface" "nic3" {
     #public_ip_address_id = var.pip3_id
   }
 
-  tags = merge(var.common["tags"], {"ResourceType" = "Nic"})
+  tags = merge(var.common["tags"], { "ResourceType" = "Nic" })
 
 }
 
@@ -98,7 +98,7 @@ resource "azurerm_virtual_machine" "vm" {
     computer_name  = var.vm_name
   }
 
-  tags = merge(var.common["tags"], {"ResourceType" = "Palo Alto"})
+  tags = merge(var.common["tags"], { "ResourceType" = "Palo Alto" })
 
 }
 

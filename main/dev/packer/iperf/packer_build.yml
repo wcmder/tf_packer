@@ -1,0 +1,49 @@
+---
+variables:
+  # variable group name in DevOps
+  - group: dostest01kv01
+  # Directory to run tasks
+  - name: parentpath
+    value: main
+  - name: dir
+    value: dev/packer/iperf
+  # spn
+  - name: spn
+    value: "Azure SPN devops-spn"
+###
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - main/dev/packer/iperf/
+    exclude:
+      - main/dev/packer/iperf/*.yml
+stages:
+  - stage: Build
+    jobs:
+      - job: Packer
+        displayName:
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+            fetchDepth: 1
+          - task: riezebosch.Packer.PackerTool.PackerTool@0
+            displayName: "Use Latest Packer "
+          - task: CmdLine@2
+            displayName: Packer version
+            inputs:
+              workingDirectory: $(parentpath)/$(dir)
+              script: packer version
+          - task: CmdLine@2
+            displayName: Packer init
+            inputs:
+              workingDirectory: $(parentpath)/$(dir)
+              script: packer init ./
+          - task: CmdLine@2
+            displayName: Packer build
+            inputs:
+              workingDirectory: $(parentpath)/$(dir)
+              script: packer build -var "spn-client-id=$(dostest-spn-id)" -var "spn-client-secret=$(dostest-spn-secret)" -var "spn-tenant-id=$(dostest-tenant-id)" -on-error=cleanup -force ./
