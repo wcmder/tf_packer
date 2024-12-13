@@ -9,6 +9,7 @@ locals {
   region = {
     usgovvirginia = "use"
     eastus        = "use"
+    westus        = "usw"
   }
 
   # get region abbrivation for resrouce naming prefix
