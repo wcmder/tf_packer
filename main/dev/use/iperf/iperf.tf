@@ -104,7 +104,7 @@ module "iperf_pip" {
 
 # get imag id
 data "azurerm_image" "iperf" {
-  name                = "iperf-0.1.0"
+  name                = "iperf-0.1.2"
   resource_group_name = local.common.rsg_name
 }
 
