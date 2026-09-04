@@ -163,7 +163,8 @@ module "eve-ng1-vm" {
   ip_name               = "eveng1-ip"
   subnet_id             = module.subnet_lab.subnet_name_id["vm-subnet"]
   ip_forwarding_enabled = true
-  vm_size               = "Standard_D8s_v5"
-  storage_account_type  = "StandardSSD_LRS"
-  src_img_id            = data.azurerm_shared_image_version.eveng_runtime.id
+  #vm_size               = "Standard_D8s_v5"
+  vm_size              = "Standard_E8s_v6"
+  storage_account_type = "StandardSSD_LRS"
+  src_img_id           = data.azurerm_shared_image_version.eveng_runtime.id
 }
