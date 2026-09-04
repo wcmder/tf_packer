@@ -1,0 +1,122 @@
+---
+variables:
+  - group: dostest01kv01
+  - name: TF_VERSION
+    value: "1.14.6"
+  - name: TF_ROOT
+    value: main/env/dev/use/eve
+  - name: REPO_USERNAME
+    value: wder
+
+trigger:
+  branches:
+    include: [main]
+  paths:
+    include:
+      - main/env/dev/use/eve/**
+      - main/stacks/eve/**
+      - main/stacks/context/**
+
+stages:
+  - stage: Build
+    displayName: Plan EVE-NG
+    jobs:
+      - job: terraform_plan
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+          - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@1
+            inputs:
+              terraformVersion: $(TF_VERSION)
+          - task: Bash@3
+            displayName: Terraform init
+            inputs:
+              targetType: inline
+              workingDirectory: $(TF_ROOT)
+              script: |
+                set -euo pipefail
+                basic_auth="$(printf '%s:%s' "$REPO_USERNAME" "$REPO_ACCESS" | base64 | tr -d '\n')"
+                GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=http.extraheader \
+                GIT_CONFIG_VALUE_0="AUTHORIZATION: Basic $basic_auth" \
+                terraform init -upgrade -reconfigure -backend-config="access_key=$BACKEND_ACCESS_KEY"
+            env:
+              REPO_ACCESS: $(repo-access)
+              REPO_USERNAME: $(REPO_USERNAME)
+              BACKEND_ACCESS_KEY: $(dostest01sa01-key1)
+          - task: Bash@3
+            displayName: Terraform validate and plan
+            inputs:
+              targetType: inline
+              workingDirectory: $(TF_ROOT)
+              script: |
+                set -euo pipefail
+                terraform validate
+                terraform plan -input=false -out=tfplan
+            env:
+              TF_VAR_spn-client-id: $(dostest-spn-id)
+              TF_VAR_spn-client-secret: $(dostest-spn-secret)
+              TF_VAR_spn-tenant-id: $(dostest-tenant-id)
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: main
+              archiveType: tar
+              tarCompression: gz
+              archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-eve-tfplan.tgz
+              replaceExistingArchive: true
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-eve-tfplan.tgz
+              artifact: $(Build.BuildId)-eve-tfplan
+
+  - stage: Deploy
+    displayName: Apply EVE-NG
+    dependsOn: Build
+    jobs:
+      - deployment: terraform_apply
+        environment: tf_packer
+        pool:
+          vmImage: ubuntu-latest
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - task: DownloadPipelineArtifact@2
+                  inputs:
+                    artifactName: $(Build.BuildId)-eve-tfplan
+                    path: $(System.ArtifactsDirectory)
+                - task: ExtractFiles@1
+                  inputs:
+                    archiveFilePatterns: $(System.ArtifactsDirectory)/**/$(Build.BuildId)-eve-tfplan.tgz
+                    destinationFolder: $(System.DefaultWorkingDirectory)
+                    cleanDestinationFolder: false
+                    overwriteExistingFiles: true
+                - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@1
+                  inputs:
+                    terraformVersion: $(TF_VERSION)
+                - task: Bash@3
+                  displayName: Terraform init
+                  inputs:
+                    targetType: inline
+                    workingDirectory: $(System.DefaultWorkingDirectory)/$(TF_ROOT)
+                    script: |
+                      set -euo pipefail
+                      basic_auth="$(printf '%s:%s' "$REPO_USERNAME" "$REPO_ACCESS" | base64 | tr -d '\n')"
+                      GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=http.extraheader \
+                      GIT_CONFIG_VALUE_0="AUTHORIZATION: Basic $basic_auth" \
+                      terraform init -upgrade -reconfigure -backend-config="access_key=$BACKEND_ACCESS_KEY"
+                  env:
+                    REPO_ACCESS: $(repo-access)
+                    REPO_USERNAME: $(REPO_USERNAME)
+                    BACKEND_ACCESS_KEY: $(dostest01sa01-key1)
+                - task: Bash@3
+                  displayName: Terraform apply
+                  inputs:
+                    targetType: inline
+                    workingDirectory: $(System.DefaultWorkingDirectory)/$(TF_ROOT)
+                    script: terraform apply -auto-approve -input=false tfplan
+                  env:
+                    TF_VAR_spn-client-id: $(dostest-spn-id)
+                    TF_VAR_spn-client-secret: $(dostest-spn-secret)
+                    TF_VAR_spn-tenant-id: $(dostest-tenant-id)
