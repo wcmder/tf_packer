@@ -1,4 +1,10 @@
 ---
+parameters:
+  - name: eveImageVersion
+    displayName: Existing EVE gallery image version to deploy
+    type: string
+    default: "0.1.0"
+
 variables:
   - group: dostest01kv01
   - name: TF_VERSION
@@ -57,6 +63,7 @@ stages:
               TF_VAR_spn-client-id: $(dostest-spn-id)
               TF_VAR_spn-client-secret: $(dostest-spn-secret)
               TF_VAR_spn-tenant-id: $(dostest-tenant-id)
+              TF_VAR_eve_image_version: ${{ parameters.eveImageVersion }}
           - task: ArchiveFiles@2
             inputs:
               rootFolderOrFile: main
@@ -120,3 +127,4 @@ stages:
                     TF_VAR_spn-client-id: $(dostest-spn-id)
                     TF_VAR_spn-client-secret: $(dostest-spn-secret)
                     TF_VAR_spn-tenant-id: $(dostest-tenant-id)
+                    TF_VAR_eve_image_version: ${{ parameters.eveImageVersion }}

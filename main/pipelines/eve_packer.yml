@@ -1,4 +1,14 @@
 ---
+parameters:
+  - name: ubuntuImageVersion
+    displayName: Exact Ubuntu 22.04 Gen2 Marketplace version
+    type: string
+    default: "SET_EXACT_VERSION"
+  - name: eveImageVersion
+    displayName: New EVE gallery image version
+    type: string
+    default: "0.1.0"
+
 variables:
   # variable group name in DevOps
   - group: dostest01kv01
@@ -13,13 +23,7 @@ variables:
   - name: PACKER_VERSION
     value: "1.14.3"
 ###
-trigger:
-  branches:
-    include:
-      - main
-  paths:
-    include:
-      - main/packer/eve/**
+trigger: none
 stages:
   - stage: Build
     jobs:
@@ -50,13 +54,18 @@ stages:
               workingDirectory: $(parentpath)/$(dir)
               script: |
                 set -euo pipefail
+                if [ '${{ parameters.ubuntuImageVersion }}' = 'SET_EXACT_VERSION' ]; then
+                  echo 'Select an exact Ubuntu Marketplace version when starting the pipeline.'
+                  exit 1
+                fi
                 packer fmt -check ./
                 packer validate ./
             env:
               PKR_VAR_spn-client-id: $(dostest-spn-id)
               PKR_VAR_spn-client-secret: $(dostest-spn-secret)
               PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
-              PKR_VAR_ubuntu_image_version: $(ubuntu-image-version)
+              PKR_VAR_ubuntu_image_version: ${{ parameters.ubuntuImageVersion }}
+              PKR_VAR_eve_image_version: ${{ parameters.eveImageVersion }}
           - task: CmdLine@2
             displayName: Packer build
             inputs:
@@ -66,4 +75,5 @@ stages:
               PKR_VAR_spn-client-id: $(dostest-spn-id)
               PKR_VAR_spn-client-secret: $(dostest-spn-secret)
               PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
-              PKR_VAR_ubuntu_image_version: $(ubuntu-image-version)
+              PKR_VAR_ubuntu_image_version: ${{ parameters.ubuntuImageVersion }}
+              PKR_VAR_eve_image_version: ${{ parameters.eveImageVersion }}

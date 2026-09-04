@@ -98,9 +98,11 @@ module "eveng1_pip" {
   }
 }
 
-data "azurerm_image" "eveng_runtime" {
-  name                = "eve-ng-0.1.7"
-  resource_group_name = local.common.rsg_name
+data "azurerm_shared_image_version" "eveng_runtime" {
+  name                = var.eve_image_version
+  image_name          = "eve-ng"
+  gallery_name        = "image_gallery"
+  resource_group_name = var.image_resource_group_name
 }
 
 module "eve-ng1-vm" {
@@ -112,5 +114,5 @@ module "eve-ng1-vm" {
   subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
   pip_addr_id = module.eveng1_pip.pip_name_id["vm-vnet-eveng1-pip"]
   vm_size     = "Standard_D8s_v5"
-  src_img_id  = data.azurerm_image.eveng_runtime.id
+  src_img_id  = data.azurerm_shared_image_version.eveng_runtime.id
 }

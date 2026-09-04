@@ -33,3 +33,13 @@ variable "ubuntu_image_version" {
   type        = string
   description = "Exact Azure Marketplace version of Canonical Ubuntu 22.04 Gen2."
 }
+
+variable "eve_image_version" {
+  type        = string
+  description = "Immutable Azure Compute Gallery version to publish."
+
+  validation {
+    condition     = can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+$", var.eve_image_version))
+    error_message = "The EVE image version must use numeric major.minor.patch format."
+  }
+}

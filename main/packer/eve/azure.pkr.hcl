@@ -1,12 +1,9 @@
 # Azure image builder configuration.
 locals {
   location     = "East US"
-  rsg_name     = "dev-use-lab-rg"
+  rsg_name     = "dev-use-images-rg"
   img_name     = "eve-ng"
   gallery_name = "image_gallery"
-  img_name_v   = "${local.img_name}-${local.img_ver}"
-  # 0.1.7 - 8kv, palo tested boot
-  img_ver = "0.1.0"
 }
 
 source "azure-arm" "dev_arm" {
@@ -15,9 +12,23 @@ source "azure-arm" "dev_arm" {
   client_secret   = var.spn-client-secret
   tenant_id       = var.spn-tenant-id
 
-  location                          = local.location
-  managed_image_name                = local.img_name_v
-  managed_image_resource_group_name = local.rsg_name
+  location = local.location
+
+  shared_image_gallery_destination {
+    subscription         = var.dev_subscription_id
+    resource_group       = local.rsg_name
+    gallery_name         = local.gallery_name
+    image_name           = local.img_name
+    image_version        = var.eve_image_version
+    storage_account_type = "Standard_LRS"
+
+    target_region {
+      name     = local.location
+      replicas = 1
+    }
+  }
+
+  shared_image_gallery_timeout = "2h"
 
   communicator    = "ssh"
   os_type         = "Linux"

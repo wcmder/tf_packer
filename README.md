@@ -8,10 +8,12 @@ This repository builds Azure managed images with Packer and deploys an EVE-NG la
 main/
 ├── env/dev/use/
 │   ├── eve/               # Thin EVE-NG Terraform root
+│   ├── images/            # Gallery and stable image definitions
 │   └── iperf/             # Thin iPerf Terraform root
 ├── stacks/
 │   ├── context/           # Shared naming, tags, region, and CIDRs
 │   ├── eve/               # EVE-NG resource composition
+│   ├── images/            # Azure Compute Gallery foundation
 │   └── iperf/             # iPerf resource composition
 ├── packer/                # Environment-independent image templates
 │   ├── eve/
@@ -20,9 +22,9 @@ main/
 └── modules/               # Legacy local modules; no longer referenced
 ```
 
-The EVE-NG and iPerf environment roots contain only backend, provider, credential-variable, state-migration, and stack-call configuration. Resource composition is shared in `main/stacks/eve` and `main/stacks/iperf`. Reusable Azure resource modules are pinned to `v0.1.1` of the private `TF/azure-terraform-modules` Azure Repos repository.
+The EVE-NG and iPerf environment roots contain only backend, provider, credential-variable, and stack-call configuration. Resource composition is shared in `main/stacks/eve` and `main/stacks/iperf`. The images root owns the dedicated `dev-use-images-rg`, Azure Compute Gallery, and stable `eve-ng` image definition; Packer owns the immutable versions beneath that definition. Reusable Azure resource modules are pinned to `v0.1.1` of the private `TF/azure-terraform-modules` Azure Repos repository.
 
-The previous `main/dev/use/eve` and `main/dev/use/iperf` roots have been retired. Their existing state keys are reused by the new roots, and each `moved.tf` maps the prior module addresses into its stack.
+The environment roots use separate remote-state keys and are intended for clean deployments without legacy state migration.
 
 ## Prerequisites
 
@@ -33,11 +35,15 @@ The previous `main/dev/use/eve` and `main/dev/use/iperf` roots have been retired
 
 The Azure DevOps variable group `dostest01kv01` must expose the existing service-principal and backend secrets plus `repo-access`, a read-only Azure Repos PAT. The pipeline passes that PAT to Git only during `terraform init`.
 
-The EVE image pipeline also requires these pinned-build values in that variable group:
+The EVE Packer pipeline accepts `ubuntuImageVersion` and `eveImageVersion` as non-secret runtime parameters. The EVE deployment pipeline accepts the existing `eveImageVersion` to deploy. Resolve and review the exact Ubuntu version with `az vm image list --location eastus --publisher Canonical --offer 0001-com-ubuntu-server-jammy --sku 22_04-lts-gen2 --all`; do not build with the `SET_EXACT_VERSION` placeholder.
 
-- `ubuntu-image-version`: exact Canonical Ubuntu 22.04 Gen2 Marketplace version
+## Image publication workflow
 
-Resolve and review the Ubuntu version with `az vm image list --location eastus --publisher Canonical --offer 0001-com-ubuntu-server-jammy --sku 22_04-lts-gen2 --all`.
+Use this order:
+
+1. Apply the images root to create the stable `eve-ng` definition.
+2. Run `main/pipelines/eve_packer.yml` with an exact Ubuntu version and a new EVE version; Packer publishes that gallery version directly.
+3. Run `main/pipelines/eve_dev.yml` with the same EVE version; Terraform deploys EVE-NG from that exact gallery version.
 
 ## Run locally
 
@@ -55,7 +61,7 @@ terraform plan \
   -var="spn-tenant-id=<tenant-id>"
 ```
 
-Review the first plan carefully. The included moved blocks cover module nesting and image modules, but the shared module release also has newer collection-shaped inputs that can change nested resource addresses.
+Review every plan carefully before applying it.
 
 ## Updating Git modules
 
