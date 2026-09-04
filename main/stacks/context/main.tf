@@ -11,14 +11,14 @@ locals {
 
   cidr_all = ["10.0.0.0/21"]
   cidr_region = {
-    use_transit = [cidrsubnet(local.cidr_all[0], 1, 0)]
-    use_vnet    = [cidrsubnet(local.cidr_all[0], 3, 4)]
+    use_transit = [cidrsubnet(local.cidr_all[0], 1, 0)] # 1st of the /22 from /21
+    use_vnet    = [cidrsubnet(local.cidr_all[0], 3, 4)] # 4th of the /24 from /21
   }
   cidr_vnet = {
     use = {
       vnet_vhub = [cidrsubnet(local.cidr_region.use_transit[0], 1, 0)]
       vnet_er   = [cidrsubnet(local.cidr_region.use_transit[0], 2, 2)]
-      vnet_lab  = [cidrsubnet(local.cidr_region.use_vnet[0], 1, 0)]
+      vnet_lab  = [cidrsubnet(local.cidr_region.use_vnet[0], 1, 0)] # 1st /25
     }
   }
   cidr_subnet = {
@@ -29,8 +29,9 @@ locals {
         er_sec      = [cidrsubnet(local.cidr_vnet.use.vnet_er[0], 6, 1)]
       }
       vnet_lab = {
-        subnet_lab_vm      = [cidrsubnet(local.cidr_vnet.use.vnet_lab[0], 2, 0)]
-        subnet_lab_bastion = [cidrsubnet(local.cidr_vnet.use.vnet_lab[0], 1, 1)]
+        subnet_lab_vm          = [cidrsubnet(local.cidr_vnet.use.vnet_lab[0], 2, 0)] # 1st /27 from the /25
+        subnet_lab_gw          = [cidrsubnet(local.cidr_vnet.use.vnet_lab[0], 2, 1)] # 2nd /27 from the /25
+        subnet_lab_nested_mgmt = [cidrsubnet(local.cidr_vnet.use.vnet_lab[0], 1, 1)] # 2nd /26 from the /25
       }
     }
   }

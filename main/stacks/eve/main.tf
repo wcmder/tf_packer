@@ -7,7 +7,7 @@ module "context" {
 }
 
 module "rsg" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rsg?ref=v0.1.3"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rsg?ref=v0.1.4"
 
   common = module.context.common
   rsg = {
@@ -25,7 +25,7 @@ locals {
 }
 
 module "vnet" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vnet?ref=v0.1.3"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vnet?ref=v0.1.4"
   common = local.common
   vnet = {
     vm-vnet = {
@@ -36,40 +36,34 @@ module "vnet" {
 }
 
 module "subnet_lab" {
-  source    = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/subnet?ref=v0.1.3"
+  source    = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/subnet?ref=v0.1.4"
   common    = local.common
   vnet_name = module.vnet.vnet_name_name["vm-vnet"]
   subnet = {
     vm-subnet = {
       cidr_list = local.common.cidr.subnet.use.vnet_lab.subnet_lab_vm
     }
-    AzureBastionSubnet = {
-      cidr_list = local.common.cidr.subnet.use.vnet_lab.subnet_lab_bastion
+    GatewaySubnet = {
+      cidr_list = local.common.cidr.subnet.use.vnet_lab.subnet_lab_gw
     }
   }
 }
 
-module "bastion_nsg" {
-  source   = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_bas?ref=v0.1.3"
-  common   = local.common
-  nsg_name = "bas-nsg"
-}
-
 module "eveng_nsg" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg?ref=v0.1.3"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg?ref=v0.1.4"
   common = local.common
   nsg = {
     eveng_nsg = {
       security_rule = {
         allow_wder = {
-          priority          = 100
-          direction         = "Inbound"
-          access            = "Allow"
-          protocol          = "Tcp"
-          src_port_range    = "*"
-          dst_port_range    = "*"
-          src_addr_prefixes = ["72.83.43.168", "104.28.228.78"]
-          dst_addr_prefix   = "*"
+          priority        = 100
+          direction       = "Inbound"
+          access          = "Allow"
+          protocol        = "Tcp"
+          src_port_range  = "*"
+          dst_port_range  = "*"
+          src_addr_prefix = "*"
+          dst_addr_prefix = "*"
         }
       }
     }
@@ -77,12 +71,8 @@ module "eveng_nsg" {
 }
 
 module "nsg_assc" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_subnet_assc?ref=v0.1.3"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_subnet_assc?ref=v0.1.4"
   nsg_subnet = {
-    bas = {
-      nsg_id    = module.bastion_nsg.nsg_name_id["bas-nsg"]
-      subnet_id = module.subnet_lab.subnet_name_id["AzureBastionSubnet"]
-    }
     vm = {
       nsg_id    = module.eveng_nsg.nsg_name_id["eveng_nsg"]
       subnet_id = module.subnet_lab.subnet_name_id["vm-subnet"]
@@ -90,13 +80,71 @@ module "nsg_assc" {
   }
 }
 
-module "eveng1_pip" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/pip?ref=v0.1.3"
+module "vngw_pip" {
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/pip?ref=v0.1.4"
   common = local.common
   pip = {
-    vm-vnet-eveng1-pip = {}
+    vngw-pip = {}
   }
 }
+
+module "vngw" {
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vngw?ref=v0.1.4"
+  common = local.common
+  name   = "vngw"
+
+  type          = "Vpn"
+  vpn_type      = "RouteBased"
+  sku           = "VpnGw1"
+  generation    = "Generation2"
+  active_active = false
+  enable_bgp    = false
+
+  ip_configuration = {
+    default = {
+      gw_pip_id = module.vngw_pip.pip_name_id["vngw-pip"]
+      method    = "Dynamic"
+      subnet_id = module.subnet_lab.subnet_name_id["GatewaySubnet"]
+    }
+  }
+
+  vpn_client_configuration = {
+    address_space        = ["172.16.0.0/24"]
+    aad_tenant           = "https://login.microsoftonline.com/${var.vpn_client_tenant_id}"
+    aad_audience         = "c632b3df-fb67-4d84-bdcf-b95ad541b5c8"
+    aad_issuer           = "https://sts.windows.net/${var.vpn_client_tenant_id}/"
+    vpn_auth_types       = ["AAD"]
+    vpn_client_protocols = ["OpenVPN"]
+  }
+}
+
+module "nested_mgmt_rtb" {
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rtb?ref=v0.1.4"
+  common = local.common
+  rtb = {
+    nested-mgmt-rtb = {
+      bgp_route_propagation_enabled = true
+      route = {
+        nested-mgmt = {
+          prefix        = local.common.cidr.subnet.use.vnet_lab.subnet_lab_nested_mgmt[0]
+          next_hop_type = "VirtualAppliance"
+          next_hop_ip   = module.eve-ng1-vm.private_ip_address
+        }
+      }
+    }
+  }
+}
+
+module "nested_mgmt_rtb_assc" {
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rtb_subnet_assc?ref=v0.1.4"
+  rtb_subnet = {
+    gateway = {
+      rtb_id    = module.nested_mgmt_rtb.rtb_name_id["nested-mgmt-rtb"]
+      subnet_id = module.subnet_lab.subnet_name_id["GatewaySubnet"]
+    }
+  }
+}
+
 
 data "azurerm_shared_image_version" "eveng_runtime" {
   name                = var.eve_image_version
@@ -106,14 +154,14 @@ data "azurerm_shared_image_version" "eveng_runtime" {
 }
 
 module "eve-ng1-vm" {
-  source               = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.3"
-  common               = local.common
-  vm_name              = "eveng1-vm"
-  nic_name             = "eveng1-nic"
-  ip_name              = "eveng1-ip"
-  subnet_id            = module.subnet_lab.subnet_name_id["vm-subnet"]
-  pip_addr_id          = module.eveng1_pip.pip_name_id["vm-vnet-eveng1-pip"]
-  vm_size              = "Standard_D8s_v5"
-  storage_account_type = "StandardSSD_LRS"
-  src_img_id           = data.azurerm_shared_image_version.eveng_runtime.id
+  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.4"
+  common                = local.common
+  vm_name               = "eveng1-vm"
+  nic_name              = "eveng1-nic"
+  ip_name               = "eveng1-ip"
+  subnet_id             = module.subnet_lab.subnet_name_id["vm-subnet"]
+  ip_forwarding_enabled = true
+  vm_size               = "Standard_D8s_v5"
+  storage_account_type  = "StandardSSD_LRS"
+  src_img_id            = data.azurerm_shared_image_version.eveng_runtime.id
 }

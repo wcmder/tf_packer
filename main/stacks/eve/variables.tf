@@ -40,3 +40,8 @@ variable "image_resource_group_name" {
   description = "Resource group containing the Azure Compute Gallery."
   default     = "dev-use-images-rg"
 }
+
+variable "vpn_client_tenant_id" {
+  type        = string
+  description = "Microsoft Entra tenant ID used to authenticate Point-to-Site VPN clients."
+}
