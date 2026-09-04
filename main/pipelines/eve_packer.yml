@@ -3,7 +3,7 @@ parameters:
   - name: azureEnvironment
     displayName: Azure DevOps deployment environment
     type: string
-    default: dev
+    default: dev_packer
   - name: ubuntuImageVersion
     displayName: Exact Ubuntu 22.04 Gen2 Marketplace version
     type: string

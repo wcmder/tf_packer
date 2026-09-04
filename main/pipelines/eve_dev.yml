@@ -3,7 +3,7 @@ parameters:
   - name: azureEnvironment
     displayName: Azure DevOps deployment environment
     type: string
-    default: dev
+    default: dev_packer
   - name: eveImageVersion
     displayName: Existing EVE gallery image version to deploy
     type: string

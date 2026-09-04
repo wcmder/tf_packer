@@ -43,9 +43,76 @@ The EVE and iPerf Packer pipelines accept an exact Ubuntu version and a new appl
 
 Use this order:
 
-1. Apply the images root to create the stable `eve-ng` and `iperf` definitions.
+1. Run `images_dev.yml` to create the `dev-use-images-rg` resource group, `image_gallery` Azure Compute Gallery, and stable `eve-ng` and `iperf` image definitions.
 2. Run the applicable Packer pipeline with an exact Ubuntu version and a new application version; Packer publishes that gallery version directly.
 3. Run the matching deployment pipeline with the same application version; Terraform deploys the VM from that exact gallery version.
+
+### Select the manual pipeline inputs
+
+First, authenticate Azure CLI and select the development subscription:
+
+```bash
+az login
+az account set \
+  --subscription a4b57fa5-2f2c-4732-b452-32be7d1724b1
+```
+
+When manually running `eve_packer.yml` or `iperf_packer.yml`, select the branch containing the Packer configuration you want to build. Normally this is `main`; select a feature branch only when testing unmerged changes. The pipeline YAML is loaded from the selected branch.
+
+Find recent exact Ubuntu Marketplace versions matching the Packer source image:
+
+```bash
+az vm image list \
+  --location eastus \
+  --publisher Canonical \
+  --offer 0001-com-ubuntu-server-jammy \
+  --sku 22_04-lts-gen2 \
+  --all \
+  --query "reverse(sort_by([], &version))[:10].version" \
+  --output table
+```
+
+Copy one complete version into `ubuntuImageVersion`. Do not enter `latest` or leave the `SET_EXACT_VERSION` placeholder. To verify a selected version before building:
+
+```bash
+az vm image show \
+  --location eastus \
+  --publisher Canonical \
+  --offer 0001-com-ubuntu-server-jammy \
+  --sku 22_04-lts-gen2 \
+  --version <exact-ubuntu-version> \
+  --output table
+```
+
+The EVE or iPerf gallery version is assigned by this project and must have a numeric `major.minor.patch` format, such as `0.1.0` or `0.1.1`. Check which versions already exist before selecting a new one:
+
+```bash
+# EVE-NG versions
+az sig image-version list \
+  --resource-group dev-use-images-rg \
+  --gallery-name image_gallery \
+  --gallery-image-definition eve-ng \
+  --query "[].name" \
+  --output table
+
+# iPerf versions
+az sig image-version list \
+  --resource-group dev-use-images-rg \
+  --gallery-name image_gallery \
+  --gallery-image-definition iperf \
+  --query "[].name" \
+  --output table
+```
+
+Use a version that does not already exist. The pipelines deliberately do not replace existing gallery versions. For example, an EVE build could use:
+
+```text
+Branch:              main
+ubuntuImageVersion:  <exact-version-returned-by-az-cli>
+eveImageVersion:     0.1.0
+```
+
+After the Packer pipeline succeeds, run `eve_dev.yml` with the same `eveImageVersion`, or `iperf_dev.yml` with the same `iperfImageVersion`, to deploy a VM from that exact gallery version.
 
 ## Run locally
 

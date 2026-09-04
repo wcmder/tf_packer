@@ -3,7 +3,7 @@ parameters:
   - name: azureEnvironment
     displayName: Azure DevOps deployment environment
     type: string
-    default: dev
+    default: dev_packer
 
 variables:
   - group: dostest01kv01
