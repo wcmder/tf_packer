@@ -7,7 +7,7 @@ module "context" {
 }
 
 module "rsg" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rsg?ref=v0.1.4"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rsg?ref=v0.1.5"
 
   common = module.context.common
   rsg = {
@@ -25,7 +25,7 @@ locals {
 }
 
 module "vnet" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vnet?ref=v0.1.4"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vnet?ref=v0.1.5"
   common = local.common
   vnet = {
     vm-vnet = {
@@ -36,7 +36,7 @@ module "vnet" {
 }
 
 module "subnet_lab" {
-  source    = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/subnet?ref=v0.1.4"
+  source    = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/subnet?ref=v0.1.5"
   common    = local.common
   vnet_name = module.vnet.vnet_name_name["vm-vnet"]
   subnet = {
@@ -50,7 +50,7 @@ module "subnet_lab" {
 }
 
 module "eveng_nsg" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg?ref=v0.1.4"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg?ref=v0.1.5"
   common = local.common
   nsg = {
     eveng_nsg = {
@@ -71,7 +71,7 @@ module "eveng_nsg" {
 }
 
 module "nsg_assc" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_subnet_assc?ref=v0.1.4"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_subnet_assc?ref=v0.1.5"
   nsg_subnet = {
     vm = {
       nsg_id    = module.eveng_nsg.nsg_name_id["eveng_nsg"]
@@ -81,7 +81,7 @@ module "nsg_assc" {
 }
 
 module "vngw_pip" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/pip?ref=v0.1.4"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/pip?ref=v0.1.5"
   common = local.common
   pip = {
     vngw-pip = {}
@@ -89,13 +89,13 @@ module "vngw_pip" {
 }
 
 module "vngw" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vngw?ref=v0.1.4"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vngw?ref=v0.1.5"
   common = local.common
   name   = "vngw"
 
   type          = "Vpn"
   vpn_type      = "RouteBased"
-  sku           = "VpnGw1"
+  sku           = "VpnGw2"
   generation    = "Generation2"
   active_active = false
   enable_bgp    = false
@@ -119,7 +119,7 @@ module "vngw" {
 }
 
 module "nested_mgmt_rtb" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rtb?ref=v0.1.4"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rtb?ref=v0.1.5"
   common = local.common
   rtb = {
     nested-mgmt-rtb = {
@@ -136,7 +136,7 @@ module "nested_mgmt_rtb" {
 }
 
 module "nested_mgmt_rtb_assc" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rtb_subnet_assc?ref=v0.1.4"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rtb_subnet_assc?ref=v0.1.5"
   rtb_subnet = {
     gateway = {
       rtb_id    = module.nested_mgmt_rtb.rtb_name_id["nested-mgmt-rtb"]
@@ -154,7 +154,7 @@ data "azurerm_shared_image_version" "eveng_runtime" {
 }
 
 module "eve-ng1-vm" {
-  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.4"
+  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.5"
   common                = local.common
   vm_name               = "eveng1-vm"
   nic_name              = "eveng1-nic"
