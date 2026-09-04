@@ -21,7 +21,6 @@ trigger:
     include:
       - main/env/dev/use/images/**
       - main/stacks/images/**
-      - main/stacks/context/**
 
 stages:
   - stage: Build
