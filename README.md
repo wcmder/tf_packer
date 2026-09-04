@@ -49,12 +49,21 @@ Use this order:
 
 ### Select the manual pipeline inputs
 
-First, authenticate Azure CLI and select the development subscription:
+First, clear any stale Azure CLI account cache, authenticate against the correct tenant with device-code flow, and select the development subscription. The scope value must be the plain URL shown below, without Markdown link brackets or parentheses:
 
 ```bash
-az login
+az account clear
+az login \
+  --tenant e997af8c-9bfb-4955-b553-23a019d94051 \
+  --use-device-code \
+  --scope 'https://management.core.windows.net//.default'
+
 az account set \
   --subscription a4b57fa5-2f2c-4732-b452-32be7d1724b1
+
+az account show \
+  --query '{user:user.name, subscription:name, subscriptionId:id, tenantId:tenantId}' \
+  --output table
 ```
 
 When manually running `eve_packer.yml` or `iperf_packer.yml`, select the branch containing the Packer configuration you want to build. Normally this is `main`; select a feature branch only when testing unmerged changes. The pipeline YAML is loaded from the selected branch.
