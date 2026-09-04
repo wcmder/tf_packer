@@ -37,7 +37,7 @@ module "sig_img_eve" {
   img_name  = "eve-ng"
   sig_name  = module.sig.sig_name
   os_type   = "Linux"
-  publisher = "wder"
+  publisher = "dkn"
   offer     = "UbuntuServer"
   sku       = "jammy-eve-ng"
 
@@ -51,7 +51,7 @@ module "sig_img_iperf" {
   img_name  = "iperf"
   sig_name  = module.sig.sig_name
   os_type   = "Linux"
-  publisher = "wder"
+  publisher = "dkn"
   offer     = "UbuntuServer"
   sku       = "jammy-iperf"
 
