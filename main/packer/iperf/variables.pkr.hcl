@@ -4,7 +4,8 @@ variable "spn-client-id" {
 }
 
 variable "spn-client-secret" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "spn-tenant-id" {
@@ -24,4 +25,19 @@ variable "demo_subscription_id" {
 variable "dev_subscription_id" {
   type    = string
   default = "a4b57fa5-2f2c-4732-b452-32be7d1724b1"
+}
+
+variable "ubuntu_image_version" {
+  type        = string
+  description = "Exact Azure Marketplace version of Canonical Ubuntu 22.04 Gen2."
+}
+
+variable "iperf_image_version" {
+  type        = string
+  description = "Immutable Azure Compute Gallery version to publish."
+
+  validation {
+    condition     = can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+$", var.iperf_image_version))
+    error_message = "The iPerf image version must use numeric major.minor.patch format."
+  }
 }

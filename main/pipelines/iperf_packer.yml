@@ -1,4 +1,14 @@
 ---
+parameters:
+  - name: ubuntuImageVersion
+    displayName: Exact Ubuntu 22.04 Gen2 Marketplace version
+    type: string
+    default: "SET_EXACT_VERSION"
+  - name: iperfImageVersion
+    displayName: New iPerf gallery image version
+    type: string
+    default: "0.1.0"
+
 variables:
   # variable group name in DevOps
   - group: dostest01kv01
@@ -10,14 +20,10 @@ variables:
   # spn
   - name: spn
     value: "Azure SPN devops-spn"
+  - name: PACKER_VERSION
+    value: "1.14.3"
 ###
-trigger:
-  branches:
-    include:
-      - main
-  paths:
-    include:
-      - main/packer/iperf/**
+trigger: none
 stages:
   - stage: Build
     jobs:
@@ -29,7 +35,9 @@ stages:
           - checkout: self
             fetchDepth: 1
           - task: riezebosch.Packer.PackerTool.PackerTool@0
-            displayName: "Use Latest Packer "
+            displayName: Use Packer $(PACKER_VERSION)
+            inputs:
+              version: $(PACKER_VERSION)
           - task: CmdLine@2
             displayName: Packer version
             inputs:
@@ -41,7 +49,31 @@ stages:
               workingDirectory: $(parentpath)/$(dir)
               script: packer init ./
           - task: CmdLine@2
+            displayName: Packer format and validate
+            inputs:
+              workingDirectory: $(parentpath)/$(dir)
+              script: |
+                set -euo pipefail
+                if [ '${{ parameters.ubuntuImageVersion }}' = 'SET_EXACT_VERSION' ]; then
+                  echo 'Select an exact Ubuntu Marketplace version when starting the pipeline.'
+                  exit 1
+                fi
+                packer fmt -check ./
+                packer validate ./
+            env:
+              PKR_VAR_spn-client-id: $(dostest-spn-id)
+              PKR_VAR_spn-client-secret: $(dostest-spn-secret)
+              PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
+              PKR_VAR_ubuntu_image_version: ${{ parameters.ubuntuImageVersion }}
+              PKR_VAR_iperf_image_version: ${{ parameters.iperfImageVersion }}
+          - task: CmdLine@2
             displayName: Packer build
             inputs:
               workingDirectory: $(parentpath)/$(dir)
-              script: packer build -var "spn-client-id=$(dostest-spn-id)" -var "spn-client-secret=$(dostest-spn-secret)" -var "spn-tenant-id=$(dostest-tenant-id)" -on-error=cleanup -force ./
+              script: packer build -on-error=cleanup ./
+            env:
+              PKR_VAR_spn-client-id: $(dostest-spn-id)
+              PKR_VAR_spn-client-secret: $(dostest-spn-secret)
+              PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
+              PKR_VAR_ubuntu_image_version: ${{ parameters.ubuntuImageVersion }}
+              PKR_VAR_iperf_image_version: ${{ parameters.iperfImageVersion }}

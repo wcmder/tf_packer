@@ -98,9 +98,11 @@ module "iperf_pip" {
   }
 }
 
-data "azurerm_image" "iperf" {
-  name                = "iperf-0.1.2"
-  resource_group_name = local.common.rsg_name
+data "azurerm_shared_image_version" "iperf" {
+  name                = var.iperf_image_version
+  image_name          = "iperf"
+  gallery_name        = "image_gallery"
+  resource_group_name = var.image_resource_group_name
 }
 
 module "iperf-vm" {
@@ -112,5 +114,5 @@ module "iperf-vm" {
   subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
   pip_addr_id = module.iperf_pip.pip_name_id["vm-vnet-iperf-pip"]
   vm_size     = "Standard_D8s_v3"
-  src_img_id  = data.azurerm_image.iperf.id
+  src_img_id  = data.azurerm_shared_image_version.iperf.id
 }
