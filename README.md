@@ -22,7 +22,7 @@ main/
 └── modules/               # Legacy local modules; no longer referenced
 ```
 
-The EVE-NG and iPerf environment roots contain only backend, provider, credential-variable, and stack-call configuration. Resource composition is shared in `main/stacks/eve` and `main/stacks/iperf`. The images root owns the dedicated `dev-use-images-rg`, Azure Compute Gallery, and stable `eve-ng` and `iperf` image definitions; Packer owns the immutable versions beneath those definitions. Reusable Azure resource modules are pinned to `v0.1.1` of the private `TF/azure-terraform-modules` Azure Repos repository.
+The EVE-NG and iPerf environment roots contain only backend, provider, credential-variable, and stack-call configuration. Resource composition is shared in `main/stacks/eve` and `main/stacks/iperf`. The images root owns the dedicated `dev-use-images-rg`, Azure Compute Gallery, and stable `eve-ng` and `iperf` image definitions; Packer owns the immutable versions beneath those definitions. Reusable Azure resource modules are pinned to `v0.1.3` of the private `TF/azure-terraform-modules` Azure Repos repository.
 
 The environment roots use separate remote-state keys and are intended for clean deployments without legacy state migration.
 
@@ -143,4 +143,4 @@ Review every plan carefully before applying it.
 
 ## Updating Git modules
 
-Module source addresses are static and version-pinned. To upgrade, replace every `?ref=v0.1.1` under `main/stacks/eve` and `main/stacks/iperf` with a newly published immutable tag, run `terraform init -upgrade`, and review the full plans before applying.
+Module source addresses are static and version-pinned. To upgrade a module, replace its existing `?ref=<tag>` with a newly published immutable tag, run `terraform init -upgrade`, and review the full plans before applying.

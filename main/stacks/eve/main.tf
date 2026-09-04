@@ -7,7 +7,7 @@ module "context" {
 }
 
 module "rsg" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rsg?ref=v0.1.1"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rsg?ref=v0.1.3"
 
   common = module.context.common
   rsg = {
@@ -25,7 +25,7 @@ locals {
 }
 
 module "vnet" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vnet?ref=v0.1.1"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vnet?ref=v0.1.3"
   common = local.common
   vnet = {
     vm-vnet = {
@@ -36,7 +36,7 @@ module "vnet" {
 }
 
 module "subnet_lab" {
-  source    = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/subnet?ref=v0.1.1"
+  source    = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/subnet?ref=v0.1.3"
   common    = local.common
   vnet_name = module.vnet.vnet_name_name["vm-vnet"]
   subnet = {
@@ -50,13 +50,13 @@ module "subnet_lab" {
 }
 
 module "bastion_nsg" {
-  source   = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_bas?ref=v0.1.1"
+  source   = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_bas?ref=v0.1.3"
   common   = local.common
   nsg_name = "bas-nsg"
 }
 
 module "eveng_nsg" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg?ref=v0.1.1"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg?ref=v0.1.3"
   common = local.common
   nsg = {
     eveng_nsg = {
@@ -77,7 +77,7 @@ module "eveng_nsg" {
 }
 
 module "nsg_assc" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_subnet_assc?ref=v0.1.1"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_subnet_assc?ref=v0.1.3"
   nsg_subnet = {
     bas = {
       nsg_id    = module.bastion_nsg.nsg_name_id["bas-nsg"]
@@ -91,7 +91,7 @@ module "nsg_assc" {
 }
 
 module "eveng1_pip" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/pip?ref=v0.1.1"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/pip?ref=v0.1.3"
   common = local.common
   pip = {
     vm-vnet-eveng1-pip = {}
@@ -106,13 +106,14 @@ data "azurerm_shared_image_version" "eveng_runtime" {
 }
 
 module "eve-ng1-vm" {
-  source      = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.1"
-  common      = local.common
-  vm_name     = "eveng1-vm"
-  nic_name    = "eveng1-nic"
-  ip_name     = "eveng1-ip"
-  subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
-  pip_addr_id = module.eveng1_pip.pip_name_id["vm-vnet-eveng1-pip"]
-  vm_size     = "Standard_D8s_v5"
-  src_img_id  = data.azurerm_shared_image_version.eveng_runtime.id
+  source               = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.3"
+  common               = local.common
+  vm_name              = "eveng1-vm"
+  nic_name             = "eveng1-nic"
+  ip_name              = "eveng1-ip"
+  subnet_id            = module.subnet_lab.subnet_name_id["vm-subnet"]
+  pip_addr_id          = module.eveng1_pip.pip_name_id["vm-vnet-eveng1-pip"]
+  vm_size              = "Standard_D8s_v5"
+  storage_account_type = "StandardSSD_LRS"
+  src_img_id           = data.azurerm_shared_image_version.eveng_runtime.id
 }
