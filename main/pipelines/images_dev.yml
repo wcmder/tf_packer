@@ -3,7 +3,7 @@ parameters:
   - name: azureEnvironment
     displayName: Azure DevOps deployment environment
     type: string
-    default: tf_packer
+    default: dev
 
 variables:
   - group: dostest01kv01
@@ -126,4 +126,3 @@ stages:
                     TF_VAR_spn-client-id: $(dostest-spn-id)
                     TF_VAR_spn-client-secret: $(dostest-spn-secret)
                     TF_VAR_spn-tenant-id: $(dostest-tenant-id)
-

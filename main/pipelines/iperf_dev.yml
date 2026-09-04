@@ -3,7 +3,7 @@ parameters:
   - name: azureEnvironment
     displayName: Azure DevOps deployment environment
     type: string
-    default: tf_packer
+    default: dev
   - name: iperfImageVersion
     displayName: Existing iPerf gallery image version to deploy
     type: string
