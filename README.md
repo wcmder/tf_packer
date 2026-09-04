@@ -141,6 +141,36 @@ terraform plan \
 
 Review every plan carefully before applying it.
 
+## Stop and start the EVE-NG lab VM
+
+Deallocate the EVE-NG VM when the lab is idle to stop its compute charges:
+
+```bash
+az vm deallocate \
+  --resource-group dev-use-lab-rg \
+  --name dev-use-lab-eveng1-vm
+```
+
+Start the VM again before using the lab:
+
+```bash
+az vm start \
+  --resource-group dev-use-lab-rg \
+  --name dev-use-lab-eveng1-vm
+```
+
+Check its current power state:
+
+```bash
+az vm get-instance-view \
+  --resource-group dev-use-lab-rg \
+  --name dev-use-lab-eveng1-vm \
+  --query "instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus | [0]" \
+  --output tsv
+```
+
+Shutting down EVE-NG from inside the guest operating system might leave the Azure VM allocated. Use `az vm deallocate` and confirm the state is `VM deallocated` to stop compute billing. Managed disks, public IP addresses, and the VPN gateway continue to incur charges while the VM is deallocated.
+
 ## Updating Git modules
 
 Module source addresses are static and version-pinned. To upgrade a module, replace its existing `?ref=<tag>` with a newly published immutable tag, run `terraform init -upgrade`, and review the full plans before applying.
