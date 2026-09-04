@@ -84,7 +84,9 @@ module "vngw_pip" {
   source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/pip?ref=v0.1.5"
   common = local.common
   pip = {
-    vngw-pip = {}
+    vngw-pip = {
+      zones = ["1", "2", "3"]
+    }
   }
 }
 
@@ -95,7 +97,7 @@ module "vngw" {
 
   type          = "Vpn"
   vpn_type      = "RouteBased"
-  sku           = "VpnGw2"
+  sku           = "VpnGw2AZ"
   generation    = "Generation2"
   active_active = false
   enable_bgp    = false
