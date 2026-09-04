@@ -1,5 +1,9 @@
 ---
 parameters:
+  - name: azureEnvironment
+    displayName: Azure DevOps deployment environment
+    type: string
+    default: tf_packer
   - name: ubuntuImageVersion
     displayName: Exact Ubuntu 22.04 Gen2 Marketplace version
     type: string
@@ -10,70 +14,69 @@ parameters:
     default: "0.1.0"
 
 variables:
-  # variable group name in DevOps
   - group: dostest01kv01
-  # Directory to run tasks
-  - name: parentpath
-    value: main
-  - name: dir
-    value: packer/iperf
-  # spn
-  - name: spn
-    value: "Azure SPN devops-spn"
   - name: PACKER_VERSION
     value: "1.14.3"
-###
+  - name: PACKER_ROOT
+    value: main/packer/iperf
+
 trigger: none
+
 stages:
   - stage: Build
+    displayName: Build and publish iPerf image
     jobs:
-      - job: Packer
-        displayName:
+      - deployment: Packer
+        displayName: Build and publish iPerf image
+        environment: ${{ parameters.azureEnvironment }}
         pool:
           vmImage: ubuntu-latest
-        steps:
-          - checkout: self
-            fetchDepth: 1
-          - task: riezebosch.Packer.PackerTool.PackerTool@0
-            displayName: Use Packer $(PACKER_VERSION)
-            inputs:
-              version: $(PACKER_VERSION)
-          - task: CmdLine@2
-            displayName: Packer version
-            inputs:
-              workingDirectory: $(parentpath)/$(dir)
-              script: packer version
-          - task: CmdLine@2
-            displayName: Packer init
-            inputs:
-              workingDirectory: $(parentpath)/$(dir)
-              script: packer init ./
-          - task: CmdLine@2
-            displayName: Packer format and validate
-            inputs:
-              workingDirectory: $(parentpath)/$(dir)
-              script: |
-                set -euo pipefail
-                if [ '${{ parameters.ubuntuImageVersion }}' = 'SET_EXACT_VERSION' ]; then
-                  echo 'Select an exact Ubuntu Marketplace version when starting the pipeline.'
-                  exit 1
-                fi
-                packer fmt -check ./
-                packer validate ./
-            env:
-              PKR_VAR_spn-client-id: $(dostest-spn-id)
-              PKR_VAR_spn-client-secret: $(dostest-spn-secret)
-              PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
-              PKR_VAR_ubuntu_image_version: ${{ parameters.ubuntuImageVersion }}
-              PKR_VAR_iperf_image_version: ${{ parameters.iperfImageVersion }}
-          - task: CmdLine@2
-            displayName: Packer build
-            inputs:
-              workingDirectory: $(parentpath)/$(dir)
-              script: packer build -on-error=cleanup ./
-            env:
-              PKR_VAR_spn-client-id: $(dostest-spn-id)
-              PKR_VAR_spn-client-secret: $(dostest-spn-secret)
-              PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
-              PKR_VAR_ubuntu_image_version: ${{ parameters.ubuntuImageVersion }}
-              PKR_VAR_iperf_image_version: ${{ parameters.iperfImageVersion }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  fetchDepth: 1
+                - task: riezebosch.Packer.PackerTool.PackerTool@0
+                  displayName: Use Packer $(PACKER_VERSION)
+                  inputs:
+                    version: $(PACKER_VERSION)
+                - task: CmdLine@2
+                  displayName: Packer version
+                  inputs:
+                    workingDirectory: $(PACKER_ROOT)
+                    script: packer version
+                - task: CmdLine@2
+                  displayName: Packer init
+                  inputs:
+                    workingDirectory: $(PACKER_ROOT)
+                    script: packer init ./
+                - task: CmdLine@2
+                  displayName: Packer format and validate
+                  inputs:
+                    workingDirectory: $(PACKER_ROOT)
+                    script: |
+                      set -euo pipefail
+                      if [ '${{ parameters.ubuntuImageVersion }}' = 'SET_EXACT_VERSION' ]; then
+                        echo 'Select an exact Ubuntu Marketplace version when starting the pipeline.'
+                        exit 1
+                      fi
+                      packer fmt -check ./
+                      packer validate ./
+                  env:
+                    PKR_VAR_spn-client-id: $(dostest-spn-id)
+                    PKR_VAR_spn-client-secret: $(dostest-spn-secret)
+                    PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
+                    PKR_VAR_ubuntu_image_version: ${{ parameters.ubuntuImageVersion }}
+                    PKR_VAR_iperf_image_version: ${{ parameters.iperfImageVersion }}
+                - task: CmdLine@2
+                  displayName: Packer build
+                  inputs:
+                    workingDirectory: $(PACKER_ROOT)
+                    script: packer build -on-error=cleanup ./
+                  env:
+                    PKR_VAR_spn-client-id: $(dostest-spn-id)
+                    PKR_VAR_spn-client-secret: $(dostest-spn-secret)
+                    PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
+                    PKR_VAR_ubuntu_image_version: ${{ parameters.ubuntuImageVersion }}
+                    PKR_VAR_iperf_image_version: ${{ parameters.iperfImageVersion }}

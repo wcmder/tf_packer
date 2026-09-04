@@ -1,4 +1,10 @@
 ---
+parameters:
+  - name: azureEnvironment
+    displayName: Azure DevOps deployment environment
+    type: string
+    default: tf_packer
+
 variables:
   - group: dostest01kv01
   - name: TF_VERSION
@@ -74,7 +80,7 @@ stages:
     dependsOn: Build
     jobs:
       - deployment: terraform_apply
-        environment: tf_packer
+        environment: ${{ parameters.azureEnvironment }}
         pool:
           vmImage: ubuntu-latest
         strategy:
@@ -120,5 +126,4 @@ stages:
                     TF_VAR_spn-client-id: $(dostest-spn-id)
                     TF_VAR_spn-client-secret: $(dostest-spn-secret)
                     TF_VAR_spn-tenant-id: $(dostest-tenant-id)
-
 

@@ -1,5 +1,9 @@
 ---
 parameters:
+  - name: azureEnvironment
+    displayName: Azure DevOps deployment environment
+    type: string
+    default: tf_packer
   - name: eveImageVersion
     displayName: Existing EVE gallery image version to deploy
     type: string
@@ -81,7 +85,7 @@ stages:
     dependsOn: Build
     jobs:
       - deployment: terraform_apply
-        environment: tf_packer
+        environment: ${{ parameters.azureEnvironment }}
         pool:
           vmImage: ubuntu-latest
         strategy:
