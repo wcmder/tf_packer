@@ -33,7 +33,9 @@ The environment roots use separate remote-state keys and are intended for clean 
 - Access to the remote-state storage account
 - Read access to `TF/azure-terraform-modules`
 
-The Azure DevOps variable group `dostest01kv01` must expose the existing service-principal and backend secrets plus `repo-access`, a read-only Azure Repos PAT. The pipeline passes that PAT to Git only during `terraform init`.
+The Terraform and Packer pipelines authenticate to Azure with the `sp-test` service principal. The Azure DevOps variable group `dostest01kv01` must expose the `sp-test` client ID and secret through `dostest-spn-id` and `dostest-spn-secret`, the tenant ID through `dostest-tenant-id`, the backend credentials, and `repo-access`, a read-only Azure Repos PAT. The pipeline passes that PAT to Git only during `terraform init`.
+
+`sp-test` requires the Contributor role on the development subscription `a4b57fa5-2f2c-4732-b452-32be7d1724b1`. This allows Terraform to create resource groups and infrastructure and allows Packer to create temporary build resources and publish Azure Compute Gallery versions. It does not grant permission to create Azure role assignments.
 
 The EVE Packer pipeline accepts `ubuntuImageVersion` and `eveImageVersion` as non-secret runtime parameters. The EVE deployment pipeline accepts the existing `eveImageVersion` to deploy. Resolve and review the exact Ubuntu version with `az vm image list --location eastus --publisher Canonical --offer 0001-com-ubuntu-server-jammy --sku 22_04-lts-gen2 --all`; do not build with the `SET_EXACT_VERSION` placeholder.
 
