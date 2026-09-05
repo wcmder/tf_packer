@@ -5,7 +5,7 @@ module "context" {
   reg      = var.location
   svc_name = var.service_name
 }
-
+/*
 module "rsg" {
   source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rsg?ref=v0.1.5"
 
@@ -168,3 +168,4 @@ module "eve-ng1-vm" {
   storage_account_type = "StandardSSD_LRS"
   src_img_id           = data.azurerm_shared_image_version.eveng_runtime.id
 }
+*/
