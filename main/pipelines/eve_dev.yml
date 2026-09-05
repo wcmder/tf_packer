@@ -56,6 +56,7 @@ stages:
               REPO_USERNAME: $(REPO_USERNAME)
               BACKEND_ACCESS_KEY: $(dostest01sa01-key1)
           - task: Bash@3
+            name: detect_changes
             displayName: Terraform validate and plan
             inputs:
               targetType: inline
@@ -63,7 +64,15 @@ stages:
               script: |
                 set -euo pipefail
                 terraform validate
-                terraform plan -input=false -out=tfplan
+                set +e
+                terraform plan -input=false -detailed-exitcode -out=tfplan
+                plan_exit_code=$?
+                set -e
+                case "$plan_exit_code" in
+                  0) echo "##vso[task.setvariable variable=changesPresent;isOutput=true]false" ;;
+                  2) echo "##vso[task.setvariable variable=changesPresent;isOutput=true]true" ;;
+                  *) exit "$plan_exit_code" ;;
+                esac
             env:
               TF_VAR_spn-client-id: $(dostest-spn-id)
               TF_VAR_spn-client-secret: $(dostest-spn-secret)
@@ -84,6 +93,7 @@ stages:
   - stage: Deploy
     displayName: Apply EVE-NG
     dependsOn: Build
+    condition: and(succeeded(), eq(dependencies.Build.outputs['terraform_plan.detect_changes.changesPresent'], 'true'))
     jobs:
       - deployment: terraform_apply
         environment: ${{ parameters.azureEnvironment }}
