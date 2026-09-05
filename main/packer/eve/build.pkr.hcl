@@ -62,7 +62,7 @@ build {
       "cd /data/cisco1",
       "pwd",
       "curl --fail --show-error --location --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${var.C8KV_DL1_PATH}",
-      "echo 'Cisco image downloaded'",
+      "echo 'Cisco image 1 downloaded'",
       "mkdir -p /data/palo1",
       "cd /data/palo1",
       "pwd",
