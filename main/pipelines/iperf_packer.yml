@@ -7,7 +7,7 @@ parameters:
   - name: ubuntuImageVersion
     displayName: Exact Ubuntu 22.04 Gen2 Marketplace version
     type: string
-    default: "SET_EXACT_VERSION"
+    default: "22.04.202608060"
   - name: iperfImageVersion
     displayName: New iPerf gallery image version
     type: string
@@ -57,8 +57,8 @@ stages:
                     workingDirectory: $(PACKER_ROOT)
                     script: |
                       set -euo pipefail
-                      if [ '${{ parameters.ubuntuImageVersion }}' = 'SET_EXACT_VERSION' ]; then
-                        echo 'Select an exact Ubuntu Marketplace version when starting the pipeline.'
+                      if [[ ! '${{ parameters.ubuntuImageVersion }}' =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                        echo 'ubuntuImageVersion must be an exact numeric Marketplace version, such as 22.04.202608060.'
                         exit 1
                       fi
                       packer fmt -check ./

@@ -19,10 +19,10 @@ main/
 │   ├── eve/
 │   └── iperf/
 ├── pipelines/             # Terraform and Packer pipelines
-└── modules/               # Legacy local modules; no longer referenced
+└── modules/               # Legacy local modules; no longer referenced, deleted
 ```
 
-The EVE-NG and iPerf environment roots contain only backend, provider, credential-variable, and stack-call configuration. Resource composition is shared in `main/stacks/eve` and `main/stacks/iperf`. The images root owns the dedicated `dev-use-images-rg`, Azure Compute Gallery, and stable `eve-ng` and `iperf` image definitions; Packer owns the immutable versions beneath those definitions. Reusable Azure resource modules are pinned to `v0.1.5` of the private `TF/azure-terraform-modules` Azure Repos repository.
+The EVE-NG and iPerf environment roots contain only backend, provider, credential-variable, and stack-call configuration. Resource composition is shared in `main/stacks/eve` and `main/stacks/iperf`. The images root owns the dedicated `dev-use-images-rg`, Azure Compute Gallery, and stable `eve-ng` and `iperf` image definitions; Packer owns the immutable versions beneath those definitions. Reusable Azure resource modules are pinned to `v0.1.6` of the private `TF/azure-terraform-modules` Azure Repos repository.
 
 The environment roots use separate remote-state keys and are intended for clean deployments without legacy state migration.
 
@@ -37,7 +37,7 @@ The Terraform and Packer pipelines authenticate to Azure with the `sp-test` serv
 
 `sp-test` requires the Contributor role on the development subscription `a4b57fa5-2f2c-4732-b452-32be7d1724b1`. This allows Terraform to create resource groups and infrastructure and allows Packer to create temporary build resources and publish Azure Compute Gallery versions. It does not grant permission to create Azure role assignments.
 
-The EVE and iPerf Packer pipelines accept an exact Ubuntu version and a new application image version as non-secret runtime parameters. Their deployment pipelines accept the corresponding existing gallery version to deploy. Resolve and review the exact Ubuntu version with `az vm image list --location eastus --publisher Canonical --offer 0001-com-ubuntu-server-jammy --sku 22_04-lts-gen2 --all`; do not build with the `SET_EXACT_VERSION` placeholder.
+The EVE and iPerf Packer pipelines accept an exact Ubuntu version and a new application image version as non-secret runtime parameters. `ubuntuImageVersion` defaults to the pinned version `22.04.202608060` and can be changed when manually starting either pipeline. Their deployment pipelines accept the corresponding existing gallery version to deploy. Resolve and review alternative Ubuntu versions with `az vm image list --location eastus --publisher Canonical --offer 0001-com-ubuntu-server-jammy --sku 22_04-lts-gen2 --all`.
 
 ## Image publication workflow
 
@@ -81,7 +81,7 @@ az vm image list \
   --output table
 ```
 
-Copy one complete version into `ubuntuImageVersion`. Do not enter `latest` or leave the `SET_EXACT_VERSION` placeholder. To verify a selected version before building:
+Use the default pinned version or copy another complete version into `ubuntuImageVersion` when starting the pipeline. Do not enter `latest`. To verify a selected version before building:
 
 ```bash
 az vm image show \

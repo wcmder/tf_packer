@@ -7,7 +7,7 @@ module "context" {
 }
 
 module "rsg" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rsg?ref=v0.1.5"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rsg?ref=v0.1.6"
 
   common = module.context.common
   rsg = {
@@ -25,13 +25,13 @@ locals {
 }
 
 module "sig" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/sig?ref=v0.1.5"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/sig?ref=v0.1.6"
   common = local.common
   name   = "image_gallery"
 }
 
 module "sig_img_eve" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/sig_img?ref=v0.1.5"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/sig_img?ref=v0.1.6"
 
   common    = local.common
   img_name  = "eve-ng"
@@ -45,7 +45,7 @@ module "sig_img_eve" {
 }
 
 module "sig_img_iperf" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/sig_img?ref=v0.1.5"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/sig_img?ref=v0.1.6"
 
   common    = local.common
   img_name  = "iperf"

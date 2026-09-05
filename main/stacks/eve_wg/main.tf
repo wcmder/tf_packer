@@ -7,7 +7,7 @@ module "context" {
 }
 
 module "rsg" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rsg?ref=v0.1.5"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rsg?ref=v0.1.6"
 
   common = module.context.common
   rsg = {
@@ -34,7 +34,7 @@ locals {
 }
 
 module "vnet" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vnet?ref=v0.1.5"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vnet?ref=v0.1.6"
   common = local.common
   vnet = {
     vm-vnet = {
@@ -45,7 +45,7 @@ module "vnet" {
 }
 
 module "subnet_lab" {
-  source    = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/subnet?ref=v0.1.5"
+  source    = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/subnet?ref=v0.1.6"
   common    = local.common
   vnet_name = module.vnet.vnet_name_name["vm-vnet"]
   subnet = {
@@ -56,7 +56,7 @@ module "subnet_lab" {
 }
 
 module "eveng_nsg" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg?ref=v0.1.5"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg?ref=v0.1.6"
   common = local.common
   nsg = {
     eveng_nsg = {
@@ -77,7 +77,7 @@ module "eveng_nsg" {
 }
 
 module "nsg_assc" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_subnet_assc?ref=v0.1.5"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_subnet_assc?ref=v0.1.6"
   nsg_subnet = {
     vm = {
       nsg_id    = module.eveng_nsg.nsg_name_id["eveng_nsg"]
@@ -87,7 +87,7 @@ module "nsg_assc" {
 }
 
 module "eve_pip" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/pip?ref=v0.1.5"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/pip?ref=v0.1.6"
   common = local.common
   pip = {
     eve-wg-pip = {
@@ -104,7 +104,7 @@ data "azurerm_shared_image_version" "eveng_runtime" {
 }
 
 module "eve-ng1-vm" {
-  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.5"
+  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.6"
   common                = local.common
   vm_name               = "eveng1-vm"
   nic_name              = "eveng1-nic"
