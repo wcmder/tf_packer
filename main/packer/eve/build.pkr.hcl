@@ -4,24 +4,34 @@ variable "FILE_NAME" {
   default = "virtioa.qcow2"
 }
 
-variable "C8KV_IMG_PATH" {
+variable "C8KV_IMG1_PATH" {
   type    = string
-  default = "/opt/unetlab/addons/qemu/c8000v-17.06.02"
+  default = "/opt/unetlab/addons/qemu/c8000v-17.15.06"
 }
 
-variable "C8KV_DL_PATH" {
+variable "C8KV_DL1_PATH" {
   type    = string
-  default = "https://repo.dknetworks.io/files/c8kv/virtioa.qcow2"
+  default = "https://repo.dknetworks.io/files/c8kv_17.15/c8000v-universalk9_16G_serial.17.15.06.qcow2"
 }
 
-variable "PALO_IMG_PATH" {
+variable "PALO_IMG1_PATH" {
   type    = string
   default = "/opt/unetlab/addons/qemu/paloalto-10.2.5"
 }
 
-variable "PALO_DL_PATH" {
+variable "PALO_DL1_PATH" {
   type    = string
-  default = "https://repo.dknetworks.io/files/palo/virtioa.qcow2"
+  default = "https://repo.dknetworks.io/files/palo_10.2/virtioa.qcow2"
+}
+
+variable "PALO_IMG2_PATH" {
+  type    = string
+  default = "/opt/unetlab/addons/qemu/paloalto-11.2.10-h6"
+}
+
+variable "PALO_DL2_PATH" {
+  type    = string
+  default = "https://repo.dknetworks.io/files/palo_11.2/PA-VM-KVM-11.2.10-h6.qcow2"
 }
 
 locals {
@@ -48,16 +58,21 @@ build {
     execute_command   = local.execute_command
     expect_disconnect = true
     inline = [
-      "mkdir -p /data/cisco",
-      "cd /data/cisco",
+      "mkdir -p /data/cisco1",
+      "cd /data/cisco1",
       "pwd",
-      "curl --fail --show-error --location --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${var.C8KV_DL_PATH}",
+      "curl --fail --show-error --location --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${var.C8KV_DL1_PATH}",
       "echo 'Cisco image downloaded'",
-      "mkdir -p /data/palo",
-      "cd /data/palo",
+      "mkdir -p /data/palo1",
+      "cd /data/palo1",
       "pwd",
-      "curl --fail --show-error --location --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${var.PALO_DL_PATH}",
-      "echo 'Palo Alto image downloaded'",
+      "curl --fail --show-error --location --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${var.PALO_DL1_PATH}",
+      "echo 'Palo Alto image 1 downloaded'",
+      "mkdir -p /data/palo2",
+      "cd /data/palo2",
+      "pwd",
+      "curl --fail --show-error --location --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${var.PALO_DL2_PATH}",
+      "echo 'Palo Alto image 2 downloaded'",
     ]
   }
 
@@ -78,16 +93,22 @@ build {
     expect_disconnect = true
     pause_after       = "120s"
     inline = [
-      "mkdir -p ${var.C8KV_IMG_PATH}",
-      "cd ${var.C8KV_IMG_PATH}",
+      "mkdir -p ${var.C8KV_IMG1_PATH}",
+      "cd ${var.C8KV_IMG1_PATH}",
       "pwd",
-      "mv /data/cisco/${var.FILE_NAME} .",
+      "mv /data/cisco1/${var.FILE_NAME} .",
       "ls",
       #
-      "mkdir -p ${var.PALO_IMG_PATH}",
-      "cd ${var.PALO_IMG_PATH}",
+      "mkdir -p ${var.PALO_IMG1_PATH}",
+      "cd ${var.PALO_IMG1_PATH}",
       "pwd",
-      "mv /data/palo/${var.FILE_NAME} .",
+      "mv /data/palo1/${var.FILE_NAME} .",
+      "ls",
+      #
+      "mkdir -p ${var.PALO_IMG2_PATH}",
+      "cd ${var.PALO_IMG2_PATH}",
+      "pwd",
+      "mv /data/palo2/${var.FILE_NAME} .",
       "ls",
       #
       "echo 'root:eve' | sudo chpasswd",

@@ -171,6 +171,63 @@ az vm get-instance-view \
 
 Shutting down EVE-NG from inside the guest operating system might leave the Azure VM allocated. Use `az vm deallocate` and confirm the state is `VM deallocated` to stop compute billing. Managed disks, public IP addresses, and the VPN gateway continue to incur charges while the VM is deallocated.
 
+## WireGuard remote access stack
+
+`main/stacks/eve_wireguard` is the lower-cost alternative to the Azure VPN Gateway EVE stack. WireGuard runs directly on the EVE-NG VM. The stack creates one Standard public IP, permits only UDP port `51820` from the Internet, installs WireGuard with an Azure VM extension, enables IPv4 forwarding and NAT, and does not create a VPN gateway or `GatewaySubnet`.
+
+Generate a key pair on each client. Keep the private key only on that client:
+
+```bash
+umask 077
+wg genkey | tee wg-client.key | wg pubkey > wg-client.pub
+```
+
+Add only the client public key and a unique address to the stack call:
+
+```hcl
+wireguard_peers = {
+  macbook = {
+    public_key = "<contents-of-wg-client.pub>"
+    address    = "172.16.0.2/32"
+  }
+}
+```
+
+After applying Terraform, retrieve the generated server public key through the Azure control plane:
+
+```bash
+az vm run-command invoke \
+  --resource-group dev-use-lab-rg \
+  --name dev-use-lab-eveng1-vm \
+  --command-id RunShellScript \
+  --scripts "cat /etc/wireguard/server.pub" \
+  --query "value[0].message" \
+  --output tsv
+```
+
+Get the endpoint and EVE private address from Terraform:
+
+```bash
+terraform output -raw wireguard_public_ip_address
+terraform output -raw eve_private_ip_address
+```
+
+Create the client configuration using the locally generated private key:
+
+```ini
+[Interface]
+PrivateKey = <contents-of-wg-client.key>
+Address = 172.16.0.2/32
+
+[Peer]
+PublicKey = <server-public-key>
+Endpoint = <wireguard-public-ip>:51820
+AllowedIPs = 172.16.0.0/24, 10.0.4.0/25
+PersistentKeepalive = 25
+```
+
+Import this configuration into the WireGuard client and activate the tunnel. Access EVE-NG at `https://<eve-private-ip>`. Deallocating the EVE VM also stops the WireGuard endpoint; start the VM before connecting.
+
 ## Updating Git modules
 
 Module source addresses are static and version-pinned. To upgrade a module, replace its existing `?ref=<tag>` with a newly published immutable tag, run `terraform init -upgrade`, and review the full plans before applying.
