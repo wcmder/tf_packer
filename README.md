@@ -173,13 +173,20 @@ Shutting down EVE-NG from inside the guest operating system might leave the Azur
 
 ## WireGuard remote access stack
 
-`main/stacks/eve_wireguard` is the lower-cost alternative to the Azure VPN Gateway EVE stack. WireGuard runs directly on the EVE-NG VM. The stack creates one Standard public IP, permits only UDP port `51820` from the Internet, installs WireGuard with an Azure VM extension, enables IPv4 forwarding and NAT, and does not create a VPN gateway or `GatewaySubnet`.
+`main/stacks/eve_wg` is the lower-cost alternative to the Azure VPN Gateway EVE stack. WireGuard runs directly on the EVE-NG VM. The stack creates one Standard public IP, permits only UDP port `51820` from the Internet, installs WireGuard with an Azure VM extension, enables IPv4 forwarding and NAT, and does not create a VPN gateway or `GatewaySubnet`.
 
-Generate a key pair on each client. Keep the private key only on that client:
+The `main/env/dev/use/eve` root uses `main/stacks/eve_wg` to replace the Azure VPN Gateway implementation.
+
+Install the WireGuard command-line tools on the Mac, then generate a client key pair. Keep the private key only on the Mac:
 
 ```bash
+brew install wireguard-tools
+mkdir -p ~/.config/wireguard
+chmod 700 ~/.config/wireguard
+cd ~/.config/wireguard
 umask 077
-wg genkey | tee wg-client.key | wg pubkey > wg-client.pub
+wg genkey | tee macbook-private.key | wg pubkey > macbook-public.key
+cat macbook-public.key
 ```
 
 Add only the client public key and a unique address to the stack call:
@@ -187,11 +194,13 @@ Add only the client public key and a unique address to the stack call:
 ```hcl
 wireguard_peers = {
   macbook = {
-    public_key = "<contents-of-wg-client.pub>"
+    public_key = "<contents-of-macbook-public.key>"
     address    = "172.16.0.2/32"
   }
 }
 ```
+
+Run Terraform plan and apply after adding the peer. Use a different key and client address, such as `172.16.0.3/32`, for every additional device.
 
 After applying Terraform, retrieve the generated server public key through the Azure control plane:
 
@@ -205,18 +214,27 @@ az vm run-command invoke \
   --output tsv
 ```
 
-Get the endpoint and EVE private address from Terraform:
+Get the public WireGuard endpoint and the private EVE address:
 
 ```bash
-terraform output -raw wireguard_public_ip_address
-terraform output -raw eve_private_ip_address
+az network public-ip show \
+  --resource-group dev-use-lab-rg \
+  --name dev-use-lab-eve-wg-pip \
+  --query ipAddress \
+  --output tsv
+
+az vm list-ip-addresses \
+  --resource-group dev-use-lab-rg \
+  --name dev-use-lab-eveng1-vm \
+  --query "[0].virtualMachine.network.privateIpAddresses[0]" \
+  --output tsv
 ```
 
-Create the client configuration using the locally generated private key:
+Create `~/.config/wireguard/eve-wg.conf` using the locally generated private key:
 
 ```ini
 [Interface]
-PrivateKey = <contents-of-wg-client.key>
+PrivateKey = <contents-of-macbook-private.key>
 Address = 172.16.0.2/32
 
 [Peer]
@@ -226,7 +244,20 @@ AllowedIPs = 172.16.0.0/24, 10.0.4.0/25
 PersistentKeepalive = 25
 ```
 
-Import this configuration into the WireGuard client and activate the tunnel. Access EVE-NG at `https://<eve-private-ip>`. Deallocating the EVE VM also stops the WireGuard endpoint; start the VM before connecting.
+Start the tunnel and verify that a recent handshake appears:
+
+```bash
+sudo wg-quick up ~/.config/wireguard/eve-wg.conf
+sudo wg show
+```
+
+Access EVE-NG at `https://<eve-private-ip>`. Stop the tunnel with:
+
+```bash
+sudo wg-quick down ~/.config/wireguard/eve-wg.conf
+```
+
+Alternatively, install the WireGuard app from the macOS App Store, import `eve-wg.conf`, and activate the tunnel in the app. Deallocating the EVE VM also stops the WireGuard endpoint; start the VM before connecting.
 
 ## Updating Git modules
 

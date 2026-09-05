@@ -25,6 +25,7 @@ trigger:
     include:
       - main/env/dev/use/eve/**
       - main/stacks/eve/**
+      - main/stacks/eve_wg/**
       - main/stacks/context/**
 
 stages:
