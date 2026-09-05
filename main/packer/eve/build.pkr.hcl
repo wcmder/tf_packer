@@ -4,39 +4,51 @@ variable "FILE_NAME" {
   default = "virtioa.qcow2"
 }
 
-variable "C8KV_IMG1_PATH" {
-  type    = string
-  default = "/opt/unetlab/addons/qemu/c8000v-17.15.06"
-}
+variable "EVE_IMAGES" {
+  type = map(object({
+    image_path    = string
+    download_path = string
+  }))
 
-variable "C8KV_DL1_PATH" {
-  type    = string
-  default = "https://repo.dknetworks.io/files/c8kv_17.15/c8000v-universalk9_16G_serial.17.15.06.qcow2"
-}
-
-variable "PALO_IMG1_PATH" {
-  type    = string
-  default = "/opt/unetlab/addons/qemu/paloalto-10.2.5"
-}
-
-variable "PALO_DL1_PATH" {
-  type    = string
-  default = "https://repo.dknetworks.io/files/palo_10.2/virtioa.qcow2"
-}
-
-variable "PALO_IMG2_PATH" {
-  type    = string
-  default = "/opt/unetlab/addons/qemu/paloalto-11.2.10-h6"
-}
-
-variable "PALO_DL2_PATH" {
-  type    = string
-  default = "https://repo.dknetworks.io/files/palo_11.2/PA-VM-KVM-11.2.10-h6.qcow2"
+  default = {
+    c8kv_17_15 = {
+      image_path    = "/opt/unetlab/addons/qemu/c8000v-17.15.06"
+      download_path = "https://repo.dknetworks.io/files/c8kv_17.15/c8000v-universalk9_16G_serial.17.15.06.qcow2"
+    }
+    palo_10_2 = {
+      image_path    = "/opt/unetlab/addons/qemu/paloalto-10.2.5"
+      download_path = "https://repo.dknetworks.io/files/palo_10.2/virtioa.qcow2"
+    }
+    palo_11_2 = {
+      image_path    = "/opt/unetlab/addons/qemu/paloalto-11.2.10-h6"
+      download_path = "https://repo.dknetworks.io/files/palo_11.2/PA-VM-KVM-11.2.10-h6.qcow2"
+    }
+  }
 }
 
 locals {
   eve_installer_url    = "https://www.eve-ng.net/jammy/install-eve.sh"
   eve_installer_sha256 = "5c2139837cc8de6d270439d7564040fdfd151522ff03fc7dbd39586c82dbaa6d"
+
+  download_image_commands = flatten([
+    for name, image in var.EVE_IMAGES : [
+      "mkdir -p /data/${name}",
+      "cd /data/${name}",
+      "pwd",
+      "curl --fail --show-error --location --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${image.download_path}",
+      "echo '${name} image downloaded'",
+    ]
+  ])
+
+  install_image_commands = flatten([
+    for name, image in var.EVE_IMAGES : [
+      "mkdir -p ${image.image_path}",
+      "cd ${image.image_path}",
+      "pwd",
+      "mv /data/${name}/${var.FILE_NAME} .",
+      "ls -lh ${var.FILE_NAME}",
+    ]
+  ])
 }
 
 
@@ -55,25 +67,8 @@ build {
   }
 
   provisioner "shell" {
-    execute_command   = local.execute_command
-    expect_disconnect = true
-    inline = [
-      "mkdir -p /data/cisco1",
-      "cd /data/cisco1",
-      "pwd",
-      "curl --fail --show-error --location --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${var.C8KV_DL1_PATH}",
-      "echo 'Cisco image 1 downloaded'",
-      "mkdir -p /data/palo1",
-      "cd /data/palo1",
-      "pwd",
-      "curl --fail --show-error --location --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${var.PALO_DL1_PATH}",
-      "echo 'Palo Alto image 1 downloaded'",
-      "mkdir -p /data/palo2",
-      "cd /data/palo2",
-      "pwd",
-      "curl --fail --show-error --location --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${var.PALO_DL2_PATH}",
-      "echo 'Palo Alto image 2 downloaded'",
-    ]
+    execute_command = local.execute_command
+    inline          = local.download_image_commands
   }
 
 
@@ -92,29 +87,11 @@ build {
     execute_command   = local.execute_command
     expect_disconnect = true
     pause_after       = "120s"
-    inline = [
-      "mkdir -p ${var.C8KV_IMG1_PATH}",
-      "cd ${var.C8KV_IMG1_PATH}",
-      "pwd",
-      "mv /data/cisco1/${var.FILE_NAME} .",
-      "ls",
-      #
-      "mkdir -p ${var.PALO_IMG1_PATH}",
-      "cd ${var.PALO_IMG1_PATH}",
-      "pwd",
-      "mv /data/palo1/${var.FILE_NAME} .",
-      "ls",
-      #
-      "mkdir -p ${var.PALO_IMG2_PATH}",
-      "cd ${var.PALO_IMG2_PATH}",
-      "pwd",
-      "mv /data/palo2/${var.FILE_NAME} .",
-      "ls",
-      #
+    inline = concat(local.install_image_commands, [
       "echo 'root:eve' | sudo chpasswd",
       "echo 'DONE - root set, images installed, rebooting'",
       "reboot now",
-    ]
+    ])
   }
 
   provisioner "shell" {

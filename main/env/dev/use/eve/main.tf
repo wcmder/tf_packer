@@ -10,7 +10,6 @@ module "eve" {
   vpn_client_tenant_id = var.spn-tenant-id
 }
 
-*/
 
 module "eve_wg" {
   source = "../../../../stacks/eve_wg"
@@ -28,3 +27,4 @@ module "eve_wg" {
     }
   }
 }
+*/
