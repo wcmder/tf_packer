@@ -11,6 +11,10 @@ parameters:
 
 variables:
   - group: dostest01kv01
+  # Set to "false" to skip plan and apply on automatic and manual runs.
+  # To disable automatic runs entirely, replace the trigger block below with: trigger: none
+  - name: IPERF_PIPELINE_ENABLED
+    value: "true"
   - name: TF_VERSION
     value: "1.14.6"
   - name: TF_ROOT
@@ -26,10 +30,12 @@ trigger:
       - main/env/dev/use/iperf/**
       - main/stacks/iperf/**
       - main/stacks/context/**
+      - main/pipelines/iperf_dev.yml
 
 stages:
   - stage: Build
     displayName: Plan iPerf
+    condition: and(succeeded(), eq(variables['IPERF_PIPELINE_ENABLED'], 'true'))
     jobs:
       - job: terraform_plan
         pool:
@@ -92,7 +98,7 @@ stages:
   - stage: Deploy
     displayName: Apply iPerf
     dependsOn: Build
-    condition: and(succeeded(), eq(dependencies.Build.outputs['terraform_plan.detect_changes.changesPresent'], 'true'))
+    condition: and(succeeded(), eq(variables['IPERF_PIPELINE_ENABLED'], 'true'), eq(dependencies.Build.outputs['terraform_plan.detect_changes.changesPresent'], 'true'))
     jobs:
       - deployment: terraform_apply
         environment: ${{ parameters.azureEnvironment }}
