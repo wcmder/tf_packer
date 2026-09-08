@@ -1,26 +1,24 @@
 ---
-parameters:
-  - name: azureEnvironment
-    displayName: Azure DevOps deployment environment
-    type: string
-    default: dev_packer
-  - name: ubuntuImageVersion
-    displayName: Exact Ubuntu 22.04 Gen2 Marketplace version
-    type: string
-    default: "22.04.202608060"
-  - name: iperfImageVersion
-    displayName: New iPerf gallery image version
-    type: string
-    default: "0.1.0"
-
 variables:
   - group: dostest01kv01
+  - name: AZURE_ENVIRONMENT
+    value: dev_packer
+  - name: UBUNTU_IMAGE_VERSION
+    value: "22.04.202608060"
+  - name: IPERF_IMAGE_VERSION
+    value: "0.1.$(Build.BuildId)"
   - name: PACKER_VERSION
     value: "1.14.3"
   - name: PACKER_ROOT
     value: main/packer/iperf
 
-trigger: none
+trigger:
+  branches:
+    include: [main]
+  paths:
+    include:
+      - main/packer/iperf/**
+      - main/pipelines/iperf_packer.yml
 
 stages:
   - stage: Build
@@ -28,7 +26,7 @@ stages:
     jobs:
       - deployment: Packer
         displayName: Build and publish iPerf image
-        environment: ${{ parameters.azureEnvironment }}
+        environment: ${{ variables.AZURE_ENVIRONMENT }}
         pool:
           vmImage: ubuntu-latest
         strategy:
@@ -57,8 +55,8 @@ stages:
                     workingDirectory: $(PACKER_ROOT)
                     script: |
                       set -euo pipefail
-                      if [[ ! '${{ parameters.ubuntuImageVersion }}' =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-                        echo 'ubuntuImageVersion must be an exact numeric Marketplace version, such as 22.04.202608060.'
+                      if [[ ! '$(UBUNTU_IMAGE_VERSION)' =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                        echo 'UBUNTU_IMAGE_VERSION must be an exact numeric Marketplace version, such as 22.04.202608060.'
                         exit 1
                       fi
                       packer fmt -check ./
@@ -67,8 +65,8 @@ stages:
                     PKR_VAR_spn-client-id: $(dostest-spn-id)
                     PKR_VAR_spn-client-secret: $(dostest-spn-secret)
                     PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
-                    PKR_VAR_ubuntu_image_version: ${{ parameters.ubuntuImageVersion }}
-                    PKR_VAR_iperf_image_version: ${{ parameters.iperfImageVersion }}
+                    PKR_VAR_ubuntu_image_version: $(UBUNTU_IMAGE_VERSION)
+                    PKR_VAR_iperf_image_version: $(IPERF_IMAGE_VERSION)
                 - task: CmdLine@2
                   displayName: Packer build
                   inputs:
@@ -78,5 +76,5 @@ stages:
                     PKR_VAR_spn-client-id: $(dostest-spn-id)
                     PKR_VAR_spn-client-secret: $(dostest-spn-secret)
                     PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
-                    PKR_VAR_ubuntu_image_version: ${{ parameters.ubuntuImageVersion }}
-                    PKR_VAR_iperf_image_version: ${{ parameters.iperfImageVersion }}
+                    PKR_VAR_ubuntu_image_version: $(UBUNTU_IMAGE_VERSION)
+                    PKR_VAR_iperf_image_version: $(IPERF_IMAGE_VERSION)
