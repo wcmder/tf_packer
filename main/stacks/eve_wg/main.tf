@@ -104,7 +104,7 @@ data "azurerm_shared_image_version" "eveng_runtime" {
 }
 
 module "eve-ng1-vm" {
-  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.6"
+  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.7"
   common                = local.common
   vm_name               = "eveng1-vm"
   nic_name              = "eveng1-nic"
@@ -117,16 +117,9 @@ module "eve-ng1-vm" {
   src_img_id            = data.azurerm_shared_image_version.eveng_runtime.id
 }
 
-data "azurerm_linux_virtual_machine" "eve" {
-  name                = "${local.common.env}-eveng1-vm"
-  resource_group_name = local.common.rsg_name
-
-  depends_on = [module.eve-ng1-vm]
-}
-
 resource "azurerm_virtual_machine_extension" "wireguard" {
   name                       = "wireguard"
-  virtual_machine_id         = data.azurerm_linux_virtual_machine.eve.id
+  virtual_machine_id         = module.eve-ng1-vm.vm_id
   publisher                  = "Microsoft.Azure.Extensions"
   type                       = "CustomScript"
   type_handler_version       = "2.1"
@@ -144,21 +137,14 @@ resource "azurerm_virtual_machine_extension" "wireguard" {
   tags = local.common.tags
 }
 
-data "azurerm_public_ip" "eve" {
-  name                = "${local.common.env}-eve-wg-pip"
-  resource_group_name = local.common.rsg_name
-
-  depends_on = [module.eve_pip]
-}
-
 output "eve_private_ip_address" {
   description = "Private address used to access EVE-NG from WireGuard."
-  value       = data.azurerm_linux_virtual_machine.eve.private_ip_address
+  value       = module.eve-ng1-vm.private_ip_address
 }
 
 output "wireguard_public_ip_address" {
   description = "Public WireGuard endpoint address."
-  value       = data.azurerm_public_ip.eve.ip_address
+  value       = module.eve_pip.pip_name_ip["eve-wg-pip"]
 }
 
 output "wireguard_port" {

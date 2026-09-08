@@ -10,6 +10,7 @@ module "eve" {
   vpn_client_tenant_id = var.spn-tenant-id
 }
 
+*/
 
 module "eve_wg" {
   source = "../../../../stacks/eve_wg"
@@ -22,9 +23,8 @@ module "eve_wg" {
 
   wireguard_peers = {
     macbook = {
-      public_key = "<contents-of-macbook-public.key>"
+      public_key = "MI64Bvb9JZyOWzomKspmrNHvsPRVmnTOR7O2VIN5A3E="
       address    = "172.16.0.2/32"
     }
   }
 }
-*/

@@ -206,7 +206,7 @@ Shutting down EVE-NG from inside the guest operating system might leave the Azur
 
 `main/stacks/eve_wg` is the lower-cost alternative to the Azure VPN Gateway EVE stack. WireGuard runs directly on the EVE-NG VM. The stack creates one Standard public IP, permits only UDP port `51820` from the Internet, installs WireGuard with an Azure VM extension, enables IPv4 forwarding and NAT, and does not create a VPN gateway or `GatewaySubnet`.
 
-The `main/env/dev/use/eve` root uses `main/stacks/eve_wg` to replace the Azure VPN Gateway implementation.
+The `main/env/dev/use/eve` root contains a `module "eve_wg"` example for using WireGuard in place of the Azure VPN Gateway implementation.
 
 Install the WireGuard command-line tools on the Mac, then generate a client key pair. Keep the private key only on the Mac:
 
@@ -220,13 +220,25 @@ wg genkey | tee macbook-private.key | wg pubkey > macbook-public.key
 cat macbook-public.key
 ```
 
-Add only the client public key and a unique address to the stack call:
+Edit [main/env/dev/use/eve/main.tf](main/env/dev/use/eve/main.tf) in this repository. Inside its existing `module "eve_wg"` block, set `wireguard_peers` as shown below. Replace the public-key placeholder with the output of `cat ~/.config/wireguard/macbook-public.key`; keep the private key on your Mac.
+
+The file currently wraps both module examples in a `/* ... */` comment. Enable only `module "eve_wg"` by moving the closing `*/` to just before that module and removing the trailing `*/`. Keep the older `module "eve"` example commented out. The resulting active WireGuard module should look like this:
 
 ```hcl
-wireguard_peers = {
-  macbook = {
-    public_key = "<contents-of-macbook-public.key>"
-    address    = "172.16.0.2/32"
+module "eve_wg" {
+  source = "../../../../stacks/eve_wg"
+
+  environment         = "dev"
+  location            = "East US"
+  service_name        = "lab"
+  resource_group_name = "rg"
+  eve_image_version   = var.eve_image_version
+
+  wireguard_peers = {
+    macbook = {
+      public_key = "<contents-of-macbook-public.key>"
+      address    = "172.16.0.2/32"
+    }
   }
 }
 ```
@@ -261,11 +273,18 @@ az vm list-ip-addresses \
   --output tsv
 ```
 
-Create `~/.config/wireguard/eve-wg.conf` using the locally generated private key:
+Run this on your Mac to create `~/.config/wireguard/eve-wg.conf` using the saved private key. Replace `<server-public-key>` and `<wireguard-public-ip>` with the values retrieved above. This overwrites any existing configuration at that path.
 
-```ini
+```bash
+(
+  set -euo pipefail
+  umask 077
+  mkdir -p ~/.config/wireguard
+  macbook_private_key=$(cat ~/.config/wireguard/macbook-private.key)
+
+  cat > ~/.config/wireguard/eve-wg.conf <<EOF
 [Interface]
-PrivateKey = <contents-of-macbook-private.key>
+PrivateKey = $macbook_private_key
 Address = 172.16.0.2/32
 
 [Peer]
@@ -273,6 +292,10 @@ PublicKey = <server-public-key>
 Endpoint = <wireguard-public-ip>:51820
 AllowedIPs = 172.16.0.0/24, 10.0.4.0/25
 PersistentKeepalive = 25
+EOF
+
+  chmod 600 ~/.config/wireguard/eve-wg.conf
+)
 ```
 
 Start the tunnel and verify that a recent handshake appears:

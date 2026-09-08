@@ -7,10 +7,14 @@ parameters:
   - name: eveImageVersion
     displayName: Existing EVE gallery image version to deploy
     type: string
-    default: "0.1.0"
+    default: "0.1.703"
 
 variables:
   - group: dostest01kv01
+  # Set to "false" to skip plan and apply on automatic and manual runs.
+  # To disable automatic runs entirely, replace the trigger block below with: trigger: none
+  - name: EVE_PIPELINE_ENABLED
+    value: "true"
   - name: TF_VERSION
     value: "1.14.6"
   - name: TF_ROOT
@@ -27,10 +31,12 @@ trigger:
       - main/stacks/eve/**
       - main/stacks/eve_wg/**
       - main/stacks/context/**
+      - main/pipelines/eve_dev.yml
 
 stages:
   - stage: Build
     displayName: Plan EVE-NG
+    condition: and(succeeded(), eq(variables['EVE_PIPELINE_ENABLED'], 'true'))
     jobs:
       - job: terraform_plan
         pool:
@@ -93,7 +99,7 @@ stages:
   - stage: Deploy
     displayName: Apply EVE-NG
     dependsOn: Build
-    condition: and(succeeded(), eq(dependencies.Build.outputs['terraform_plan.detect_changes.changesPresent'], 'true'))
+    condition: and(succeeded(), eq(variables['EVE_PIPELINE_ENABLED'], 'true'), eq(dependencies.Build.outputs['terraform_plan.detect_changes.changesPresent'], 'true'))
     jobs:
       - deployment: terraform_apply
         environment: ${{ parameters.azureEnvironment }}
