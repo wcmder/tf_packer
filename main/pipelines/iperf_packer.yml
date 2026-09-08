@@ -1,6 +1,10 @@
 ---
 variables:
   - group: dostest01kv01
+  # Set to "false" to skip all work on automatic and manual runs.
+  # To disable automatic runs entirely, replace the trigger block below with: trigger: none
+  - name: IPERF_PIPELINE_ENABLED
+    value: "true"
   - name: AZURE_ENVIRONMENT
     value: dev_packer
   - name: UBUNTU_IMAGE_VERSION
@@ -23,6 +27,7 @@ trigger:
 stages:
   - stage: Build
     displayName: Build and publish iPerf image
+    condition: and(succeeded(), eq(variables['IPERF_PIPELINE_ENABLED'], 'true'))
     jobs:
       - deployment: Packer
         displayName: Build and publish iPerf image
