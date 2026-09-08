@@ -1,6 +1,10 @@
 ---
 variables:
   - group: dostest01kv01
+  # Set to "false" to skip all work, including preflight, on automatic and manual runs.
+  # To disable automatic runs entirely, replace the trigger block below with: trigger: none
+  - name: EVE_PIPELINE_ENABLED
+    value: "false"
   - name: AZURE_ENVIRONMENT
     value: dev_packer
   - name: UBUNTU_IMAGE_VERSION
@@ -23,8 +27,51 @@ trigger:
 stages:
   - stage: Build
     displayName: Build and publish EVE image
+    condition: and(succeeded(), eq(variables['EVE_PIPELINE_ENABLED'], 'true'))
     jobs:
+      - job: Preflight
+        displayName: Verify EVE installer checksum
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+            fetchDepth: 1
+          - task: Bash@3
+            displayName: Check upstream installer before building VM
+            inputs:
+              targetType: inline
+              workingDirectory: $(PACKER_ROOT)
+              script: |
+                set -euo pipefail
+                python3 - <<'PY'
+                import hashlib
+                import pathlib
+                import re
+                import subprocess
+                import tempfile
+
+                config = pathlib.Path('build.pkr.hcl').read_text()
+                def literal(name):
+                    matches = re.findall(r'^\s*' + re.escape(name) + r'\s*=\s*"([^"\n]+)"\s*$', config, re.MULTILINE)
+                    if len(matches) != 1:
+                        raise SystemExit(f'Expected one literal {name} in build.pkr.hcl')
+                    return matches[0]
+
+                url = literal('eve_installer_url')
+                expected = literal('eve_installer_sha256')
+                with tempfile.TemporaryDirectory() as directory:
+                    installer = pathlib.Path(directory) / 'install-eve.sh'
+                    subprocess.run(['curl', '--fail', '--show-error', '--location',
+                                    '--retry', '2', '--connect-timeout', '15', '--max-time', '60',
+                                    '--output', str(installer), url], check=True)
+                    actual = hashlib.sha256(installer.read_bytes()).hexdigest()
+                if actual != expected:
+                    raise SystemExit(f'EVE installer checksum mismatch: expected {expected}, got {actual}. '
+                                     'Review the upstream installer before updating eve_installer_sha256 in build.pkr.hcl.')
+                print(f'EVE installer checksum verified: {actual}')
+                PY
       - deployment: Packer
+        dependsOn: Preflight
         displayName: Build and publish EVE image
         environment: ${{ variables.AZURE_ENVIRONMENT }}
         pool:

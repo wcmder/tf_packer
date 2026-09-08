@@ -123,6 +123,37 @@ eveImageVersion:     0.1.0
 
 After the Packer pipeline succeeds, run `eve_dev.yml` with the same `eveImageVersion`, or `iperf_dev.yml` with the same `iperfImageVersion`, to deploy a VM from that exact gallery version.
 
+### Check the EVE installer SHA-256 manually
+
+The EVE pipeline checks the upstream installer against `eve_installer_sha256` in [main/packer/eve/build.pkr.hcl](main/packer/eve/build.pkr.hcl) before creating the build VM or downloading appliance images. A download failure or checksum mismatch stops the build. Packer also verifies the checksum inside the VM before executing the installer.
+
+From the repository root, download the installer without executing it and calculate its SHA-256 on macOS or Linux:
+
+```bash
+(
+  set -euo pipefail
+  eve_installer_dir=$(mktemp -d)
+  curl --fail --show-error --location \
+    --connect-timeout 15 --max-time 60 \
+    --output "$eve_installer_dir/install-eve.sh" \
+    https://www.eve-ng.net/jammy/install-eve.sh
+
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$eve_installer_dir/install-eve.sh"
+  else
+    shasum -a 256 "$eve_installer_dir/install-eve.sh"
+  fi
+
+  # Display the expected hash stored in the Packer configuration.
+  rg '^  eve_installer_sha256 =' main/packer/eve/build.pkr.hcl
+  echo "Downloaded installer retained for review: $eve_installer_dir/install-eve.sh"
+)
+```
+
+Compare the calculated 64-character hash with the pinned value. If they differ, review the downloaded script and the upstream changes before replacing `eve_installer_sha256` in `build.pkr.hcl` with the new hash. Do not update the pin solely to bypass a failed check. If `eve_installer_url` changes, use that URL in the command above as well.
+
+Commit and push the reviewed checksum change to `main` to trigger a new EVE build. The preflight check will use the updated value automatically.
+
 ## Run locally
 
 Authenticate to the private module repository with Git Credential Manager, then run:
