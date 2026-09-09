@@ -7,14 +7,14 @@ parameters:
   - name: eveImageVersion
     displayName: Existing EVE gallery image version to deploy
     type: string
-    default: "0.1.703"
+    default: "0.1.710"
 
 variables:
   - group: dostest01kv01
   # Set to "false" to skip plan and apply on automatic and manual runs.
   # To disable automatic runs entirely, replace the trigger block below with: trigger: none
   - name: EVE_PIPELINE_ENABLED
-    value: "false"
+    value: "true"
   - name: TF_VERSION
     value: "1.14.6"
   - name: TF_ROOT
