@@ -102,7 +102,7 @@ data "azurerm_shared_image_version" "eveng_runtime" {
   gallery_name        = "image_gallery"
   resource_group_name = var.image_resource_group_name
 }
-
+/*
 module "eve-ng1-vm" {
   source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.7"
   common                = local.common
@@ -151,3 +151,4 @@ output "wireguard_port" {
   description = "UDP port used by the WireGuard endpoint."
   value       = var.wireguard_port
 }
+*/
