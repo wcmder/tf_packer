@@ -61,8 +61,11 @@ build {
   provisioner "shell" {
     execute_command = local.execute_command
     inline = [
-      "apt -y update",
-      "apt -y upgrade",
+      # Command-not-found suggestions are optional; their metadata hook can fail
+      # on missing CNF indexes and abort otherwise successful package updates.
+      "if [ -f /etc/apt/apt.conf.d/50command-not-found ]; then mv /etc/apt/apt.conf.d/50command-not-found /etc/apt/50command-not-found.disabled; fi",
+      "apt-get update",
+      "apt-get -y upgrade",
     ]
   }
 
