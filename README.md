@@ -290,13 +290,23 @@ Address = 172.16.0.2/32
 [Peer]
 PublicKey = <server-public-key>
 Endpoint = <wireguard-public-ip>:51820
-AllowedIPs = 172.16.0.0/24, 10.0.4.0/25
+AllowedIPs = 172.16.0.0/24, 10.0.4.0/25, 172.16.1.0/24
 PersistentKeepalive = 25
 EOF
 
   chmod 600 ~/.config/wireguard/eve-wg.conf
 )
 ```
+
+### Router management through Cloud1
+
+The EVE Packer image configures `pnet1` as a persistent internal bridge with address `172.16.1.1/24`. The WireGuard extension configures the tunnel, forwarding, and firewall rules; it does not create or address the bridge. The original `/etc/network/interfaces` is saved as `/etc/network/interfaces.before-pnet1` during image configuration.
+
+In each EVE lab, add a network of type **Cloud1 / pnet1** and connect the router management interfaces to it. Assign unique static addresses such as `172.16.1.11/24` and `172.16.1.12/24`, with management gateway `172.16.1.1` (or a route to `172.16.0.0/24` through that gateway in the management routing table). No DHCP server is configured. Cloud1 is shared across labs on this EVE host, so addresses must be unique across simultaneously running labs.
+
+The client configuration above includes `172.16.1.0/24` in `AllowedIPs`. Update existing Mac configurations too, then reconnect the tunnel. WireGuard forwards traffic to Cloud1 without source NAT, so router APIs see the client's `172.16.0.x` address. Enable the API service and allow that source subnet on each router. This change provides management access; it does not configure Internet NAT for router-originated traffic.
+
+Build a new EVE image with `eve_packer.yml`, then set `eveImageVersion` in `eve_dev.yml` to the published version. The VM module and WireGuard extension in `main/stacks/eve_wg/main.tf` are currently commented out; re-enable that block before deployment. Review the Terraform plan for VM replacement before applying the new image, and keep the applicable pipeline enable switches set to `"true"`. Running only the extension on an older image will not add `pnet1`. The extension briefly restarts WireGuard when applying changes. After connecting, test `ping 172.16.1.11` or call the router's API at `https://172.16.1.11` using its appropriate endpoint and credentials.
 
 Start the tunnel and verify that a recent handshake appears:
 

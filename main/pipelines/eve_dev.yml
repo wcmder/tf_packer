@@ -14,7 +14,7 @@ variables:
   # Set to "false" to skip plan and apply on automatic and manual runs.
   # To disable automatic runs entirely, replace the trigger block below with: trigger: none
   - name: EVE_PIPELINE_ENABLED
-    value: "true"
+    value: "false"
   - name: TF_VERSION
     value: "1.14.6"
   - name: TF_ROOT

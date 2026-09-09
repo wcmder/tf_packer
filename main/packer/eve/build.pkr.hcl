@@ -103,6 +103,11 @@ build {
     ]
   }
 
+  provisioner "shell" {
+    execute_command = local.execute_command
+    script          = "${path.root}/scripts/configure-pnet1.sh"
+  }
+
   /*
   provisioner "shell" {
     execute_command = local.execute_command
