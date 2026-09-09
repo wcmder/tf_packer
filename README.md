@@ -202,6 +202,14 @@ az vm get-instance-view \
 
 Shutting down EVE-NG from inside the guest operating system might leave the Azure VM allocated. Use `az vm deallocate` and confirm the state is `VM deallocated` to stop compute billing. Managed disks, public IP addresses, and the VPN gateway continue to incur charges while the VM is deallocated.
 
+## Azure VPN Gateway access to router management
+
+The alternative `main/stacks/eve` stack uses gateway module `v0.1.8` to advertise `172.16.1.0/24` to point-to-site clients. Its route table on `GatewaySubnet` sends that prefix to the EVE VM's private IP. Terraform enables Azure NIC forwarding. Packer's `configure-routing.sh` enables persistent Linux forwarding without adding firewall rules or NAT. The lab assumes the host firewall permits forwarding and DHCP; these scripts do not override existing firewall policies.
+
+Build and deploy a new image containing both the Packer-configured `pnet1` gateway (`172.16.1.1/24`) and routing setup. Router management interfaces use unique addresses in `172.16.1.0/24` and route replies to the VPN client pool `172.16.0.0/24` through `172.16.1.1`, in the appropriate management routing table. There is no routing VM extension; changes to this host routing setup require a new image.
+
+The environment currently selects WireGuard in `main/env/dev/use/eve/main.tf`. To choose Azure VPN Gateway, enable the `module "eve"` call and disable `module "eve_wg"`, then review the migration plan before applying: these modules use different Terraform resource addresses. After gateway deployment, download/import the updated Azure VPN client profile as needed, reconnect, and verify that the client routes `172.16.1.0/24` through the VPN. Do not connect both VPNs simultaneously with the same client address pool.
+
 ## WireGuard remote access stack
 
 `main/stacks/eve_wg` is the lower-cost alternative to the Azure VPN Gateway EVE stack. WireGuard runs directly on the EVE-NG VM. The stack creates one Standard public IP, permits only UDP port `51820` from the Internet, installs WireGuard with an Azure VM extension, enables IPv4 forwarding and NAT, and does not create a VPN gateway or `GatewaySubnet`.
@@ -300,9 +308,13 @@ EOF
 
 ### Router management through Cloud1
 
-The EVE Packer image configures `pnet1` as a persistent internal bridge with address `172.16.1.1/24`. The WireGuard extension configures the tunnel, forwarding, and firewall rules; it does not create or address the bridge. The original `/etc/network/interfaces` is saved as `/etc/network/interfaces.before-pnet1` during image configuration.
+The EVE Packer image configures `pnet1` as a persistent internal bridge with address `172.16.1.1/24`. The WireGuard extension configures the tunnel, forwarding, and NAT for destinations outside the management subnet; it does not add firewall allow rules or create or address the bridge. The original `/etc/network/interfaces` is saved as `/etc/network/interfaces.before-pnet1` during image configuration.
 
-In each EVE lab, add a network of type **Cloud1 / pnet1** and connect the router management interfaces to it. Assign unique static addresses such as `172.16.1.11/24` and `172.16.1.12/24`, with management gateway `172.16.1.1` (or a route to `172.16.0.0/24` through that gateway in the management routing table). No DHCP server is configured. Cloud1 is shared across labs on this EVE host, so addresses must be unique across simultaneously running labs.
+In each EVE lab, add a network of type **Cloud1 / pnet1** and connect the router management interfaces to it. Enable DHCP on those interfaces to receive an address from `172.16.1.100–172.16.1.199`, a `/24` mask, and gateway `172.16.1.1`, with a 12-hour lease. Packer installs the dedicated `eve-pnet1-dhcp` service, serving only `pnet1`. It does not provide DNS; use management IPs for API access. Ensure the router accepts the gateway in its management routing table.
+
+For stable API addresses, assign unique static addresses outside the DHCP pool, such as `172.16.1.11/24` and `172.16.1.12/24`, with management gateway `172.16.1.1` (or a route to `172.16.0.0/24` through that gateway). Cloud1 is shared across labs on this EVE host, so addresses must be unique across simultaneously running labs. Avoid running another DHCP server on Cloud1.
+
+On the EVE VM, inspect leases with `sudo cat /var/lib/eve-dhcp/pnet1.leases` and troubleshoot with `sudo journalctl -u eve-pnet1-dhcp`. The DHCP configuration is `/etc/eve-dhcp/pnet1.conf`. Build and deploy a new image to install this service on a VM.
 
 The client configuration above includes `172.16.1.0/24` in `AllowedIPs`. Update existing Mac configurations too, then reconnect the tunnel. WireGuard forwards traffic to Cloud1 without source NAT, so router APIs see the client's `172.16.0.x` address. Enable the API service and allow that source subnet on each router. This change provides management access; it does not configure Internet NAT for router-originated traffic.
 

@@ -5,7 +5,6 @@ module "context" {
   reg      = var.location
   svc_name = var.service_name
 }
-/*
 module "rsg" {
   source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rsg?ref=v0.1.6"
 
@@ -91,7 +90,7 @@ module "vngw_pip" {
 }
 
 module "vngw" {
-  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vngw?ref=v0.1.6"
+  source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/vngw?ref=v0.1.8"
   common = local.common
   name   = "vngw"
 
@@ -101,6 +100,10 @@ module "vngw" {
   generation    = "Generation2"
   active_active = false
   enable_bgp    = false
+
+  custom_route = {
+    address_prefixes = ["172.16.1.0/24"]
+  }
 
   ip_configuration = {
     default = {
@@ -128,7 +131,7 @@ module "nested_mgmt_rtb" {
       bgp_route_propagation_enabled = true
       route = {
         nested-mgmt = {
-          prefix        = local.common.cidr.subnet.use.vnet_lab.subnet_lab_nested_mgmt[0]
+          prefix        = "172.16.1.0/24"
           next_hop_type = "VirtualAppliance"
           next_hop_ip   = module.eve-ng1-vm.private_ip_address
         }
@@ -156,7 +159,7 @@ data "azurerm_shared_image_version" "eveng_runtime" {
 }
 
 module "eve-ng1-vm" {
-  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.6"
+  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.8"
   common                = local.common
   vm_name               = "eveng1-vm"
   nic_name              = "eveng1-nic"
@@ -168,4 +171,3 @@ module "eve-ng1-vm" {
   storage_account_type = "StandardSSD_LRS"
   src_img_id           = data.azurerm_shared_image_version.eveng_runtime.id
 }
-*/

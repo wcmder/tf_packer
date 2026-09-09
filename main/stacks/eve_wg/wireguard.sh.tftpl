@@ -23,8 +23,8 @@ cat > /etc/wireguard/wg0.conf <<EOF
 Address = ${server_address}
 ListenPort = ${listen_port}
 PrivateKey = $server_private_key
-PostUp = iptables -I FORWARD 1 -i wg0 -j ACCEPT; iptables -I FORWARD 1 -o wg0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT; iptables -t nat -A POSTROUTING -s ${client_cidr} ! -d 172.16.1.0/24 -j MASQUERADE
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT; iptables -t nat -D POSTROUTING -s ${client_cidr} ! -d 172.16.1.0/24 -j MASQUERADE
+PostUp = iptables -t nat -A POSTROUTING -s ${client_cidr} ! -d 172.16.1.0/24 -j MASQUERADE
+PostDown = iptables -t nat -D POSTROUTING -s ${client_cidr} ! -d 172.16.1.0/24 -j MASQUERADE
 
 ${peer_blocks}
 EOF
