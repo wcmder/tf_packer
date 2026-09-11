@@ -310,7 +310,9 @@ EOF
 
 The EVE Packer image configures `pnet1` as a persistent internal bridge with address `172.16.1.1/24`. The WireGuard extension configures the tunnel, forwarding, and NAT for destinations outside the management subnet; it does not add firewall allow rules or create or address the bridge. The original `/etc/network/interfaces` is saved as `/etc/network/interfaces.before-pnet1` during image configuration.
 
-In each EVE lab, add a network of type **Cloud1 / pnet1** and connect the router management interfaces to it. Enable DHCP on those interfaces to receive an address from `172.16.1.100–172.16.1.199`, a `/24` mask, and gateway `172.16.1.1`, with a 12-hour lease. Packer installs the dedicated `eve-pnet1-dhcp` service, serving only `pnet1`. It does not provide DNS; use management IPs for API access. Ensure the router accepts the gateway in its management routing table.
+In each EVE lab, add a network of type **Cloud1 / pnet1** and connect the router management interfaces to it. Enable DHCP on those interfaces to receive an address from `172.16.1.100–172.16.1.199`, a `/24` mask, and gateway `172.16.1.1`, with an infinite lease. Packer installs the dedicated `eve-pnet1-dhcp` service, serving only `pnet1`. It does not provide DNS; use management IPs for API access. Ensure the router accepts the gateway in its management routing table.
+
+Leases persist across reboots while the client MAC/client ID remains unchanged. Preserve `/var/lib/eve-dhcp/pnet1.leases` when replacing the EVE VM to retain assignments. Infinite leases do not expire automatically, so retired nodes' leases may need cleanup to reclaim pool addresses.
 
 For stable API addresses, assign unique static addresses outside the DHCP pool, such as `172.16.1.11/24` and `172.16.1.12/24`, with management gateway `172.16.1.1` (or a route to `172.16.0.0/24` through that gateway). Cloud1 is shared across labs on this EVE host, so addresses must be unique across simultaneously running labs. Avoid running another DHCP server on Cloud1.
 

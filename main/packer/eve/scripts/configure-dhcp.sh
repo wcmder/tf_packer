@@ -15,7 +15,7 @@ cat > /etc/eve-dhcp/pnet1.conf <<'EOF'
 port=0
 interface=pnet1
 bind-dynamic
-dhcp-range=172.16.1.100,172.16.1.199,255.255.255.0,12h
+dhcp-range=172.16.1.100,172.16.1.199,255.255.255.0,infinite
 dhcp-option=option:router,172.16.1.1
 # Management access uses IP addresses; do not advertise a nonexistent DNS service.
 dhcp-option=option:dns-server
