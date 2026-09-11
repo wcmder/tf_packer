@@ -75,6 +75,7 @@ If `az account set` cannot find the subscription or the error mentions a Governm
 
 ```bash
 az cloud show --query name --output tsv
+az cloud list --output table
 ```
 
 It should return `AzureCloud`. A subscription-not-found error names the cloud being searched; it does not necessarily establish which cloud owns the subscription. Run the login sequence above again after correcting the cloud. If the subscription is still absent from `az account list`, ensure the browser device-code login uses an account with access to the specified subscription and tenant.
