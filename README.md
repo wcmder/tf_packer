@@ -51,14 +51,17 @@ Use this order:
 
 ### Select the manual pipeline inputs
 
-First, clear any stale Azure CLI account cache, authenticate against the correct tenant with device-code flow, and select the development subscription. The scope value must be the plain URL shown below, without Markdown link brackets or parentheses:
+This project uses public Azure (`AzureCloud`) in East US, not Azure Government. First, select the public cloud, clear any stale Azure CLI account cache, authenticate against the correct tenant with device-code flow, and select the development subscription. The scope value must be the plain URL shown below, without Markdown link brackets or parentheses:
 
 ```bash
+az cloud set --name AzureCloud
 az account clear
 az login \
   --tenant e997af8c-9bfb-4955-b553-23a019d94051 \
   --use-device-code \
   --scope 'https://management.core.windows.net//.default'
+
+az account list --output table
 
 az account set \
   --subscription a4b57fa5-2f2c-4732-b452-32be7d1724b1
@@ -67,6 +70,14 @@ az account show \
   --query '{user:user.name, subscription:name, subscriptionId:id, tenantId:tenantId}' \
   --output table
 ```
+
+If `az account set` cannot find the subscription or the error mentions a Government cloud, check the active cloud:
+
+```bash
+az cloud show --query name --output tsv
+```
+
+It should return `AzureCloud`. A subscription-not-found error names the cloud being searched; it does not necessarily establish which cloud owns the subscription. Run the login sequence above again after correcting the cloud. If the subscription is still absent from `az account list`, ensure the browser device-code login uses an account with access to the specified subscription and tenant.
 
 When manually running `eve_packer.yml` or `iperf_packer.yml`, select the branch containing the Packer configuration you want to build. Normally this is `main`; select a feature branch only when testing unmerged changes. The pipeline YAML is loaded from the selected branch.
 
