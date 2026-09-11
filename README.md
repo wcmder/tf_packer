@@ -2,6 +2,8 @@
 
 This repository builds Azure managed images with Packer and deploys an EVE-NG lab with Terraform.
 
+See [CHANGELOG.md](CHANGELOG.md) for image and build-pipeline changes, release recording instructions, and deployment notes.
+
 ## Structure
 
 ```text
