@@ -85,7 +85,7 @@ module "nsg_assc" {
     }
   }
 }
-
+/*
 module "eve_pip" {
   source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/pip?ref=v0.1.6"
   common = local.common
@@ -151,3 +151,4 @@ output "wireguard_port" {
   description = "UDP port used by the WireGuard endpoint."
   value       = var.wireguard_port
 }
+*/

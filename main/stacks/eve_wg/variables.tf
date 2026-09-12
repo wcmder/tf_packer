@@ -45,6 +45,7 @@ variable "vm_size" {
   type        = string
   description = "Nested-virtualization-capable, SCSI-compatible EVE-NG VM size."
   default     = "Standard_E8ds_v5"
+  #default = "Standard_D32ds_v5"
 }
 
 variable "wireguard_port" {
