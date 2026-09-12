@@ -170,21 +170,55 @@ Commit and push the reviewed checksum change to `main` to trigger a new EVE buil
 
 ## Run locally
 
-Authenticate to the private module repository with Git Credential Manager, then run:
+Sign in to public Azure using the login instructions above and authenticate to the private module repository with Git Credential Manager. Git authentication downloads the modules; the backend storage key and service principal below authenticate Terraform to Azure.
+
+The commands below assume the pipeline secrets are stored in Key Vault `dostest01kv01`. Your signed-in account needs permission to read them. If the Azure DevOps variable group uses a different vault, replace the vault name accordingly.
+
+| Credential | Key Vault secret |
+|---|---|
+| Backend storage access key | `dostest01sa01-key1` |
+| SPN application/client ID | `dostest-spn-id` |
+| SPN client secret | `dostest-spn-secret` |
+| SPN tenant ID | `dostest-tenant-id` |
+
+From the repository root, replace `<published-version>` with the exact EVE gallery image version and run this block. It retrieves credentials without printing them, stops if retrieval fails, and keeps the variables scoped to a subshell:
 
 ```bash
-cd main/env/dev/use/eve
-terraform init -upgrade -reconfigure \
-  -backend-config="access_key=<backend-access-key>"
-terraform fmt -check
-terraform validate
-terraform plan \
-  -var="spn-client-id=<client-id>" \
-  -var="spn-client-secret=<client-secret>" \
-  -var="spn-tenant-id=<tenant-id>"
+(
+  set -euo pipefail
+
+  ARM_ACCESS_KEY=$(az keyvault secret show \
+    --vault-name dostest01kv01 \
+    --name dostest01sa01-key1 --query value --output tsv)
+  export ARM_ACCESS_KEY
+
+  SPN_CLIENT_ID=$(az keyvault secret show \
+    --vault-name dostest01kv01 \
+    --name dostest-spn-id --query value --output tsv)
+
+  SPN_CLIENT_SECRET=$(az keyvault secret show \
+    --vault-name dostest01kv01 \
+    --name dostest-spn-secret --query value --output tsv)
+
+  SPN_TENANT_ID=$(az keyvault secret show \
+    --vault-name dostest01kv01 \
+    --name dostest-tenant-id --query value --output tsv)
+
+  cd main/env/dev/use/eve
+  terraform init -upgrade -reconfigure
+  terraform fmt -check
+  terraform validate
+  env \
+    "TF_VAR_spn-client-id=$SPN_CLIENT_ID" \
+    "TF_VAR_spn-client-secret=$SPN_CLIENT_SECRET" \
+    "TF_VAR_spn-tenant-id=$SPN_TENANT_ID" \
+    terraform plan -var="eve_image_version=<published-version>"
+)
 ```
 
-Review every plan carefully before applying it.
+The backend reads `ARM_ACCESS_KEY` automatically. Its storage account `dostest01sa01` is in subscription `3ee28fc2-7a0e-46c8-b38d-14ca6a26d742`; the Azure provider deploys EVE into subscription `a4b57fa5-2f2c-4732-b452-32be7d1724b1`. The `env` command passes the existing hyphenated Terraform variable names without requiring zsh to export invalid shell identifiers.
+
+Review every plan carefully before applying it. This example only plans changes; it does not deploy them.
 
 ## Stop and start the EVE-NG lab VM
 
