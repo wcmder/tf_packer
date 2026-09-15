@@ -7,7 +7,7 @@ parameters:
   - name: eveImageVersion
     displayName: Existing EVE gallery image version to deploy
     type: string
-    default: "0.1.715"
+    default: "0.1.719"
 
 variables:
   - group: dostest01kv01

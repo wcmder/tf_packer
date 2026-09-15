@@ -85,7 +85,7 @@ module "nsg_assc" {
     }
   }
 }
-/*
+
 module "eve_pip" {
   source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/pip?ref=v0.1.6"
   common = local.common
@@ -104,7 +104,7 @@ data "azurerm_shared_image_version" "eveng_runtime" {
 }
 
 module "eve-ng1-vm" {
-  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.7"
+  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.9"
   common                = local.common
   vm_name               = "eveng1-vm"
   nic_name              = "eveng1-nic"
@@ -114,6 +114,7 @@ module "eve-ng1-vm" {
   ip_forwarding_enabled = true
   vm_size               = var.vm_size
   storage_account_type  = "StandardSSD_LRS"
+  os_disk_size_gb       = 512
   src_img_id            = data.azurerm_shared_image_version.eveng_runtime.id
 }
 
@@ -151,4 +152,4 @@ output "wireguard_port" {
   description = "UDP port used by the WireGuard endpoint."
   value       = var.wireguard_port
 }
-*/
+

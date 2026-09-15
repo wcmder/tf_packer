@@ -43,6 +43,8 @@ The EVE and iPerf Packer pipelines accept an exact Ubuntu version and a new appl
 
 ## Image publication workflow
 
+Both EVE deployment stacks request a 512 GB managed OS disk through VM module `v0.1.9`. The Packer base image remains 128 GB. Review the Terraform plan before applying a disk expansion; after deployment, check `df -h / /opt/unetlab` on EVE to confirm the guest filesystem uses the expanded capacity. This host disk setting does not resize the virtual disks inside Panorama or firewall nodes.
+
 Use this order:
 
 1. Run `images_dev.yml` to create the `dev-use-images-rg` resource group, `image_gallery` Azure Compute Gallery, and stable `eve-ng` and `iperf` image definitions.

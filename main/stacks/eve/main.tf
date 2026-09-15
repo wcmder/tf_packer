@@ -159,7 +159,7 @@ data "azurerm_shared_image_version" "eveng_runtime" {
 }
 
 module "eve-ng1-vm" {
-  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.8"
+  source                = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.9"
   common                = local.common
   vm_name               = "eveng1-vm"
   nic_name              = "eveng1-nic"
@@ -169,5 +169,6 @@ module "eve-ng1-vm" {
   #vm_size               = "Standard_D8s_v5"
   vm_size              = "Standard_E8s_v5"
   storage_account_type = "StandardSSD_LRS"
+  os_disk_size_gb      = 512
   src_img_id           = data.azurerm_shared_image_version.eveng_runtime.id
 }
