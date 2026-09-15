@@ -222,6 +222,32 @@ The backend reads `ARM_ACCESS_KEY` automatically. Its storage account `dostest01
 
 Review every plan carefully before applying it. This example only plans changes; it does not deploy them.
 
+### Release a stale Terraform state lock
+
+An error stating `state blob is already locked` means Terraform cannot acquire the lock for the backend state. Check Azure DevOps for an active EVE apply and any local Terraform processes first. Wait for an active operation to finish; only unlock after confirming the owning operation has stopped. A canceled or failed pipeline can leave a stale lock.
+
+The UUID under `Lock Info: ID` identifies that particular lock. It is not a subscription ID, credential, or permanent state identifier. For example, `75023812-29a0-b45d-5ebe-6e73556d9073` was the ID reported by one failed attempt. Always copy the ID from the current error and confirm its path is `tfstate01/tfp-eve.tfstate` for the EVE backend.
+
+After signing in with `az login` as described above, run this block from the repository root. Replace `<lock-id-from-current-error>` with that ID. The storage access key is sufficient for the backend unlock; the VM deployment SPN credentials are not needed. Initialization also requires Git access to the private modules.
+
+```bash
+(
+  set -euo pipefail
+
+  ARM_ACCESS_KEY=$(az keyvault secret show \
+    --vault-name dostest01kv01 \
+    --name dostest01sa01-key1 \
+    --query value --output tsv)
+  export ARM_ACCESS_KEY
+
+  cd main/env/dev/use/eve
+  terraform init -reconfigure
+  terraform force-unlock '<lock-id-from-current-error>'
+)
+```
+
+Your signed-in account needs permission to read the Key Vault secret. Terraform asks for confirmation before unlocking. This releases the lock; it does not stop the original process, roll back a partial apply, or delete Azure resources. Do not bypass locking with `-lock=false`. After unlocking, rerun the pipeline to generate a fresh plan against the current state.
+
 ## Stop and start the EVE-NG lab VM
 
 Deallocate the EVE-NG VM when the lab is idle to stop its compute charges:
