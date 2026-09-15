@@ -15,13 +15,21 @@ variable "EVE_IMAGES" {
       image_path    = "/opt/unetlab/addons/qemu/c8000v-17.15.06"
       download_path = "https://repo.dknetworks.io/files/c8kv_17.15/c8000v-universalk9_16G_serial.17.15.06.qcow2"
     }
-    palo_10_2 = {
-      image_path    = "/opt/unetlab/addons/qemu/paloalto-10.2.5"
-      download_path = "https://repo.dknetworks.io/files/palo_10.2/virtioa.qcow2"
+    pano_11_2 = {
+      image_path    = "/opt/unetlab/addons/qemu/panorama-11.2.8"
+      download_path = "https://repo.dknetworks.io/files/palo_11.2/Panorama-KVM-11.2.8.qcow2"
     }
     palo_11_2 = {
       image_path    = "/opt/unetlab/addons/qemu/paloalto-11.2.10-h6"
       download_path = "https://repo.dknetworks.io/files/palo_11.2/PA-VM-KVM-11.2.10-h6.qcow2"
+    }
+    pano_12_1 = {
+      image_path    = "/opt/unetlab/addons/qemu/panorama-12.1.5"
+      download_path = "https://repo.dknetworks.io/files/palo_12.1/Panorama-KVM-12.1.5.qcow2"
+    }
+    palo_12_1 = {
+      image_path    = "/opt/unetlab/addons/qemu/paloalto-12.1.7"
+      download_path = "https://repo.dknetworks.io/files/palo_12.1/PA-VM-KVM-12.1.7.qcow2"
     }
   }
 }
