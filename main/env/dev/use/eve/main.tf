@@ -11,7 +11,7 @@ module "eve" {
 }
 
 
-
+*/
 module "eve_wg" {
   source = "../../../../stacks/eve_wg"
 
@@ -28,4 +28,4 @@ module "eve_wg" {
     }
   }
 }
-*/
+
