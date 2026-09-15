@@ -17,8 +17,8 @@ interface=pnet1
 bind-dynamic
 dhcp-range=172.16.1.100,172.16.1.199,255.255.255.0,infinite
 dhcp-option=option:router,172.16.1.1
-# Management access uses IP addresses; do not advertise a nonexistent DNS service.
-dhcp-option=option:dns-server
+# Advertise external resolvers; dnsmasq remains DHCP-only (port=0).
+dhcp-option=option:dns-server,8.8.8.8,8.8.4.4
 dhcp-leasefile=/var/lib/eve-dhcp/pnet1.leases
 log-dhcp
 EOF

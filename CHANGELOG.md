@@ -21,6 +21,7 @@ The entries below summarize recent repository changes; their first published ima
 ### Changed
 
 - DHCP leases now use `infinite` instead of 12 hours.
+- DHCP advertises public DNS servers `8.8.8.8` and `8.8.4.4`; the local dnsmasq DNS service remains disabled. Clients need outbound connectivity and must renew existing leases to obtain the new options.
 - Bridge, DHCP, and host routing setup run during Packer imaging. Host routing enables IP forwarding without installing custom firewall allow rules.
 - Builds trigger on relevant changes to `main`, with YAML variables replacing runtime inputs and gallery versions generated as `0.1.$(Build.BuildId)`.
 - Added `EVE_PIPELINE_ENABLED` to skip build work when disabled.
