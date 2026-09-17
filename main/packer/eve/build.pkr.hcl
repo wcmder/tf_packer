@@ -24,8 +24,8 @@ variable "EVE_IMAGES" {
       download_path = "https://repo.dknetworks.io/files/palo_11.2/PA-VM-KVM-11.2.10-h6.qcow2"
     }
     pano_12_1 = {
-      image_path    = "/opt/unetlab/addons/qemu/panorama-12.1.5"
-      download_path = "https://repo.dknetworks.io/files/palo_12.1/Panorama-KVM-12.1.5.qcow2"
+      image_path    = "/opt/unetlab/addons/qemu/panorama-12.1.2"
+      download_path = "https://repo.dknetworks.io/files/palo_12.1/Panorama-KVM-12.1.2.qcow2"
     }
     palo_12_1 = {
       image_path    = "/opt/unetlab/addons/qemu/paloalto-12.1.7"
