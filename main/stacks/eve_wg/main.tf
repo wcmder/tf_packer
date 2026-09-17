@@ -72,7 +72,7 @@ module "eveng_nsg" {
           dst_addr_prefix = "*"
         }
         allow_ssh = {
-          priority        = 100
+          priority        = 200
           direction       = "Inbound"
           access          = "Allow"
           protocol        = "Tcp"
