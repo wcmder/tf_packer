@@ -71,6 +71,16 @@ module "eveng_nsg" {
           src_addr_prefix = "*"
           dst_addr_prefix = "*"
         }
+        allow_ssh = {
+          priority        = 100
+          direction       = "Inbound"
+          access          = "Allow"
+          protocol        = "Tcp"
+          src_port_range  = "*"
+          dst_port_range  = tostring(var.wireguard_port)
+          src_addr_prefix = "96.240.140.17"
+          dst_addr_prefix = "*"
+        }
       }
     }
   }
