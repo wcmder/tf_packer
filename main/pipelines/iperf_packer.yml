@@ -15,7 +15,7 @@ variables:
     value: "dev-use-images-rg"
   - name: IMAGE_GALLERY
     value: "image_gallery"
-  - name: IMAGE_LOCATION
+  - name: RSG_LOCATION
     value: "East US"
   - name: UBUNTU_IMAGE_VERSION
     value: "22.04.202608060"
@@ -80,7 +80,7 @@ stages:
                     PKR_VAR_subscription_id: $(IMAGE_SUBSCRIPTION_ID)
                     PKR_VAR_image_resource_group: $(IMAGE_RESOURCE_GROUP)
                     PKR_VAR_gallery_name: $(IMAGE_GALLERY)
-                    PKR_VAR_location: $(IMAGE_LOCATION)
+                    PKR_VAR_location: $(RSG_LOCATION)
                     PKR_VAR_spn-client-id: $(dostest-spn-id)
                     PKR_VAR_spn-client-secret: $(dostest-spn-secret)
                     PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
@@ -95,7 +95,7 @@ stages:
                     PKR_VAR_subscription_id: $(IMAGE_SUBSCRIPTION_ID)
                     PKR_VAR_image_resource_group: $(IMAGE_RESOURCE_GROUP)
                     PKR_VAR_gallery_name: $(IMAGE_GALLERY)
-                    PKR_VAR_location: $(IMAGE_LOCATION)
+                    PKR_VAR_location: $(RSG_LOCATION)
                     PKR_VAR_spn-client-id: $(dostest-spn-id)
                     PKR_VAR_spn-client-secret: $(dostest-spn-secret)
                     PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
