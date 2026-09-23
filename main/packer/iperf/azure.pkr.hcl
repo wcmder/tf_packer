@@ -1,29 +1,26 @@
 # Azure image builder configuration.
 locals {
-  location     = "East US"
-  rsg_name     = "dev-use-images-rg"
-  img_name     = "iperf"
-  gallery_name = "image_gallery"
+  img_name = "iperf"
 }
 
-source "azure-arm" "dev_arm" {
-  subscription_id = var.dev_subscription_id
+source "azure-arm" "arm" {
+  subscription_id = var.subscription_id
   client_id       = var.spn-client-id
   client_secret   = var.spn-client-secret
   tenant_id       = var.spn-tenant-id
 
-  location = local.location
+  location = var.location
 
   shared_image_gallery_destination {
-    subscription         = var.dev_subscription_id
-    resource_group       = local.rsg_name
-    gallery_name         = local.gallery_name
+    subscription         = var.subscription_id
+    resource_group       = var.image_resource_group
+    gallery_name         = var.gallery_name
     image_name           = local.img_name
     image_version        = var.iperf_image_version
     storage_account_type = "Standard_LRS"
 
     target_region {
-      name     = local.location
+      name     = var.location
       replicas = 1
     }
   }

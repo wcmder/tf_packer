@@ -63,7 +63,7 @@ locals {
 
 build {
   sources = [
-    "source.azure-arm.dev_arm"
+    "source.azure-arm.arm"
   ]
 
   provisioner "shell" {
