@@ -77,7 +77,7 @@ module "eveng_nsg" {
           access          = "Allow"
           protocol        = "Tcp"
           src_port_range  = "*"
-          dst_port_range  = tostring(var.wireguard_port)
+          dst_port_range  = "22"
           src_addr_prefix = "96.240.140.17"
           dst_addr_prefix = "*"
         }
