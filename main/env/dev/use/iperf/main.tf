@@ -1,4 +1,4 @@
-/*
+
 
 module "iperf" {
   source = "../../../../stacks/iperf"
@@ -20,4 +20,4 @@ module "iperf2" {
   resource_group_name = "rg"
   iperf_image_version = var.iperf_image_version
 }
-*/
+
