@@ -113,7 +113,7 @@ module "iperf-vm" {
   ip_name     = "iperf-ip"
   subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
   pip_addr_id = module.iperf_pip.pip_name_id["vm-vnet-iperf-pip"]
-  vm_size     = "Standard_D8s_v3"
+  vm_size     = "Standard_D4s_v5"
   src_img_id  = data.azurerm_shared_image_version.iperf.id
 }
 

@@ -7,7 +7,7 @@ parameters:
   - name: iperfImageVersion
     displayName: Existing iPerf gallery image version to deploy
     type: string
-    default: "0.1.0"
+    default: "0.1.735"
 
 variables:
   - group: dostest01kv01
@@ -24,7 +24,7 @@ variables:
 
 trigger:
   branches:
-    include: [dev]
+    include: [main]
   paths:
     include:
       - main/env/dev/use/iperf/**
