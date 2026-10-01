@@ -43,16 +43,7 @@ module "subnet_lab" {
     vm-subnet = {
       cidr_list = local.common.cidr.subnet.use.vnet_lab.subnet_lab_vm
     }
-    AzureBastionSubnet = {
-      cidr_list = local.common.cidr.subnet.use.vnet_lab.subnet_lab_bastion
-    }
   }
-}
-
-module "bastion_nsg" {
-  source   = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_bas?ref=v0.1.6"
-  common   = local.common
-  nsg_name = "bas-nsg"
 }
 
 module "iperf_nsg" {
@@ -79,10 +70,6 @@ module "iperf_nsg" {
 module "nsg_assc" {
   source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/nsg_subnet_assc?ref=v0.1.6"
   nsg_subnet = {
-    bas = {
-      nsg_id    = module.bastion_nsg.nsg_name_id["bas-nsg"]
-      subnet_id = module.subnet_lab.subnet_name_id["AzureBastionSubnet"]
-    }
     vm = {
       nsg_id    = module.iperf_nsg.nsg_name_id["iperf_nsg"]
       subnet_id = module.subnet_lab.subnet_name_id["vm-subnet"]
