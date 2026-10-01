@@ -28,7 +28,9 @@ build {
       "apt-get upgrade -y",
       "echo 'UPGRADE DONE'",
       "apt-get install -y iperf",
-      "iperf --version",
+      # Older iPerf 2 releases exit 1 when printing their version, even on success.
+      "command -v iperf",
+      "dpkg-query --show iperf",
       "echo 'IPERF INSTALLED'",
       "apt-get install -y net-tools",
       "echo 'NET-TOOLS INSTALLED'",
