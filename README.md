@@ -143,6 +143,77 @@ eveImageVersion:     0.1.0
 
 After the Packer pipeline succeeds, run `eve_dev.yml` with the same `eveImageVersion`, or `iperf_dev.yml` with the same `iperfImageVersion`, to deploy a VM from that exact gallery version.
 
+### Add or remove image regional replicas
+
+These examples manage iPerf image version `0.1.737` in the East US gallery. Change the version as needed, or use `eve-ng` as the image definition for EVE. Regional replication does not require rebuilding the image.
+
+After `az login`, select the subscription:
+
+```bash
+az account set --subscription a4b57fa5-2f2c-4732-b452-32be7d1724b1
+```
+
+Check the configured target regions before updating them:
+
+```bash
+az sig image-version show \
+  --resource-group dev-use-images-rg \
+  --gallery-name image_gallery \
+  --gallery-image-definition iperf \
+  --gallery-image-version 0.1.737 \
+  --query "publishingProfile.targetRegions[].{Region:name,Replicas:regionalReplicaCount}" \
+  --output table
+```
+
+Replicate to East US, East US 2, and Central US with one replica per region. `--target-regions` specifies the complete desired list; include the source region (`eastus`) and all regions you want to retain:
+
+```bash
+az sig image-version update \
+  --resource-group dev-use-images-rg \
+  --gallery-name image_gallery \
+  --gallery-image-definition iperf \
+  --gallery-image-version 0.1.737 \
+  --target-regions eastus=1 eastus2=1 centralus=1
+```
+
+Check replication progress from another terminal. Wait for the destination region to report `Completed` before deploying a VM there:
+
+```bash
+az sig image-version show \
+  --resource-group dev-use-images-rg \
+  --gallery-name image_gallery \
+  --gallery-image-definition iperf \
+  --gallery-image-version 0.1.737 \
+  --expand ReplicationStatus \
+  --query "replicationStatus.summary[].{Region:region,State:state,Progress:progress}" \
+  --output table
+```
+
+To remove the East US 2 replica while retaining East US and Central US, explicitly allow replicated-location deletion:
+
+```bash
+az sig image-version update \
+  --resource-group dev-use-images-rg \
+  --gallery-name image_gallery \
+  --gallery-image-definition iperf \
+  --gallery-image-version 0.1.737 \
+  --allow-replicated-location-deletion true \
+  --target-regions eastus=1 centralus=1
+```
+
+Repeat the target-region query to confirm that only East US and Central US remain. This removes a regional replica of this version, not the entire image version or existing VMs. New VMs cannot use this version in a region after its replica is removed. The deletion flag persists on the image version; to restore protection after the update completes:
+
+```bash
+az sig image-version update \
+  --resource-group dev-use-images-rg \
+  --gallery-name image_gallery \
+  --gallery-image-definition iperf \
+  --gallery-image-version 0.1.737 \
+  --allow-replicated-location-deletion false
+```
+
+These changes apply only to the selected version. Keep Packer's `target_region` blocks aligned with the regions needed for future builds. Regional replicas incur storage and replication data-transfer charges. See the [Azure CLI image-version reference](https://learn.microsoft.com/en-us/cli/azure/sig/image-version?view=azure-cli-latest) and [gallery billing guidance](https://learn.microsoft.com/en-us/azure/virtual-machines/azure-compute-gallery).
+
 ### Check the EVE installer SHA-256 manually
 
 The EVE pipeline checks the upstream installer against `eve_installer_sha256` in [main/packer/eve/build.pkr.hcl](main/packer/eve/build.pkr.hcl) before creating the build VM or downloading appliance images. A download failure or checksum mismatch stops the build. Packer also verifies the checksum inside the VM before executing the installer.
