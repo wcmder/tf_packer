@@ -1,9 +1,10 @@
 locals {
   regions = {
-    usgovvirginia = "use"
+    usgovvirginia = "usgva"
     eastus        = "use"
     eastus2       = "use2"
     westus        = "usw"
+    centralus     = "usc"
   }
 
   region_key = replace(lower(var.reg), " ", "")
