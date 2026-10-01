@@ -53,6 +53,8 @@ Use this order:
 2. Run the applicable Packer pipeline with an exact Ubuntu version and a new application version; Packer publishes that gallery version directly.
 3. Run the matching deployment pipeline with the same application version; Terraform deploys the VM from that exact gallery version.
 
+The iPerf image includes both iPerf 2 (`iperf`) and iPerf 3 (`iperf3`). The VM deployment runs a Custom Script extension that creates and starts `iperf3.service` on TCP port 5201 and enables it after reboots. The extension disables the earlier `iperf.service` if present. Build a new image with `iperf_packer.yml`, then deploy that published version using `iperf_dev.yml`; older images without iPerf 3 cannot run this extension. Check the server with `systemctl status iperf3.service` or `journalctl -u iperf3.service`, and test from another host using `iperf3 -c <vm-ip> -p 5201 -P 4 -t 30`. The client must use iPerf 3. The current NSG permits TCP; UDP tests would also require an appropriate UDP rule.
+
 ### Select the manual pipeline inputs
 
 This project uses public Azure (`AzureCloud`) in East US, not Azure Government. First, select the public cloud, clear any stale Azure CLI account cache, authenticate against the correct tenant with device-code flow, and select the development subscription. The scope value must be the plain URL shown below, without Markdown link brackets or parentheses:

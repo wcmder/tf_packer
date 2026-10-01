@@ -24,7 +24,7 @@ variables:
 
 trigger:
   branches:
-    include: [main]
+    include: [dev]
   paths:
     include:
       - main/env/dev/use/iperf/**

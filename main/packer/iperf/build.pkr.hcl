@@ -27,10 +27,13 @@ build {
       "apt-get -o Acquire::Retries=3 -o APT::Update::Error-Mode=any update",
       "apt-get upgrade -y",
       "echo 'UPGRADE DONE'",
-      "apt-get install -y iperf",
+      # The deployment extension manages the server, not the package installer.
+      "echo 'iperf3 iperf3/start_daemon boolean false' | debconf-set-selections",
+      "apt-get install -y iperf iperf3",
       # Older iPerf 2 releases exit 1 when printing their version, even on success.
       "command -v iperf",
-      "dpkg-query --show iperf",
+      "command -v iperf3",
+      "dpkg-query --show iperf iperf3",
       "echo 'IPERF INSTALLED'",
       "apt-get install -y net-tools",
       "echo 'NET-TOOLS INSTALLED'",

@@ -116,3 +116,26 @@ module "iperf-vm" {
   vm_size     = "Standard_D8s_v3"
   src_img_id  = data.azurerm_shared_image_version.iperf.id
 }
+
+# Resolve the ID using the VM name exposed by the pinned VM module.
+data "azurerm_virtual_machine" "iperf" {
+  name                = module.iperf-vm.vm_name
+  resource_group_name = local.common.rsg_name
+
+  depends_on = [module.iperf-vm]
+}
+
+resource "azurerm_virtual_machine_extension" "iperf" {
+  name                       = "iperf-server"
+  virtual_machine_id         = data.azurerm_virtual_machine.iperf.id
+  publisher                  = "Microsoft.Azure.Extensions"
+  type                       = "CustomScript"
+  type_handler_version       = "2.1"
+  auto_upgrade_minor_version = true
+
+  protected_settings = jsonencode({
+    script = filebase64("${path.module}/start-iperf.sh")
+  })
+
+  tags = local.common.tags
+}
