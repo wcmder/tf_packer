@@ -1,3 +1,5 @@
+/*
+
 module "iperf" {
   source = "../../../../stacks/iperf"
 
@@ -8,7 +10,7 @@ module "iperf" {
   iperf_image_version = var.iperf_image_version
 }
 
-/*
+
 module "iperf2" {
   source = "../../../../stacks/iperf2"
 
