@@ -31,6 +31,7 @@ trigger:
       - main/stacks/iperf/**
       - main/stacks/context/**
       - main/pipelines/iperf_dev.yml
+      - main/env/dev/use/iperf2/**
 
 stages:
   - stage: Build
