@@ -93,15 +93,16 @@ data "azurerm_shared_image_version" "iperf" {
 }
 
 module "iperf-vm" {
-  source      = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.6"
-  common      = local.common
-  vm_name     = "iperf-vm"
-  nic_name    = "iperf-nic"
-  ip_name     = "iperf-ip"
-  subnet_id   = module.subnet_lab.subnet_name_id["vm-subnet"]
-  pip_addr_id = module.iperf_pip.pip_name_id["vm-vnet-iperf-pip"]
-  vm_size     = "Standard_D4s_v5"
-  src_img_id  = data.azurerm_shared_image_version.iperf.id
+  source                         = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.10.0"
+  common                         = local.common
+  vm_name                        = "iperf-vm"
+  nic_name                       = "iperf-nic"
+  ip_name                        = "iperf-ip"
+  subnet_id                      = module.subnet_lab.subnet_name_id["vm-subnet"]
+  pip_addr_id                    = module.iperf_pip.pip_name_id["vm-vnet-iperf-pip"]
+  vm_size                        = "Standard_D4s_v5"
+  src_img_id                     = data.azurerm_shared_image_version.iperf.id
+  accelerated_networking_enabled = true
 }
 
 # Resolve the ID using the VM name exposed by the pinned VM module.

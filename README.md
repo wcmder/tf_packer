@@ -284,6 +284,8 @@ Shutting down EVE-NG from inside the guest operating system might leave the Azur
 
 ## Stop and start the iPerf VM
 
+The iPerf VM uses VM module `v0.10.0` with `accelerated_networking_enabled = true`. When enabling this on an existing VM, deallocate it before applying `iperf_dev.yml`, then start it afterward using the commands below. No gallery image rebuild is needed.
+
 After signing in with `az login`, stop and deallocate the iPerf VM when it is idle:
 
 ```bash
