@@ -10,6 +10,9 @@ build {
     execute_command = local.execute_command
     inline = [
       "export DEBIAN_FRONTEND=noninteractive",
+      # Command-not-found suggestions are optional; their metadata hook can fail
+      # on missing CNF indexes and abort otherwise successful package updates.
+      "if [ -f /etc/apt/apt.conf.d/50command-not-found ]; then mv /etc/apt/apt.conf.d/50command-not-found /etc/apt/50command-not-found.disabled; fi",
       "apt-get -o APT::Update::Error-Mode=any update",
       # Ubuntu 22.04 ships iperf in Universe, which must be enabled explicitly.
       "apt-get install -y software-properties-common",
