@@ -13,11 +13,18 @@ build {
       # Command-not-found suggestions are optional; their metadata hook can fail
       # on missing CNF indexes and abort otherwise successful package updates.
       "if [ -f /etc/apt/apt.conf.d/50command-not-found ]; then mv /etc/apt/apt.conf.d/50command-not-found /etc/apt/50command-not-found.disabled; fi",
-      "apt-get -o APT::Update::Error-Mode=any update",
+      # Log storage health and discard cached indexes that may be truncated.
+      # Keep APT's lock file and signature verification intact.
+      "df -h / /tmp /var/lib/apt/lists",
+      "df -i / /tmp /var/lib/apt/lists",
+      "ls -ld /tmp /var/lib/apt/lists /var/lib/apt/lists/partial",
+      "find /var/lib/apt/lists -maxdepth 1 -type f -name '*InRelease' -exec wc -c {} +",
+      "find /var/lib/apt/lists -type f ! -name lock -delete",
+      "apt-get -o Acquire::Retries=3 -o APT::Update::Error-Mode=any update",
       # Ubuntu 22.04 ships iperf in Universe, which must be enabled explicitly.
       "apt-get install -y software-properties-common",
       "add-apt-repository --yes --no-update universe",
-      "apt-get -o APT::Update::Error-Mode=any update",
+      "apt-get -o Acquire::Retries=3 -o APT::Update::Error-Mode=any update",
       "apt-get upgrade -y",
       "echo 'UPGRADE DONE'",
       "apt-get install -y iperf",
