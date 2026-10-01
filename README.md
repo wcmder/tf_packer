@@ -282,6 +282,39 @@ az vm get-instance-view \
 
 Shutting down EVE-NG from inside the guest operating system might leave the Azure VM allocated. Use `az vm deallocate` and confirm the state is `VM deallocated` to stop compute billing. Managed disks, public IP addresses, and the VPN gateway continue to incur charges while the VM is deallocated.
 
+## Stop and start the iPerf VM
+
+After signing in with `az login`, stop and deallocate the iPerf VM when it is idle:
+
+```bash
+az vm deallocate \
+  --subscription a4b57fa5-2f2c-4732-b452-32be7d1724b1 \
+  --resource-group dev-use-iperf-rg \
+  --name dev-use-iperf-iperf-vm
+```
+
+Start it again before testing. The configured `iperf3.service` starts automatically on boot and listens on TCP port 5201:
+
+```bash
+az vm start \
+  --subscription a4b57fa5-2f2c-4732-b452-32be7d1724b1 \
+  --resource-group dev-use-iperf-rg \
+  --name dev-use-iperf-iperf-vm
+```
+
+Check for `VM deallocated` after stopping or `VM running` after starting:
+
+```bash
+az vm get-instance-view \
+  --subscription a4b57fa5-2f2c-4732-b452-32be7d1724b1 \
+  --resource-group dev-use-iperf-rg \
+  --name dev-use-iperf-iperf-vm \
+  --query "instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus | [0]" \
+  --output tsv
+```
+
+Use `az vm deallocate` to stop compute billing; `az vm stop` or shutting down inside the guest can leave the VM allocated. Disks and public IP resources can continue to incur charges. See the [Azure CLI VM reference](https://learn.microsoft.com/en-us/cli/azure/vm?view=azure-cli-latest).
+
 ## Azure VPN Gateway access to router management
 
 The alternative `main/stacks/eve` stack uses gateway module `v0.1.8` to advertise `172.16.1.0/24` to point-to-site clients. Its route table on `GatewaySubnet` sends that prefix to the EVE VM's private IP. Terraform enables Azure NIC forwarding. Packer's `configure-routing.sh` enables persistent Linux forwarding without adding firewall rules or NAT. The lab assumes the host firewall permits forwarding and DHCP; these scripts do not override existing firewall policies.
