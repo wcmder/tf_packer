@@ -2,6 +2,7 @@ locals {
   regions = {
     usgovvirginia = "use"
     eastus        = "use"
+    eastus2       = "use2"
     westus        = "usw"
   }
 
