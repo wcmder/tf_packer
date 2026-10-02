@@ -34,7 +34,7 @@ variable "location" {
 
 variable "ubuntu_image_version" {
   type        = string
-  description = "Exact Azure Marketplace version of Canonical Ubuntu 22.04 Gen2."
+  description = "Exact Azure Marketplace version of Canonical Ubuntu 24.04 Gen2."
 }
 
 variable "iperf_image_version" {

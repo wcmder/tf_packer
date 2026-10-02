@@ -41,7 +41,7 @@ The Terraform and Packer pipelines authenticate to Azure with the `sp-test` serv
 
 `sp-test` requires the Contributor role on the development subscription `a4b57fa5-2f2c-4732-b452-32be7d1724b1`. This allows Terraform to create resource groups and infrastructure and allows Packer to create temporary build resources and publish Azure Compute Gallery versions. It does not grant permission to create Azure role assignments.
 
-The EVE and iPerf Packer pipelines accept an exact Ubuntu version and a new application image version as non-secret runtime parameters. `ubuntuImageVersion` defaults to the pinned version `22.04.202608060` and can be changed when manually starting either pipeline. Their deployment pipelines accept the corresponding existing gallery version to deploy. Resolve and review alternative Ubuntu versions with `az vm image list --location eastus --publisher Canonical --offer 0001-com-ubuntu-server-jammy --sku 22_04-lts-gen2 --all`.
+The Packer pipelines define `UBUNTU_IMAGE_VERSION` and generate application image versions as `0.1.$(Build.BuildId)`. EVE uses Ubuntu 22.04 Gen2 (`Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2`) pinned to `22.04.202608060`. iPerf uses Ubuntu 24.04 Gen2 (`Canonical:ubuntu-24_04-lts:server`) pinned to `24.04.202609040`. Change the corresponding pipeline YAML to select another exact Marketplace version. Their deployment pipelines accept the published application image version to deploy.
 
 ## Image publication workflow
 
@@ -142,6 +142,23 @@ eveImageVersion:     0.1.0
 ```
 
 After the Packer pipeline succeeds, run `eve_dev.yml` with the same `eveImageVersion`, or `iperf_dev.yml` with the same `iperfImageVersion`, to deploy a VM from that exact gallery version.
+
+### Upgrade the iPerf VMs to Ubuntu 24.04
+
+Run `iperf_packer.yml` to build a new Ubuntu 24.04 image containing iPerf 2 and iPerf 3. The existing gallery versions remain unchanged. To review available Ubuntu 24.04 base versions:
+
+```bash
+az vm image list \
+  --location eastus \
+  --publisher Canonical \
+  --offer ubuntu-24_04-lts \
+  --sku server \
+  --all \
+  --query "[].{Version:version,URN:urn}" \
+  --output table
+```
+
+Replicate the newly published gallery version to each deployment region using the commands below, then run `iperf_dev.yml` with `iperfImageVersion` set to that new version. Both iPerf module calls use this input. Changing the source image replaces the VMs and their OS disks; preserve any files needed from the existing VMs before applying. This is an image-based replacement, not an in-place OS upgrade. The VM extension starts iPerf 3 after deployment. Verify inside each VM with `cat /etc/os-release` and `systemctl status iperf3.service`. EVE remains on Ubuntu 22.04.
 
 ### Add or remove image regional replicas
 

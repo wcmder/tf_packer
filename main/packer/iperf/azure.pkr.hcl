@@ -29,9 +29,9 @@ source "azure-arm" "arm" {
 
   communicator    = "ssh"
   os_type         = "Linux"
-  image_offer     = "0001-com-ubuntu-server-jammy"
+  image_offer     = "ubuntu-24_04-lts"
   image_publisher = "Canonical"
-  image_sku       = "22_04-lts-gen2"
+  image_sku       = "server"
   image_version   = var.ubuntu_image_version
   vm_size         = "Standard_D4s_v5"
   os_disk_size_gb = 64

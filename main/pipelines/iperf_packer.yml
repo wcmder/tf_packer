@@ -18,7 +18,7 @@ variables:
   - name: RSG_LOCATION
     value: "East US"
   - name: UBUNTU_IMAGE_VERSION
-    value: "22.04.202608060"
+    value: "24.04.202609040"
   - name: IPERF_IMAGE_VERSION
     value: "0.1.$(Build.BuildId)"
   - name: PACKER_VERSION
@@ -71,7 +71,7 @@ stages:
                     script: |
                       set -euo pipefail
                       if [[ ! '$(UBUNTU_IMAGE_VERSION)' =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-                        echo 'UBUNTU_IMAGE_VERSION must be an exact numeric Marketplace version, such as 22.04.202608060.'
+                        echo 'UBUNTU_IMAGE_VERSION must be an exact numeric Marketplace version, such as 24.04.202609040.'
                         exit 1
                       fi
                       packer fmt -check ./

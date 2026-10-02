@@ -21,7 +21,7 @@ build {
       "find /var/lib/apt/lists -maxdepth 1 -type f -name '*InRelease' -exec wc -c {} +",
       "find /var/lib/apt/lists -type f ! -name lock -delete",
       "apt-get -o Acquire::Retries=3 -o APT::Update::Error-Mode=any update",
-      # Ubuntu 22.04 ships iperf in Universe, which must be enabled explicitly.
+      # Ubuntu ships iperf in Universe, which must be enabled explicitly.
       "apt-get install -y software-properties-common",
       "add-apt-repository --yes --no-update universe",
       "apt-get -o Acquire::Retries=3 -o APT::Update::Error-Mode=any update",
