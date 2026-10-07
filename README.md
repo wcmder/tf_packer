@@ -62,6 +62,8 @@ To switch back, restore the Git source with the desired published tag and rerun 
 
 ## Prerequisites
 
+Replace `<subscription-id>`, `<backend-subscription-id>`, and `<tenant-id>` in the examples with your deployment subscription, backend storage subscription, and Microsoft Entra tenant IDs.
+
 - Terraform 1.14.6 or later
 - Azure credentials for the development subscription
 - Access to the remote-state storage account
@@ -69,7 +71,7 @@ To switch back, restore the Git source with the desired published tag and rerun 
 
 The Terraform and Packer pipelines authenticate to Azure with the `sp-test` service principal. The Azure DevOps variable group `dostest01kv01` must expose the `sp-test` client ID and secret through `dostest-spn-id` and `dostest-spn-secret`, the tenant ID through `dostest-tenant-id`, the backend credentials, and `repo-access`, a read-only Azure Repos PAT. The pipeline passes that PAT to Git only during `terraform init`.
 
-`sp-test` requires the Contributor role on the development subscription `a4b57fa5-2f2c-4732-b452-32be7d1724b1`. This allows Terraform to create resource groups and infrastructure and allows Packer to create temporary build resources and publish Azure Compute Gallery versions. It does not grant permission to create Azure role assignments.
+`sp-test` requires the Contributor role on the development subscription `<subscription-id>`. This allows Terraform to create resource groups and infrastructure and allows Packer to create temporary build resources and publish Azure Compute Gallery versions. It does not grant permission to create Azure role assignments.
 
 The Packer pipelines define `UBUNTU_IMAGE_VERSION` and generate application image versions as `0.1.$(Build.BuildId)`. EVE uses Ubuntu 22.04 Gen2 (`Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2`) pinned to `22.04.202608060`. iPerf uses Ubuntu 24.04 Gen2 (`Canonical:ubuntu-24_04-lts:server`) pinned to `24.04.202609040`. Change the corresponding pipeline YAML to select another exact Marketplace version. Their deployment pipelines accept the published application image version to deploy.
 
@@ -101,14 +103,14 @@ This project uses public Azure (`AzureCloud`) in East US, not Azure Government. 
 az cloud set --name AzureCloud
 az account clear
 az login \
-  --tenant e997af8c-9bfb-4955-b553-23a019d94051 \
+  --tenant "<tenant-id>" \
   --use-device-code \
   --scope 'https://management.core.windows.net//.default'
 
 az account list --output table
 
 az account set \
-  --subscription a4b57fa5-2f2c-4732-b452-32be7d1724b1
+  --subscription "<subscription-id>"
 
 az account show \
   --query '{user:user.name, subscription:name, subscriptionId:id, tenantId:tenantId}' \
@@ -205,7 +207,7 @@ These examples manage iPerf image version `0.1.737` in the East US gallery. Chan
 After `az login`, select the subscription:
 
 ```bash
-az account set --subscription a4b57fa5-2f2c-4732-b452-32be7d1724b1
+az account set --subscription "<subscription-id>"
 ```
 
 Check the configured target regions before updating them:
@@ -348,7 +350,7 @@ From the repository root, replace `<published-version>` with the exact EVE galle
 )
 ```
 
-The backend reads `ARM_ACCESS_KEY` automatically. Its storage account `dostest01sa01` is in subscription `3ee28fc2-7a0e-46c8-b38d-14ca6a26d742`; the Azure provider deploys EVE into subscription `a4b57fa5-2f2c-4732-b452-32be7d1724b1`. The `env` command passes the existing hyphenated Terraform variable names without requiring zsh to export invalid shell identifiers.
+The backend reads `ARM_ACCESS_KEY` automatically. Its storage account `dostest01sa01` is in subscription `<backend-subscription-id>`; the Azure provider deploys EVE into subscription `<subscription-id>`. The `env` command passes the existing hyphenated Terraform variable names without requiring zsh to export invalid shell identifiers.
 
 Review every plan carefully before applying it. This example only plans changes; it does not deploy them.
 
@@ -416,7 +418,7 @@ After signing in with `az login`, stop and deallocate the iPerf VM when it is id
 
 ```bash
 az vm deallocate \
-  --subscription a4b57fa5-2f2c-4732-b452-32be7d1724b1 \
+  --subscription "<subscription-id>" \
   --resource-group dev-use-iperf-rg \
   --name dev-use-iperf-iperf-vm
 ```
@@ -425,7 +427,7 @@ Start it again before testing. The configured `iperf3.service` starts automatica
 
 ```bash
 az vm start \
-  --subscription a4b57fa5-2f2c-4732-b452-32be7d1724b1 \
+  --subscription "<subscription-id>" \
   --resource-group dev-use-iperf-rg \
   --name dev-use-iperf-iperf-vm
 ```
@@ -434,7 +436,7 @@ Check for `VM deallocated` after stopping or `VM running` after starting:
 
 ```bash
 az vm get-instance-view \
-  --subscription a4b57fa5-2f2c-4732-b452-32be7d1724b1 \
+  --subscription "<subscription-id>" \
   --resource-group dev-use-iperf-rg \
   --name dev-use-iperf-iperf-vm \
   --query "instanceView.statuses[?starts_with(code, 'PowerState/')].displayStatus | [0]" \
