@@ -93,7 +93,9 @@ data "azurerm_shared_image_version" "iperf" {
 }
 
 module "iperf-vm" {
-  source                         = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.10.0"
+  source                         = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/system/vm?ref=v0.1.11"
+  admin_username                 = var.vm_admin_username
+  admin_password                 = var.vm_admin_password
   common                         = local.common
   vm_name                        = "iperf-vm"
   nic_name                       = "iperf-nic"

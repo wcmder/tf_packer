@@ -14,7 +14,7 @@ variables:
   # Set to "false" to skip plan and apply on automatic and manual runs.
   # To disable automatic runs entirely, replace the trigger block below with: trigger: none
   - name: EVE_PIPELINE_ENABLED
-    value: "true"
+    value: "false"
   - name: TF_VERSION
     value: "1.14.6"
   - name: TF_ROOT
@@ -83,6 +83,8 @@ stages:
               TF_VAR_spn-client-id: $(dostest-spn-id)
               TF_VAR_spn-client-secret: $(dostest-spn-secret)
               TF_VAR_spn-tenant-id: $(dostest-tenant-id)
+              TF_VAR_vm_admin_username: $(vm-admin-username)
+              TF_VAR_vm_admin_password: $(vm-admin-password)
               TF_VAR_eve_image_version: ${{ parameters.eveImageVersion }}
           - task: ArchiveFiles@2
             inputs:
@@ -148,4 +150,6 @@ stages:
                     TF_VAR_spn-client-id: $(dostest-spn-id)
                     TF_VAR_spn-client-secret: $(dostest-spn-secret)
                     TF_VAR_spn-tenant-id: $(dostest-tenant-id)
+                    TF_VAR_vm_admin_username: $(vm-admin-username)
+                    TF_VAR_vm_admin_password: $(vm-admin-password)
                     TF_VAR_eve_image_version: ${{ parameters.eveImageVersion }}

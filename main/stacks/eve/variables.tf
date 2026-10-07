@@ -45,3 +45,14 @@ variable "vpn_client_tenant_id" {
   type        = string
   description = "Microsoft Entra tenant ID used to authenticate Point-to-Site VPN clients."
 }
+
+variable "vm_admin_username" {
+  type        = string
+  description = "VM administrator username supplied by the deployment pipeline."
+}
+
+variable "vm_admin_password" {
+  type        = string
+  sensitive   = true
+  description = "VM administrator password supplied by a secret pipeline variable; stored in Terraform state."
+}

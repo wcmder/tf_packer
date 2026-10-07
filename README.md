@@ -43,6 +43,14 @@ The Terraform and Packer pipelines authenticate to Azure with the `sp-test` serv
 
 The Packer pipelines define `UBUNTU_IMAGE_VERSION` and generate application image versions as `0.1.$(Build.BuildId)`. EVE uses Ubuntu 22.04 Gen2 (`Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2`) pinned to `22.04.202608060`. iPerf uses Ubuntu 24.04 Gen2 (`Canonical:ubuntu-24_04-lts:server`) pinned to `24.04.202609040`. Change the corresponding pipeline YAML to select another exact Marketplace version. Their deployment pipelines accept the published application image version to deploy.
 
+## VM administrator credentials
+
+EVE and iPerf VM calls target shared VM module `v0.1.11`, which requires caller-supplied administrator credentials. Publish that module release from `azure-terraform-modules` before running these updated deployment pipelines; the tag is not created by this workspace change.
+
+Add `vm-admin-username` and secret `vm-admin-password` to the existing `dostest01kv01` variable group (or its linked Key Vault). Both deployment pipelines pass these values as `TF_VAR_vm_admin_username` and `TF_VAR_vm_admin_password` to plan and apply. The environment roots forward them through the stacks to the shared module. Local Terraform runs need the same inputs through environment variables or an uncommitted variable file.
+
+Keep the existing VM administrator username when migrating to avoid VM replacement. Review the Terraform plan before applying a password change. Password inputs are sensitive at every layer, but passwords remain in Terraform state and saved plan artifacts; restrict access to those resources. Existing committed credential values remain in Git history, so replace the old password through the secret store. These inputs configure the Azure VM administrator account; they do not change the EVE guest root password configured by Packer.
+
 ## Image publication workflow
 
 Both EVE deployment stacks request a 512 GB managed OS disk through VM module `v0.1.9`. The Packer base image remains 128 GB. Review the Terraform plan before applying a disk expansion; after deployment, check `df -h / /opt/unetlab` on EVE to confirm the guest filesystem uses the expanded capacity. This host disk setting does not resize the virtual disks inside Panorama or firewall nodes.

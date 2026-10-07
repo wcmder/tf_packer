@@ -83,6 +83,8 @@ stages:
               TF_VAR_spn-client-id: $(dostest-spn-id)
               TF_VAR_spn-client-secret: $(dostest-spn-secret)
               TF_VAR_spn-tenant-id: $(dostest-tenant-id)
+              TF_VAR_vm_admin_username: $(vm-admin-username)
+              TF_VAR_vm_admin_password: $(vm-admin-password)
               TF_VAR_iperf_image_version: ${{ parameters.iperfImageVersion }}
           - task: ArchiveFiles@2
             inputs:
@@ -148,4 +150,6 @@ stages:
                     TF_VAR_spn-client-id: $(dostest-spn-id)
                     TF_VAR_spn-client-secret: $(dostest-spn-secret)
                     TF_VAR_spn-tenant-id: $(dostest-tenant-id)
+                    TF_VAR_vm_admin_username: $(vm-admin-username)
+                    TF_VAR_vm_admin_password: $(vm-admin-password)
                     TF_VAR_iperf_image_version: ${{ parameters.iperfImageVersion }}

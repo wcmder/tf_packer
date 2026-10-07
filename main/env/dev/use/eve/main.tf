@@ -2,6 +2,9 @@
 module "eve" {
   source = "../../../../stacks/eve"
 
+  vm_admin_username = var.vm_admin_username
+  vm_admin_password = var.vm_admin_password
+
   environment          = "dev"
   location             = "East US"
   service_name         = "lab"
@@ -14,6 +17,9 @@ module "eve" {
 */
 module "eve_wg" {
   source = "../../../../stacks/eve_wg"
+
+  vm_admin_username = var.vm_admin_username
+  vm_admin_password = var.vm_admin_password
 
   environment         = "dev"
   location            = "East US"
