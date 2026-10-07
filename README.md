@@ -16,12 +16,12 @@ main/
 │   ├── context/           # Shared naming, tags, region, and CIDRs
 │   ├── eve/               # EVE-NG resource composition
 │   ├── images/            # Azure Compute Gallery foundation
+│   ├── modules/           # Local copies of reusable network/system modules
 │   └── iperf/             # iPerf resource composition
 ├── packer/                # Environment-independent image templates
 │   ├── eve/
 │   └── iperf/
 ├── pipelines/             # Terraform and Packer pipelines
-└── modules/               # Legacy local modules; no longer referenced, deleted
 ```
 
 The EVE-NG and iPerf environment roots contain only backend, provider, credential-variable, and stack-call configuration. Resource composition is shared in `main/stacks/eve` and `main/stacks/iperf`. The images root owns the dedicated `dev-use-images-rg`, Azure Compute Gallery, and stable `eve-ng` and `iperf` image definitions; Packer owns the immutable versions beneath those definitions. Reusable Azure resource modules are pinned to `v0.1.6` of the private `TF/azure-terraform-modules` Azure Repos repository.
@@ -29,6 +29,36 @@ The EVE-NG and iPerf environment roots contain only backend, provider, credentia
 Packer templates in `main/packer/` receive their destination from `eve_packer.yml` and `iperf_packer.yml`. Each pipeline defines `IMAGE_SUBSCRIPTION_ID`, `IMAGE_RESOURCE_GROUP`, `IMAGE_GALLERY`, and `RSG_LOCATION` and passes them to both Packer validation and build using `PKR_VAR_*` environment variables. These pipelines currently target dev; to target another environment, configure its destination and credentials and create its gallery with Terraform first. `AZURE_ENVIRONMENT` selects the Azure DevOps deployment environment only; it does not select the gallery. Local Packer runs must also supply `subscription_id`, `image_resource_group`, `gallery_name`, and `location` (for example, through `PKR_VAR_*` environment variables or a Packer variable file).
 
 The environment roots use separate remote-state keys and are intended for clean deployments without legacy state migration.
+
+## Switch between Git and local module sources
+
+Local reusable modules are in `main/stacks/modules/` (plural). In a stack such as `main/stacks/eve/main.tf`, change only the existing module's `source` line to select Git or the local copy.
+
+Pinned Git source:
+
+```hcl
+source = "git::https://dev.azure.com/wder/TF/_git/azure-terraform-modules//modules/network/rtb?ref=v0.1.6"
+```
+
+Equivalent local path from `main/stacks/eve/`, `eve_wg/`, `iperf/`, or `iperf2/`:
+
+```hcl
+source = "../modules/network/rtb"
+```
+
+For the VM module, the local source is `../modules/system/vm`. Relative paths are resolved from the directory containing the calling `.tf` file, not the terminal's working directory. Use exactly one active `source` per module block; local paths do not take a `?ref=` tag. Keep the module block name and inputs unchanged, and confirm the local copy supports those inputs and outputs.
+
+After switching either direction, initialize and validate from the consuming environment root, then review a plan using its usual credentials and image-version inputs:
+
+```bash
+terraform -chdir=main/env/dev/use/eve init
+terraform -chdir=main/env/dev/use/eve validate
+terraform -chdir=main/env/dev/use/eve plan
+```
+
+Use `main/env/dev/use/iperf` for the iPerf deployment. Changing a source address requires initialization; it does not by itself require a state move when module and resource addresses remain the same. Differences in the selected module code can still change or replace resources, so inspect the plan. Use `init -upgrade` only when deliberately refreshing dependencies within their configured constraints.
+
+To switch back, restore the Git source with the desired published tag and rerun the same checks. For pipeline runs using local modules, commit `main/stacks/modules/` with the stack changes so the agent has those files. Include `main/stacks/modules/**` in deployment pipeline path filters if edits to local modules should trigger automatic runs.
 
 ## Prerequisites
 
