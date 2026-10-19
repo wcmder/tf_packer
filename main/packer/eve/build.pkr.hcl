@@ -15,13 +15,17 @@ variable "EVE_IMAGES" {
       image_path    = "/opt/unetlab/addons/qemu/c8000v-17.15.06"
       download_path = "https://repo.dknetworks.io/files/c8kv_17.15/c8000v-universalk9_16G_serial.17.15.06.qcow2"
     }
-    pano_11_2 = {
-      image_path    = "/opt/unetlab/addons/qemu/panorama-11.2.8"
-      download_path = "https://repo.dknetworks.io/files/palo_11.2/Panorama-KVM-11.2.8.qcow2"
+    versadir_22_1_4 = {
+      image_path    = "/opt/unetlab/addons/qemu/versadir-22.1.4"
+      download_path = "https://repo.dknetworks.io/files/versa_22.1/versa-director-d58d641-22.1.4-B.qcow2"
     }
-    palo_11_2 = {
-      image_path    = "/opt/unetlab/addons/qemu/paloalto-11.2.10-h6"
-      download_path = "https://repo.dknetworks.io/files/palo_11.2/PA-VM-KVM-11.2.10-h6.qcow2"
+    versaana_22_1_4 = {
+      image_path    = "/opt/unetlab/addons/qemu/versaana-22.1.4"
+      download_path = "https://repo.dknetworks.io/files/versa_22.1/versa-analytics-262aa66-22.1.4-B.qcow2"
+    }
+    versafvnf_22_1_4 = {
+      image_path    = "/opt/unetlab/addons/qemu/versafvnf-22.1.4"
+      download_path = "https://repo.dknetworks.io/files/versa_22.1/versa-flexvnf-262aa66-22.1.4-B.qcow2"
     }
     pano_12_1 = {
       image_path    = "/opt/unetlab/addons/qemu/panorama-12.1.2"
