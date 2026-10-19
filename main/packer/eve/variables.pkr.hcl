@@ -1,4 +1,16 @@
 # Azure authentication and build variables.
+variable "image_download_id" {
+  type        = string
+  sensitive   = true
+  description = "Cloudflare Access service token client ID for the image repository."
+}
+
+variable "image_download_secret" {
+  type        = string
+  sensitive   = true
+  description = "Cloudflare Access service token secret for the image repository."
+}
+
 variable "spn-client-id" {
   type = string
 }

@@ -128,6 +128,8 @@ stages:
                     PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
                     PKR_VAR_ubuntu_image_version: $(UBUNTU_IMAGE_VERSION)
                     PKR_VAR_eve_image_version: $(EVE_IMAGE_VERSION)
+                    PKR_VAR_image_download_id: $(iamge-download-id)
+                    PKR_VAR_image_download_secret: $(iamge-download-secret)
                 - task: CmdLine@2
                   displayName: Packer build
                   inputs:
@@ -143,3 +145,5 @@ stages:
                     PKR_VAR_spn-tenant-id: $(dostest-tenant-id)
                     PKR_VAR_ubuntu_image_version: $(UBUNTU_IMAGE_VERSION)
                     PKR_VAR_eve_image_version: $(EVE_IMAGE_VERSION)
+                    PKR_VAR_image_download_id: $(iamge-download-id)
+                    PKR_VAR_image_download_secret: $(iamge-download-secret)

@@ -52,7 +52,11 @@ locals {
       <<-EOT
       for attempt in 1 2 3 4 5 6; do
         echo "Downloading ${name}: attempt $attempt/6"
-        if curl --fail --show-error --location --connect-timeout 30 --continue-at - -o '${var.FILE_NAME}' '${image.download_path}'; then
+        if response=$(curl --fail --show-error --connect-timeout 30 --continue-at - --write-out '%%{http_code}' --header "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID" --header "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET" -o '${var.FILE_NAME}' '${image.download_path}'); then
+          case "$response" in
+            200|206) ;;
+            *) echo "Unexpected HTTP $response for ${name}; check Access policy and download URL" >&2; exit 22 ;;
+          esac
           break
         else
           status=$?
@@ -100,8 +104,14 @@ build {
   }
 
   provisioner "shell" {
-    execute_command = local.execute_command
-    inline          = local.download_image_commands
+    # sudo must receive these variables explicitly; its default environment
+    # filtering would otherwise remove the service token. Only this step gets it.
+    execute_command = "chmod +x {{ .Path }} && sudo env {{ .Vars }} /bin/bash -e -o pipefail {{ .Path }}"
+    environment_vars = [
+      "CF_ACCESS_CLIENT_ID=${var.image_download_id}",
+      "CF_ACCESS_CLIENT_SECRET=${var.image_download_secret}",
+    ]
+    inline = local.download_image_commands
   }
 
 
