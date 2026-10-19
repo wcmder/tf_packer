@@ -47,7 +47,25 @@ locals {
       "mkdir -p /data/${name}",
       "cd /data/${name}",
       "pwd",
-      "curl --fail --show-error --location --retry 5 --retry-delay 5 -o ${var.FILE_NAME} ${image.download_path}",
+      # Start a fresh curl process for each attempt so the resume offset includes
+      # bytes received before a connection reset. Built-in retries rewind output.
+      <<-EOT
+      for attempt in 1 2 3 4 5 6; do
+        echo "Downloading ${name}: attempt $attempt/6"
+        if curl --fail --show-error --location --connect-timeout 30 --continue-at - -o '${var.FILE_NAME}' '${image.download_path}'; then
+          break
+        else
+          status=$?
+        fi
+        if [ "$attempt" -eq 6 ] || [ "$status" -eq 33 ]; then
+          echo "Download failed for ${name} (curl exit $status)" >&2
+          exit "$status"
+        fi
+        echo "Retrying ${name} from the partial file in 5 seconds"
+        sleep 5
+      done
+      EOT
+      ,
       "echo '${name} image downloaded'",
     ]
   ])
